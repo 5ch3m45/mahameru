@@ -1,0 +1,58 @@
+h1, h2, h3, h4, h5, h6, p, label {
+    color: #000
+}
+.rounded-corner {
+    border-radius: 8px
+}
+.rounded-corner-card-image {
+    border-radius: 8px 8px 0 0;
+}
+.btn {
+    border-radius: 8px
+}
+ul.avatars {
+    display: flex ; /* Causes LI items to display in row. */
+    list-style-type: none ;
+    margin: auto ; /* Centers vertically / horizontally in flex container. */
+    padding: 0px 7px 0px 0px ;
+    z-index: 1 ; /* Sets up new stack-container. */
+}
+li.avatars__item {
+    height: 49px ;
+    margin: 0px 0px 0px -10px ;
+    padding: 0px 0px 0px 0px ;
+    position: relative ;
+    width: 42px ; /* Forces flex items to be smaller than their contents. */
+}
+li.avatars__item:nth-child( 1 ) { z-index: 9 ; }
+li.avatars__item:nth-child( 2 ) { z-index: 8 ; }
+li.avatars__item:nth-child( 3 ) { z-index: 7 ; }
+li.avatars__item:nth-child( 4 ) { z-index: 6 ; }
+li.avatars__item:nth-child( 5 ) { z-index: 5 ; }
+li.avatars__item:nth-child( 6 ) { z-index: 4 ; }
+li.avatars__item:nth-child( 7 ) { z-index: 3 ; }
+li.avatars__item:nth-child( 8 ) { z-index: 2 ; }
+li.avatars__item:nth-child( 9 ) { z-index: 1 ; }
+img.avatars__img,
+span.avatars__initials,
+span.avatars__others {
+    background-color: #596376 ;
+    border: 0px solid #fff ;
+    box-shadow: 0px 0px 3px #777;
+    border-radius: 100px 100px 100px 100px ;
+    color: #FFFFFF ;
+    display: block ;
+    font-family: sans-serif ;
+    font-size: 12px ;
+    font-weight: 100 ;
+    height: 45px ;
+    line-height: 45px ;
+    text-align: center ;
+    width: 45px ;
+}
+img.avatars__img.no-shadow {
+    box-shadow: 0px 0px 0px;
+}
+span.avatars__others {
+    background-color: #1E8FE1 ;
+}
