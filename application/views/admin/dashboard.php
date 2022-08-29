@@ -72,8 +72,8 @@
                             <div class="card-body">
                                 <div class="d-md-flex align-items-center">
                                     <div>
-                                        <h4 class="card-title">Arsip Ditambahkan</h4>
-                                        <h6 class="card-subtitle">Jumlah Arsip Ditambahkan di Bulan Ini</h6>
+                                        <h4 class="card-title">Jumlah Arsip Ditambahkan</h4>
+                                        <h6 class="card-subtitle">Jumlah arsip ditambahkan 2 minggu terakhir</h6>
                                     </div>
                                     <div class="ms-auto d-flex no-block align-items-center">
                                         <ul class="list-inline dl d-flex align-items-center m-r-15 m-b-0">
@@ -83,9 +83,7 @@
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="amp-pxl mt-4" style="height: 350px;">
-                                    <div class="chartist-tooltip"></div>
-                                </div>
+                                <div class="amp-pxl mt-4" style="height: 400px;"></div>
                             </div>
                         </div>
                     </div>
@@ -94,67 +92,7 @@
                             <div class="card-body">
                                 <h4 class="card-title">Klasifikasi Terbanyak</h4>
                                 <h6 class="card-subtitle">Klasifikasi dengan Arsip Terbanyak</h6>
-                                <div class="mt-5 pb-3 d-flex align-items-center">
-                                    <span class="btn btn-primary btn-circle d-flex align-items-center p-0">
-                                        &nbsp;
-                                    </span>
-                                    <div class="ms-3">
-                                        <h5 class="mb-0 fw-bold">000</h5>
-                                        <span class="text-muted fs-6">Umum</span>
-                                    </div>
-                                    <div class="ms-auto">
-                                        <span class="badge bg-light text-muted">900 arsip</span>
-                                    </div>
-                                </div>
-                                <div class="py-3 d-flex align-items-center">
-                                    <span class="btn btn-warning btn-circle d-flex align-items-center">
-                                        &nbsp;
-                                    </span>
-                                    <div class="ms-3">
-                                        <h5 class="mb-0 fw-bold">050</h5>
-                                        <span class="text-muted fs-6">Perencanaan</span>
-                                    </div>
-                                    <div class="ms-auto">
-                                        <span class="badge bg-light text-muted">755 arsip</span>
-                                    </div>
-                                </div>
-                                <div class="py-3 d-flex align-items-center">
-                                    <span class="btn btn-success btn-circle d-flex align-items-center">
-                                        &nbsp;
-                                    </span>
-                                    <div class="ms-3">
-                                        <h5 class="mb-0 fw-bold">190</h5>
-                                        <span class="text-muted fs-6">Hubungan Luar Negeri</span>
-                                    </div>
-                                    <div class="ms-auto">
-                                        <span class="badge bg-light text-muted">650 arsip</span>
-                                    </div>
-                                </div>
-                                <div class="py-3 d-flex align-items-center">
-                                    <span class="btn btn-info btn-circle d-flex align-items-center">
-                                        &nbsp;
-                                    </span>
-                                    <div class="ms-3">
-                                        <h5 class="mb-0 fw-bold">260</h5>
-                                        <span class="text-muted fs-6">Organisasi Wanita</span>
-                                    </div>
-                                    <div class="ms-auto">
-                                        <span class="badge bg-light text-muted">554 arsip</span>
-                                    </div>
-                                </div>
-
-                                <div class="pt-3 d-flex align-items-center">
-                                    <span class="btn btn-danger btn-circle d-flex align-items-center">
-                                        &nbsp;
-                                    </span>
-                                    <div class="ms-3">
-                                        <h5 class="mb-0 fw-bold">420</h5>
-                                        <span class="text-muted fs-6">Pendidikan</span>
-                                    </div>
-                                    <div class="ms-auto">
-                                        <span class="badge bg-light text-muted">340 arsip</span>
-                                    </div>
-                                </div>
+                                <div id="klasifikasi-top5" class=""></div>
                             </div>
                         </div>
                     </div>
@@ -173,7 +111,7 @@
                                 <!-- title -->
                                 <div class="d-md-flex">
                                     <div>
-                                        <h4 class="card-title">Terakhir Ditambahkan</h4>
+                                        <h4 class="card-title">Arsip Terakhir Ditambahkan</h4>
                                         <h5 class="card-subtitle">5 Arsip Terakhir Ditambahkan</h5>
                                     </div>
                                 </div>
@@ -183,155 +121,17 @@
                                         <thead>
                                             <tr>
                                                 <th class="border-top-0">#</th>
-                                                <th class="border-top-0">No. Awal</th>
+                                                <th class="border-top-0">No</th>
+                                                <th class="border-top-0">Inisial Pengolah</th>
                                                 <th class="border-top-0">Kode Klasifikasi</th>
-                                                <th class="border-top-0">Deskripsi Kegiatan</th>
-                                                <th class="border-top-0">Dibuat Oleh</th>
+                                                <th class="border-top-0">Uraian Informasi</th>
                                                 <th class="border-top-0">Lampiran</th>
+                                                <th class="border-top-0">Pencipta</th>
+                                                <th class="border-top-0">Tahun</th>
+                                                <th class="border-top-0">Status</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            <tr role="button" data-id="1">
-                                                <td>1</td>
-                                                <td>2</td>
-                                                <td>
-                                                    <label class="badge bg-primary">
-                                                        <strong>000</strong> | Umum
-                                                    </label>
-                                                </td>
-                                                <td>
-                                                    <small class="d-inline-block text-truncate" style="max-width: 250px;">Pengambilan Sumpah Jabatan Pengurus Darma Wanita Kabupaten Wonosobo Tahun 2022</small>
-                                                </td>
-                                                <td>
-                                                    <label class="badge bg-danger">BMF</label>
-                                                </td>
-                                                <td>
-                                                    <ul class="avatars">
-                                                        <li class="avatars__item">
-                                                            <img src="<?= assets_url() ?>images/users/5.jpg" class="avatars__img" />
-                                                        </li>
-                                                        <li class="avatars__item">
-                                                            <span class="avatars__initials">KD</span>
-                                                        </li>
-                                                        <li class="avatars__item">
-                                                            <span class="avatars__others">+3</span>
-                                                        </li>
-                                                    </ul>
-                                                </td>
-                                            </tr>
-                                            <tr role="button" data-id="1">
-                                                <td>2</td>
-                                                <td>34</td>
-                                                <td>
-                                                    <label class="badge bg-danger">
-                                                        <strong>420</strong> | Pendidikan
-                                                    </label>
-                                                </td>
-                                                <td>
-                                                    <small class="d-inline-block text-truncate" style="max-width: 250px;">Pengambilan Sumpah Jabatan Pengurus Darma Wanita Kabupaten Wonosobo Tahun 2022</small>
-                                                </td>
-                                                <td>
-                                                    <label class="badge bg-danger">BMF</label>
-                                                </td>
-                                                <td>
-                                                    <ul class="avatars">
-                                                        <li class="avatars__item">
-                                                            <img src="<?= assets_url() ?>images/users/5.jpg" class="avatars__img" />
-                                                        </li>
-                                                        <li class="avatars__item">
-                                                            <span class="avatars__initials">KD</span>
-                                                        </li>
-                                                        <li class="avatars__item">
-                                                            <span class="avatars__others">+3</span>
-                                                        </li>
-                                                    </ul>
-                                                </td>
-                                            </tr>
-                                            <tr role="button" data-id="1">
-                                                <td>1</td>
-                                                <td>2</td>
-                                                <td>
-                                                    <label class="badge bg-info">
-                                                        <strong>260</strong> | Organisasi Wanita
-                                                    </label>
-                                                </td>
-                                                <td>
-                                                    <small class="d-inline-block text-truncate" style="max-width: 250px;">Pengambilan Sumpah Jabatan Pengurus Darma Wanita Kabupaten Wonosobo Tahun 2022</small>
-                                                </td>
-                                                <td>
-                                                    <label class="badge bg-danger">BMF</label>
-                                                </td>
-                                                <td>
-                                                    <ul class="avatars">
-                                                        <li class="avatars__item">
-                                                            <img src="<?= assets_url() ?>images/users/5.jpg" class="avatars__img" />
-                                                        </li>
-                                                        <li class="avatars__item">
-                                                            <span class="avatars__initials">KD</span>
-                                                        </li>
-                                                        <li class="avatars__item">
-                                                            <span class="avatars__others">+3</span>
-                                                        </li>
-                                                    </ul>
-                                                </td>
-                                            </tr>
-                                            <tr role="button" data-id="1">
-                                                <td>1</td>
-                                                <td>2</td>
-                                                <td>
-                                                    <label class="badge bg-success">
-                                                        <strong>190</strong> | Hubungan Luar Negeri
-                                                    </label>
-                                                </td>
-                                                <td>
-                                                    <small class="d-inline-block text-truncate" style="max-width: 250px;">Pengambilan Sumpah Jabatan Pengurus Darma Wanita Kabupaten Wonosobo Tahun 2022</small>
-                                                </td>
-                                                <td>
-                                                    <label class="badge bg-danger">BMF</label>
-                                                </td>
-                                                <td>
-                                                    <ul class="avatars">
-                                                        <li class="avatars__item">
-                                                            <img src="<?= assets_url() ?>images/users/5.jpg" class="avatars__img" />
-                                                        </li>
-                                                        <li class="avatars__item">
-                                                            <span class="avatars__initials">KD</span>
-                                                        </li>
-                                                        <li class="avatars__item">
-                                                            <span class="avatars__others">+3</span>
-                                                        </li>
-                                                    </ul>
-                                                </td>
-                                            </tr>
-                                            <tr role="button" data-id="1">
-                                                <td>1</td>
-                                                <td>2</td>
-                                                <td>
-                                                    <label class="badge bg-warning">
-                                                        <strong>050</strong> | Perencanaan
-                                                    </label>
-                                                </td>
-                                                <td>
-                                                    <small class="d-inline-block text-truncate" style="max-width: 250px;">Pengambilan Sumpah Jabatan Pengurus Darma Wanita Kabupaten Wonosobo Tahun 2022</small>
-                                                </td>
-                                                <td>
-                                                    <label class="badge bg-danger">BMF</label>
-                                                </td>
-                                                <td>
-                                                    <ul class="avatars">
-                                                        <li class="avatars__item">
-                                                            <img src="<?= assets_url() ?>images/users/5.jpg" class="avatars__img" />
-                                                        </li>
-                                                        <li class="avatars__item">
-                                                            <span class="avatars__initials">KD</span>
-                                                        </li>
-                                                        <li class="avatars__item">
-                                                            <span class="avatars__others">+3</span>
-                                                        </li>
-                                                    </ul>
-                                                </td>
-                                            </tr>
-                                        </tbody>
+                                        <tbody></tbody>
                                     </table>
                                 </div>
                             </div>
@@ -501,7 +301,8 @@
     <!-- All Jquery -->
     <!-- ============================================================== -->
     <?php include_once(__DIR__.'/components/base_js.php'); ?>
-    <script src="<?= assets_url() ?>js/pages/dashboards/dashboard1.js?v=<?= time() ?>"></script>
+    <script src="<?= assets_url() ?>js/pages/dashboards/index.js?v=<?= time() ?>"></script>
+    <!-- <script src="<?= assets_url() ?>js/pages/dashboards/dashboard1.js?v=<?= time() ?>"></script> -->
     <script>
         $('#arsip-table tr').on('click', function() {
             window.location.href = '/arsip/detail'

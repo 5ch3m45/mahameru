@@ -18,6 +18,15 @@ class Klasifikasi_model extends CI_Model
             ->row_array();
     }
 
+    function getOneByID($id) {
+        return $this->db->select('*')
+            ->from($this->table)
+            ->where('id', $id)
+            ->limit(1)
+            ->get()
+            ->row_array();
+    }
+
     function getOneByKode($kode) {
         return $this->db->select('*')
             ->from($this->table)
@@ -32,8 +41,29 @@ class Klasifikasi_model extends CI_Model
         return $this->db->select('*')
             ->from($this->table)
             ->limit(10, $offset)
+            ->order_by('kode', 'asc')
             ->get()
             ->result_array();
     }
 
+    function getAll() {
+        return $this->db->select('*')
+            ->from($this->table)
+            ->order_by('kode', 'asc')
+            ->get()
+            ->result_array();
+    }
+
+    function getTop5() {
+        return $this->db->select('tbl_klasifikasi.id, tbl_klasifikasi.kode, tbl_klasifikasi.nama, count(tbl_arsip.id) as arsip_count')
+            ->from($this->table)
+            ->join('tbl_arsip', 'tbl_arsip.klasifikasi_id = tbl_klasifikasi.id', 'left')
+            ->where('tbl_arsip.is_published', 1)
+            ->where('tbl_arsip.is_deleted', 0)
+            ->group_by('tbl_klasifikasi.id')
+            ->order_by('arsip_count', 'desc')
+            ->limit(5)
+            ->get()
+            ->result_array();
+    }
 }

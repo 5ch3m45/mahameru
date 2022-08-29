@@ -13,7 +13,9 @@
     <link href="<?= assets_url() ?>libs/chartist/dist/chartist.min.css" rel="stylesheet">
     <link href="<?= assets_url() ?>libs/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.css" rel="stylesheet">
     <link href="<?= assets_url() ?>libs/dropzone/dropzone.min.css" rel="stylesheet">
-    <link href="<?= assets_url() ?>css/style.min.css" rel="stylesheet">
+    <link href="<?= assets_url() ?>libs/select2-4.0.13/css/select2.min.css" rel="stylesheet">
+    <link href="<?= assets_url() ?>libs/select2-4.0.13/css/select2-bootstrap-5-theme.min.css" rel="stylesheet">
+    <link href="<?= assets_url() ?>css/style.min.css?v=<?= time() ?>" rel="stylesheet">
     <style>
         ul.avatars {
             display: flex ; /* Causes LI items to display in row. */
@@ -78,5 +80,13 @@
         }
         .grid-sizer,
         .grid-item { width: 50%; padding: 5px }
+        .ct-label.ct-label.ct-horizontal.ct-end {
+            position: relative;
+            justify-content: flex-end;
+            text-align: right;
+            transform-origin: 100% 0;
+            transform: translate(-100%) rotate(-45deg);
+            white-space:nowrap;
+        }
     </style>
 </head>

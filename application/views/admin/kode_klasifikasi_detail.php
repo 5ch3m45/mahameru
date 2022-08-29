@@ -42,8 +42,8 @@
                     <div class="col-6">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb mb-0 d-flex align-items-center">
-                              <li class="breadcrumb-item"><a href="<?= base_url() ?>" class="link"><i class="mdi mdi-home-outline fs-4"></i></a></li>
-                              <li class="breadcrumb-item"><a href="<?= base_url('kode-klasifikasi') ?>" class="link">Kode Klasifikasi</a></li>
+                              <li class="breadcrumb-item"><a href="<?= base_url('admin') ?>" class="link"><i class="mdi mdi-home-outline fs-4"></i></a></li>
+                              <li class="breadcrumb-item"><a href="<?= base_url('admin/kode-klasifikasi') ?>" class="link">Kode Klasifikasi</a></li>
                               <li class="breadcrumb-item active" aria-current="page"><?= $klasifikasi['nama'] ?></li>
                             </ol>
                           </nav>
@@ -107,34 +107,38 @@
                                                 <th>#</th>
                                                 <th style="white-space: nowrap">No</th>
                                                 <th style="white-space: nowrap">Pengolah</th>
-                                                <th style="white-space: nowrap">Klasifikasi</th>
                                                 <th style="white-space: nowrap">Uraian Informasi</th>
                                                 <th style="white-space: nowrap">Lampiran</th>
                                                 <th style="white-space: nowrap">Pencipta</th>
                                                 <th style="white-space: nowrap">Tahun</th>
-                                                <th>Lampiran</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php foreach($arsips as $key => $arsip) { ?>
                                             <tr>
-                                                <td>1</td>
-                                                <td>11</td>
-                                                <td>Pengambilan Sumpah Jabatan Pengurus Darma Wanita Kabupaten Wonosobo Tahun 2022</td>
-                                                <td><label class="badge bg-danger">BMF</label></td>
+                                                <td><?= $key+1 ?></td>
+                                                <td><?= $arsip['nomor'] ?></td>
+                                                <td>BMF</td>
+                                                <td><?= $arsip['informasi'] ?></td>
                                                 <td>
+                                                    <?php if($arsip['lampirans']) { ?>
                                                     <ul class="avatars">
+                                                        <?php foreach($arsip['lampirans'] as $lampiran) { ?>
                                                         <li class="avatars__item">
-                                                            <img src="<?= assets_url() ?>images/users/5.jpg" class="avatars__img" />
+                                                            <?php if($lampiran['type'] == 'image/jpeg' || $lampiran['type'] == 'image/png') { ?>
+                                                                <img src="<?= $lampiran['url'] ?>" class="avatars__img" />
+                                                            <?php } else if($lampiran['type'] == 'video/mp4') { ?>
+                                                                <img src="/assets/images/mp4.png" class="avatars__img" />
+                                                            <?php } else if($lampiran['type'] == 'number') { ?>
+                                                                <span class="avatars__others">+<?= $lampiran['url'] ?></span>
+                                                            <?php } ?>
                                                         </li>
-                                                        <li class="avatars__item">
-                                                            <span class="avatars__initials">KD</span>
-                                                        </li>
-                                                        <li class="avatars__item">
-                                                            <span class="avatars__others">+3</span>
-                                                        </li>
+                                                        <?php } ?>
                                                     </ul>
+                                                    <?php } else { echo '-'; } ?>
                                                 </td>
+                                                <td><?= $arsip['pencipta'] ?></td>
+                                                <td><?= $arsip['tahun'] ?></td>
                                             </tr>
                                             <?php } ?>
                                         </tbody>

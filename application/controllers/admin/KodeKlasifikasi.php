@@ -5,8 +5,11 @@ class KodeKlasifikasi extends CI_Controller {
 	function __construct() {
 		parent::__construct();
 
-		$this->load->model('arsip_model');
-		$this->load->model('klasifikasi_model');
+		$this->load->model([
+			'arsip_model',
+			'klasifikasi_model',
+			'lampiran_model'
+		]);
 	}
 
 	public function index() {
@@ -54,7 +57,27 @@ class KodeKlasifikasi extends CI_Controller {
 		}
 
 		$arsips = $this->arsip_model->getBatchByKlasifikasi($klasifikasi['id'], $page);
-
+		foreach ($arsips as $key => $arsip) {
+			$arsipLampirans = [];
+			$lampirans = $this->lampiran_model->getTop2LampiransByArsip($arsip['id']);
+			$lampiransCount = $this->lampiran_model->countLampiranByArsip($arsip['id']);
+			if($lampiransCount) {
+				foreach ($lampirans as $lampiran) {
+					array_push($arsipLampirans, [
+						'type' => $lampiran['type'],
+						'url' => $lampiran['url']
+					]);
+				}
+			}
+			if($lampiransCount > 2) {
+				array_push($arsipLampirans, [
+					'type' => 'number',
+					'url' => $lampiransCount - 2
+				]);
+			}
+			$arsips[$key]['lampirans'] = $arsipLampirans;
+		}
+		
 		$this->load->view('admin/kode_klasifikasi_detail', compact('klasifikasi', 'arsipCount', 'arsips'));
 	}
 }

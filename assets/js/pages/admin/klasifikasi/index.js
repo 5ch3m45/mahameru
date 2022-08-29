@@ -22,18 +22,17 @@ $(document).ready(function() {
     $('#submitKodeBtn').on('click', function() {
         $(this).html('<div class="spinner-border spinner-border-sm"></div> Menyimpan').attr('disabled', true);
 
-        let formData = new FormData();
-        formData.append($('meta[name=token_name]').attr('content'), $('meta[name=token_hash]').attr('content'));
-        formData.append('kode', $('#kodeInput').val());
-        formData.append('nama', $('#namaInput').val());
-        formData.append('deskripsi', $('#deskripsiTextarea').val());
+        let data = new FormData();
+        data.append($('meta[name=token_name]').attr('content'), $('meta[name=token_hash]').attr('content'));
+        data.append('kode', $('#kodeInput').val());
+        data.append('nama', $('#namaInput').val());
+        data.append('deskripsi', $('#deskripsiTextarea').val());
 
-        axios.post(`/api/klasifikasi/`, formData)
+        axios.post(`/api/klasifikasi/baru`, data)
             .then(res => {
                 if(res.data.success == true) {
                     setTimeout(() => {
-                        debugger
-                        window.location.href = '/admin/kode-klasifikasi/'+res.data.data.id;
+                        window.location.href = '/admin/kode-klasifikasi/detail/'+res.data.data.id;
                         $('#ubahInformasiModal').modal('hide');
                     }, 1000);
                 }

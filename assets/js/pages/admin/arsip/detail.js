@@ -1,12 +1,92 @@
-$(function(){
-    $('.my-masonry-grid').masonryGrid({
-      'columns': 3
-    });
-});
-
 Dropzone.autoDiscover = false;
-$(document).ready(function() {
+$(async function() {
     const ARSIP_ID = window.location.pathname.split('/')[4];
+    const loadKlasifikasiOption = () => {
+        axios.get(`/api/klasifikasi`)
+            .then(res => {
+                $('#klasifikasiSelect').html('<option>Pilih kode klasifikasi</option>');
+                res.data.data.forEach(item => {
+                    $('#klasifikasiSelect').append(`
+                    <option value="${item.id}">${item.kode} | ${item.nama}</option>
+                    `)
+                })
+            })
+            .finally(() => {
+                $('#klasifikasiSelect').select2({
+                    theme: 'bootstrap-5'
+                })
+            })
+    }
+    const lampiranParser = (lampiran) => {
+        if(['image/jpeg', 'image/png'].includes(lampiran.type)) {
+            return `<img 
+                data-id="${lampiran.id}" 
+                data-url="${lampiran.url}" 
+                class="lampiran lampiran-${lampiran.id} my-masonry-grid-item p-1" 
+                style="max-width: 100%" 
+                src="${lampiran.url}">`
+        } else if(['video/mp4'].includes(lampiran.type)) {
+            return `<img 
+                data-id="${lampiran.id}" 
+                data-url="${lampiran.url}" 
+                data-type="${lampiran.type}" 
+                class="lampiran lampiran-${lampiran.id} my-masonry-grid-item p-1" 
+                style="max-width: 100%" 
+                src="/assets/images/mp4.png">`
+        }
+    }
+    const loadArsip = () => {
+        axios.get(`/api/arsip/${ARSIP_ID}`)
+            .then(res => {
+                let item = res.data.data;
+                $('#nomor-arsip-breadcrumb').text(item.nomor ? '#'+item.nomor : '');
+                $('#nomor-arsip-title').text(item.nomor ? '#'+item.nomor : '');
+
+                if(item.is_published) {
+                    $('#draftBtn').show();
+                } else {
+                    $('#is-draft-flag').show();
+                    $('#publikasiBtn').show();
+                }
+
+                $('#informasi-text').html(item.informasi ? item.informasi : '<em class="text-secondary">Belum ada informasi</em>');
+                $('#nomor-arsip-text').html(item.nomor ? item.nomor : '-');
+                $('#klasifikasi-arsip-text').html(item.klasifikasi.id ? item.klasifikasi.kode+' | '+item.klasifikasi.nama : '-');
+                $('#pencipta-arsip-text').html(item.pencipta ? item.pencipta : '-')
+                $('#tahun-arsip-text').html(item.tahun ? item.tahun : '-')
+                $('#last-updated-text').html(item.last_updated);
+
+                // set form value
+                $('#nomorInput').val(item.nomor);
+                $('#tahunInput').val(item.tahun);
+                if(item.klasifikasi_id) {
+                    $('#klasifikasiSelect').val(item.klasifikasi_id).trigger('change')
+                }
+                $('#penciptaInput').val(item.pencipta);
+                $('#informasiTextarea').val(item.informasi);
+
+                // lampiran
+                if(item.lampirans.length) {
+                    $('.my-masonry-grid').html('')
+                    item.lampirans.forEach(lampiran => {
+                        $('.my-masonry-grid').append(lampiranParser(lampiran))
+                    })
+                    $('.my-masonry-grid').masonryGrid({
+                        'columns': 3
+                    });
+                } else {
+                    $('.my-masonry-grid').html('')
+                    $('.my-masonry-grid').html('<em>Belum ada lampiran</em>')
+                }
+
+            })
+            .finally(() => {
+                
+            })
+    }
+    
+    await loadKlasifikasiOption();
+    loadArsip();
 
     $("#my-awesome-dropzone").dropzone({ 
         url: `/api/arsip/${ARSIP_ID}/lampiran`, 
@@ -17,7 +97,6 @@ $(document).ready(function() {
 
             this.on('success', function(res) {
                 let response = JSON.parse(res.xhr.response)
-                console.log(res)
                 $('meta[name=token_hash]').attr('content', response.csrf)
 
                 if(res.type == 'image/png') {
@@ -60,7 +139,34 @@ $(document).ready(function() {
         } else {
             $('#lampiranFile').html(`<img src="${$(this).data('url')}" style="max-width: 100%">`)
         }
-        $('#fotoDetailModal').modal('show')
+        $('#hapusLampiranBtn').data('id', $(this).data('id'))
+        $('#lampiranDetailModal').modal('show')
+    })
+
+    $('#hapusLampiranBtn').on('click', function() {
+        $('#hapusLampiranSubmit').data('id', $(this).data('id'))
+        $('#hapusLampiranConfirmModal').modal('show')
+    })
+    $('#hapusLampiranSubmit').on('click', function() {
+        const LAMPIRAN_ID = $(this).data('id');
+        $(':input').attr('disabled', true)
+        let data = new FormData();
+        data.append($('meta[name=token_name]').attr('content'), $('meta[name=token_hash]').attr('content'))
+        axios.post(`/api/arsip/${ARSIP_ID}/lampiran/${LAMPIRAN_ID}/hapus`, data)
+            .then(res => {
+                setTimeout(() => {
+                    $('#hapusLampiranConfirmModal').modal('hide');
+                    $('#lampiranDetailModal').modal('hide');
+                    $('.lampiran-'+LAMPIRAN_ID).hide()
+                }, 1000);
+            })
+            .catch(e => {
+                alert(e.response.data.message)
+            })
+            .finally(() => {
+                $(':input').attr('disabled', false)
+                $('meta[name=token_hash]').attr('content', response.csrf)
+            })
     })
     $('#ubahInformasiBtn').on('click', function() {
         $('#ubahInformasiModal').modal('show')
@@ -88,26 +194,30 @@ $(document).ready(function() {
         data.append('tahun', $('#tahunInput').val());
         data.append('informasi', $('#informasiTextarea').val());
         data.append('pencipta', $('#penciptaInput').val());
+        data.append('klasifikasi', $('#klasifikasiSelect').val());
         axios.post(`/api/arsip/${ARSIP_ID}/update`, data)
             .then(res => {
-                if(res.data.success == true) {
-                    if(res.data.data.informasi) {
-                        $('#informasiText').html(res.data.data.informasi);
-                    }
-                    $('#nomorText').html(res.data.data.nomor);
-                    $('#nomorTitle').html('#'+res.data.data.nomor);
-                    $('#nomorBreadcrumb').html('#'+res.data.data.nomor);
-                    $('#tahunText').html(res.data.data.tahun);
-                    $('#klasifikasiText').html(res.data.data.nomor);
-                    $('#penciptaText').html(res.data.data.pencipta);
-
-                    setTimeout(() => {
-                        $('#ubahInformasiModal').modal('hide');
-                    }, 1000);
+                let item = res.data.data;
+                if(item.informasi) {
+                    $('#informasi-arsip-text').html(item.informasi);
                 }
+                $('#nomor-arsip-text').html(item.nomor);
+                $('#nomor-arsip-title').html('#'+item.nomor);
+                $('#nomor-arsip-breadcrumb').html('#'+item.nomor);
+                $('#tahun-arsip-text').html(item.tahun);
+                if(item.klasifikasi_id) {
+                    $('#klasifikasi-arsip-text').html(item.klasifikasi.kode+' | '+item.klasifikasi.nama)
+                }
+                $('#pencipta-arsip-text').html(item.pencipta);
+
+                setTimeout(() => {
+                    $('#ubahInformasiModal').modal('hide');
+                }, 1000);
+
                 $('meta[name=token_hash]').attr('content', res.data.csrf)
             })
             .catch(e => {
+                console.log(e)
                 if(e.response.data.validation) {
                     if(e.response.data.validation.nomor) {
                         $('#nomorError').html(`<span>${e.response.data.validation.nomor}</span>`);
@@ -130,6 +240,69 @@ $(document).ready(function() {
             .finally(() => {
                 setTimeout(() => {
                     $(this).html('Simpan').attr('disabled', false);
+                }, 1000);
+            })
+    })
+
+    $('#publikasiBtn').on('click', function() {
+        let data = new FormData();
+        data.append($('meta[name=token_name]').attr('content'), $('meta[name=token_hash]').attr('content'))
+        $(this).attr('disabled', true)
+        axios.post(`/api/arsip/${ARSIP_ID}/publikasi`, data)
+            .then(res => {
+                setTimeout(() => {
+                    location.reload()
+                }, 1000);
+                $('meta[name=token_hash]').attr('content', res.data.csrf)
+            })
+            .catch(e => {
+                alert(e.response.message)
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    $(this).attr('disabled', false)
+                }, 1000);
+            })
+    })
+
+    $('#draftBtn').on('click', function() {
+        let data = new FormData();
+        data.append($('meta[name=token_name]').attr('content'), $('meta[name=token_hash]').attr('content'))
+        $(this).attr('disabled', true)
+        axios.post(`/api/arsip/${ARSIP_ID}/draft`, data)
+            .then(res => {
+                setTimeout(() => {
+                    location.reload()
+                }, 1000);
+                $('meta[name=token_hash]').attr('content', res.data.csrf)
+            })
+            .catch(e => {
+                alert(e.response.message)
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    $(this).attr('disabled', false)
+                }, 1000);
+            })
+    })
+
+    $('#delete-btn').on('click', function() {
+        let data = new FormData();
+        data.append($('meta[name=token_name]').attr('content'), $('meta[name=token_hash]').attr('content'))
+        $(this).attr('disabled', true)
+        axios.post(`/api/arsip/${ARSIP_ID}/hapus`, data)
+            .then(res => {
+                setTimeout(() => {
+                    window.location.href = '/admin/arsip';
+                }, 1000);
+                $('meta[name=token_hash]').attr('content', res.data.csrf)
+            })
+            .catch(e => {
+                alert(e.response.message)
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    $(this).attr('disabled', false)
                 }, 1000);
             })
     })

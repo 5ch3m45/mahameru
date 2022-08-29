@@ -4,43 +4,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Arsip extends CI_Controller {
 	function __construct() {
 		parent::__construct();
-		$this->load->model('arsip_model');
-		$this->load->model('lampiran_model');
+		$this->load->model([
+			'arsip_model',
+			'lampiran_model',
+			'klasifikasi_model'
+		]);
 	}
 	public function index() {
-		$page = $this->input->get('page', TRUE);
-
-		if(!$page) {
-			$page = 1;
-		}
-
-		if(!is_int((int)$page)){
-			$page = 1;
-		}
-
-		$arsips = $this->arsip_model->getBatch($page);
-
-		foreach ($arsips as $key => $arsip) {
-			$arsipLampirans = [];
-			$lampirans = $this->lampiran_model->getTop2LampiransByArsip($arsip['id']);
-			$lampiransCount = $this->lampiran_model->countLampiranByArsip($arsip['id']);
-			if($lampiransCount) {
-				foreach ($lampirans as $lampiran) {
-					array_push($arsipLampirans, [
-						'type' => $lampiran['type'],
-						'url' => $lampiran['url']
-					]);
-				}
-			}
-			if($lampiransCount > 2) {
-				array_push($arsipLampirans, [
-					'type' => 'number',
-					'url' => $lampiransCount - 2
-				]);
-			}
-			$arsips[$key]['lampirans'] = $arsipLampirans;
-		}
-		$this->load->view('admin/arsip_index', compact('arsips'));
+		$this->load->view('admin/arsip_index');
 	}
 
 	public function create() {
@@ -57,15 +28,15 @@ class Arsip extends CI_Controller {
 		$this->load->model('arsip_model');
 
 		$arsip = $this->arsip_model->first($id);
-
+		
 		if(!$arsip) {
 			echo 'Not found';
 			die();
 		}
-
+		$klasifikasis = $this->klasifikasi_model->getAll();
 		$lampirans = $this->lampiran_model->getBatchByArsip($arsip['id']);
 
-		$this->load->view('admin/arsip_detail', compact('arsip', 'lampirans'));
+		$this->load->view('admin/arsip_detail', compact('arsip', 'klasifikasis', 'lampirans'));
 	}
 
 	public function do_upload() {

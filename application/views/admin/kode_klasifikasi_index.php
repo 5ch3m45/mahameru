@@ -5,9 +5,6 @@
 
 <body>
     <?php include_once(__DIR__.'/components/preloader.php'); ?>
-    <!-- ============================================================== -->
-    <!-- Main wrapper - style you can find in pages.scss -->
-    <!-- ============================================================== -->
     <div 
         id="main-wrapper" 
         data-layout="vertical" 
@@ -16,33 +13,15 @@
         data-sidebar-position="absolute" 
         data-header-position="absolute" 
         data-boxed-layout="full">
-        <!-- ============================================================== -->
-        <!-- Topbar header - style you can find in pages.scss -->
-        <!-- ============================================================== -->
         <?php include_once(__DIR__.'/components/top_bar.php'); ?>
-        <!-- ============================================================== -->
-        <!-- End Topbar header -->
-        <!-- ============================================================== -->
-        <!-- ============================================================== -->
-        <!-- Left Sidebar - style you can find in sidebar.scss  -->
-        <!-- ============================================================== -->
         <?php include_once(__DIR__.'/components/left_sidebar.php'); ?>
-        <!-- ============================================================== -->
-        <!-- End Left Sidebar - style you can find in sidebar.scss  -->
-        <!-- ============================================================== -->
-        <!-- ============================================================== -->
-        <!-- Page wrapper  -->
-        <!-- ============================================================== -->
         <div class="page-wrapper">
-            <!-- ============================================================== -->
-            <!-- Bread crumb and right sidebar toggle -->
-            <!-- ============================================================== -->
             <div class="page-breadcrumb">
                 <div class="row align-items-center">
                     <div class="col-6">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb mb-0 d-flex align-items-center">
-                              <li class="breadcrumb-item"><a href="<?= base_url() ?>" class="link"><i class="mdi mdi-home-outline fs-4"></i></a></li>
+                              <li class="breadcrumb-item"><a href="<?= base_url('/admin/dashboard') ?>" class="link"><i class="mdi mdi-home-outline fs-4"></i></a></li>
                               <li class="breadcrumb-item active" aria-current="page">Kode Klasifikasi</li>
                             </ol>
                           </nav>
@@ -57,12 +36,6 @@
                     </div>
                 </div>
             </div>
-            <!-- ============================================================== -->
-            <!-- End Bread crumb and right sidebar toggle -->
-            <!-- ============================================================== -->
-            <!-- ============================================================== -->
-            <!-- Container fluid  -->
-            <!-- ============================================================== -->
             <div class="container-fluid">
                 <div class="row">
                     <!-- column -->
@@ -108,27 +81,12 @@
                     </div>
                 </div>
             </div>
-            <!-- ============================================================== -->
-            <!-- End Container fluid  -->
-            <!-- ============================================================== -->
-            <!-- ============================================================== -->
-            <!-- footer -->
-            <!-- ============================================================== -->
             <footer class="footer text-center">
                 All Rights Reserved by Flexy Admin. Designed and Developed by <a
                     href="https://www.wrappixel.com">WrapPixel</a>.
             </footer>
-            <!-- ============================================================== -->
-            <!-- End footer -->
-            <!-- ============================================================== -->
         </div>
-        <!-- ============================================================== -->
-        <!-- End Page wrapper  -->
-        <!-- ============================================================== -->
     </div>
-    <!-- ============================================================== -->
-    <!-- End Wrapper -->
-    <!-- ============================================================== -->
     <div class="modal fade" id="kodeBaruModal" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-labelledby="kodeBaruModalLabel" aria-hidden="true">
     	<div class="modal-dialog modal-dialog-centered">
     		<div class="modal-content">
@@ -160,9 +118,6 @@
     		</div>
     	</div>
     </div>
-    <!-- ============================================================== -->
-    <!-- All Jquery -->
-    <!-- ============================================================== -->
     <?php include_once(__DIR__.'/components/base_js.php'); ?>
     <script src="<?= assets_url() ?>js/pages/admin/klasifikasi/index.js?v=<?= time() ?>"></script>
 </body>

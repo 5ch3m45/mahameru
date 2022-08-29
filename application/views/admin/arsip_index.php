@@ -75,7 +75,7 @@
                             <div class="card-body">
                                 <!-- title -->
                                 <div class="table-responsive">
-                                    <table class="table mb-0 table-hover align-middle text-nowrap">
+                                    <table id="arsip-table" class="table mb-4 table-hover align-middle text-nowrap">
                                         <thead>
                                             <tr>
                                                 <th class="border-top-0">#</th>
@@ -86,43 +86,15 @@
                                                 <th class="border-top-0">Lampiran</th>
                                                 <th class="border-top-0">Pencipta</th>
                                                 <th class="border-top-0">Tahun</th>
+                                                <th class="border-top-0">Status</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            <?php foreach($arsips as $key => $arsip) { ?>
-                                            <tr role="button" data-id="<?= $arsip['id'] ?>">
-                                                <td><?= $key + 1 ?></td>
-                                                <td><?= $arsip['nomor'] ?></td>
-                                                <td>BMF</td>
-                                                <td>
-                                                    <label class="badge bg-primary">
-                                                        <?= $arsip['klasifikasi_id'] ?>: Kepegawaian
-                                                    </label>
-                                                </td>
-                                                <td>
-                                                    <small class="d-inline-block text-truncate" style="max-width: 250px;"><?= $arsip['informasi'] ?></small>
-                                                </td>
-                                                <td>
-                                                    <ul class="avatars">
-                                                        <?php foreach($arsip['lampirans'] as $lampiran) { ?>
-                                                        <li class="avatars__item">
-                                                            <?php if($lampiran['type'] == 'image/jpeg' || $lampiran['type'] == 'image/png') { ?>
-                                                                <img src="<?= $lampiran['url'] ?>" class="avatars__img" />
-                                                            <?php } else if($lampiran['type'] == 'video/mp4') { ?>
-                                                                <img src="/assets/images/mp4.png" class="avatars__img" />
-                                                            <?php } else if($lampiran['type'] == 'number') { ?>
-                                                                <span class="avatars__others">+<?= $lampiran['url'] ?></span>
-                                                            <?php } ?>
-                                                        </li>
-                                                        <?php } ?>
-                                                    </ul>
-                                                </td>
-                                                <td><?= $arsip['pencipta'] ?></td>
-                                                <td><?= $arsip['tahun'] ?></td>
-                                            </tr>
-                                            <?php } ?>
-                                        </tbody>
+                                        <tbody></tbody>
                                     </table>
+                                    <div class="d-flex justify-content-end mb-3">
+                                        <button type="button" id="prev-table" class="btn btn-primary me-2">Sebelumnya</button>
+                                        <button type="button" id="next-table" class="btn btn-primary">Selanjutnya</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -154,7 +126,7 @@
     <!-- All Jquery -->
     <!-- ============================================================== -->
     <?php include_once(__DIR__.'/components/base_js.php'); ?>
-    <script src="<?= assets_url() ?>js/pages/dashboards/dashboard1.js?v=<?= time() ?>"></script>
+    <script src="<?= assets_url() ?>js/pages/admin/arsip/index.js?v=<?= time() ?>"></script>
     <script>
         $('tr').on('click', function() {
             window.location.href = '<?= base_url() ?>admin/arsip/detail/'+$(this).data('id')

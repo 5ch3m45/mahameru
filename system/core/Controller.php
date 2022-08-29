@@ -101,4 +101,9 @@ class CI_Controller {
 		return self::$instance;
 	}
 
+	public function onlyPOSTRequest() {
+		if($this->input->server('REQUEST_METHOD') !== 'POST') {
+			echo 'Something wrong!'; die();
+		};
+	}
 }
