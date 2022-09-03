@@ -66,4 +66,8 @@ class Klasifikasi_model extends CI_Model
             ->get()
             ->result_array();
     }
+
+    function update($id, $data) {
+        return $this->db->update($this->table, $data, ['id' => $id]);
+    }
 }

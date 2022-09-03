@@ -70,20 +70,22 @@
                         </div>
                         <div class="col-6">
                             <div class="card rounded-corner shadow">
-                                <div class="card-body">
+                                <form id="signin-form" method="POST" class="card-body">
+                                    <input type="hidden" id="csrf-token" name="<?= $this->security->get_csrf_token_name() ?>" value="<?= $this->security->get_csrf_hash() ?>">
                                     <h2 class="display-text text-dark">Sign In</h2>
                                     <p>Silahkan masukkan <span class="text-primary">email</span> dan <span class="text-primary">kata sandi</span> Anda untuk masuk ke dashboard.</p>
                                     <hr>
                                     <div class="mb-3">
                                         <label for="">Email</label>
-                                        <input type="email" name="" id="" class="form-control rounded-corner">
+                                        <input type="text" name="login_string" id="email-input" class="form-control rounded-corner">
                                     </div>
                                     <div class="mb-4">
                                         <label for="">Kata sandi</label>
-                                        <input type="password" name="" id="" class="form-control rounded-corner">
+                                        <input type="password" name="login_pass" id="password-input" class="form-control rounded-corner">
                                     </div>
                                     <div class="mb-3">
-                                        <button class="btn btn-block btn-primary">Sign In</button>
+                                        <div id="login-error" class="mb-3"></div>
+                                        <button type="submit" class="btn btn-block btn-primary">Sign In</button>
                                     </div>
                                     <p class="mb-0">Lupa kata sandi? <a href="">Hubungi Admin</a></p>
                                 </div>
@@ -93,9 +95,6 @@
                 </div>
             </section>
         </div>
-        <footer 
-            class="text-center p-4"> All Rights Reserved by Flexy Admin. Designed and Developed by <a
-                href="https://www.wrappixel.com">WrapPixel</a>. Illustration by <a href="https://icons8.com/illustrations/author/zD2oqC8lLBBA">Icons 8</a> from <a href="https://icons8.com/illustrations">Ouch!</a></footer>
     </div>
 </body>
 <!-- ============================================================== -->
@@ -103,4 +102,6 @@
 <!-- ============================================================== -->
 <script src="<?= assets_url() ?>libs/jquery/dist/jquery.min.js"></script>
 <script src="<?= assets_url() ?>libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="<?= assets_url() ?>js/pages/auth/signin.js?v=<?= time() ?>"></script>
 </html>

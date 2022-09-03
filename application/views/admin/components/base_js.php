@@ -14,3 +14,4 @@
 <script src="<?= assets_url() ?>js/custom.js"></script>
 <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="<?= assets_url() ?>js/pages/admin/header.js?v=<?= time() ?>"></script>

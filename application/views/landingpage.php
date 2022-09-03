@@ -8,7 +8,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex,nofollow">
     <title>Home | MAHAMERU</title>
-    <!-- Favicon icon -->
+    <!-- Favicon icon -->    
+    <meta name="token_name" content="<?= $this->security->get_csrf_token_name() ?>">
+    <meta name="token_hash" content="<?= $this->security->get_csrf_hash() ?>">
     <link rel="icon" type="image/png" sizes="16x16" href="<?= assets_url() ?>/images/favicon.png">
     <!-- Custom CSS -->
     <link href="<?= assets_url() ?>/css/landingpage.min.css" rel="stylesheet">
@@ -23,41 +25,24 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Glide.js/3.2.0/css/glide.core.min.css" integrity="sha512-YQlbvfX5C6Ym6fTUSZ9GZpyB3F92hmQAZTO5YjciedwAaGRI9ccNs4iw2QTCJiSPheUQZomZKHQtuwbHkA9lgw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Glide.js/3.2.0/css/glide.theme.min.css" integrity="sha512-wCwx+DYp8LDIaTem/rpXubV/C1WiNRsEVqoztV0NZm8tiTvsUeSlA/Uz02VTGSiqfzAHD4RnqVoevMcRZgYEcQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="<?= assets_url() ?>/css/custom.css" rel="stylesheet">
-    <style>
-        html, body {
-            background-color: #fff;
-            scroll-behavior: smooth;
-        }
-        .display-text {
-            font-family: 'Montserrat', sans-serif;
-            color: #000!important
-        }
-        p {
-            color: #000
-        }
-        .text-grey {
-            color: var(--grey)
-        }
-
-        #today-archive .description {
-            background-image: linear-gradient(180deg,#000000 0%,rgba(0,0,0,0));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-    </style>
 </head>
 
 <body>
-    <!-- ============================================================== -->
-    <!-- Main wrapper -->
-    <!-- ============================================================== -->
+    <div class="modal fade rounded-corner" id="aduanModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="aduanModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered rounded-corner">
+            <div class="modal-content rounded-corner">
+                <div class="modal-body">
+                    <div id="aduan-modal-body"></div>
+                    <div class="pt-4 d-flex justify-content-end">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="main-wrapper">
-        <!-- ============================================================== -->
-        <!-- Header part -->
-        <!-- ============================================================== -->
         <header class="py-3 bg-white">
             <div class="container">
-                <!-- Start Header -->
                 <div class="header">
                     <nav class="navbar navbar-expand-md navbar-light px-0">
                         <a class="navbar-brand d-flex py-0" href="/">
@@ -89,7 +74,7 @@
                         			<a class="nav-link" href="#arsip-hari-ini">Arsip Hari Ini</a>
                         		</li>
                         		<li class="nav-item">
-                        			<a href="">
+                        			<a href="/admin">
                                         <button class="btn btn-primary">Upload Arsip</button>
                                     </a>
                         		</li>
@@ -110,7 +95,7 @@
                         			<a class="nav-link" href="#arsip-hari-ini">Arsip Hari Ini</a>
                         		</li>
                         		<li class="nav-item">
-                        			<a href="/admin/arsip">
+                        			<a href="/admin">
                                         <button class="btn btn-primary">Upload Arsip</button>
                                     </a>
                         		</li>
@@ -118,19 +103,9 @@
                         </div>
                     </nav>
                 </div>
-                <!-- End Header -->
             </div>
         </header>
-        <!-- ============================================================== -->
-        <!-- Header part -->
-        <!-- ============================================================== -->
-        <!-- ============================================================== -->
-        <!-- Page wrapper part -->
-        <!-- ============================================================== -->
         <div class="content-wrapper">
-            <!-- ============================================================== -->
-            <!-- Demos part -->
-            <!-- ============================================================== -->
             <section id="home" class="spacer bg-white">
                 <div class="container">
                     <div class="row">
@@ -280,48 +255,59 @@
                     </div>
                 </div>
             </section>
+            <section id="kolom-aduan" class="spacer bg-white">
+                <div class="container">
+                    <div class="d-md-flex d-block justify-content-between mb-5">
+                        <div>
+                            <p class="mb-0">KOLOM</p>
+                            <h2 class="text-dark display-text">ADUAN</h2>
+                        </div>
+                        <div class="d-flex align-items-end">
+                            <a href="/aduan">
+                                <button class="btn btn-sm btn-primary">Periksa Aduan Anda</button>
+                            </a>
+                        </div>
+                    </div>
+                    <form id="aduan-form" action="/api/aduan/create" method="post">
+                        <div class="mb-3">
+                            <label for="">Email</label>
+                            <input type="email" class="form-control" name="email" id="email-aduan-input">
+                            <small id="email-error" class="text-danger"></small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="">Nama</label>
+                            <input type="text" name="nama" id="nama-aduan-input" class="form-control">
+                            <small id="nama-error" class="text-danger"></small>
+                        </div>
+                        <div class="mb-4">
+                            <label for="">Aduan</label>
+                            <textarea name="aduan" id="aduan-textarea" rows="4" class="form-control"></textarea>
+                            <div id="aduan-counter" class="d-flex justify-content-end" style="font-size: .8rem; color: #666">0 karakter</div>
+                            <small id="aduan-error" class="text-danger"></small>
+                        </div>
+                        <div class="mb-4">
+                            <label for="">Verifikasi</label>
+                            <div class="mb-2">
+                                <img id="captcha-image" src="<?= $captcha ?>" alt="">
+                            </div>
+                            <input id="captcha" name="captcha" type="text" class="form-control">
+                            <small id="captcha-error" class="text-danger"></small>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary">Buat Aduan</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
-        <!-- ============================================================== -->
-        <!-- End page wrapperHeader part -->
-        <!-- ============================================================== -->
         <footer class="text-center p-4"> All Rights Reserved by Flexy Admin. Designed and Developed by <a
                 href="https://www.wrappixel.com">WrapPixel</a>. Illustration by <a href="https://icons8.com/illustrations/author/zD2oqC8lLBBA">Icons 8</a> from <a href="https://icons8.com/illustrations">Ouch!</a></footer>
     </div>
+    <script src="<?= assets_url() ?>libs/jquery/dist/jquery.min.js"></script>
+    <script src="<?= assets_url() ?>libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://unpkg.com/@glidejs/glide"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="<?= assets_url() ?>js/pages/landingpage.js?v=<?= time() ?>"></script>
 </body>
-<!-- ============================================================== -->
-<!-- All Jquery -->
-<!-- ============================================================== -->
-<script src="<?= assets_url() ?>libs/jquery/dist/jquery.min.js"></script>
-<script src="<?= assets_url() ?>libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script src="https://unpkg.com/@glidejs/glide"></script>
-<script>
-    AOS.init({
-        duration: 500,
-        once: true
-    });
-    $(document).ready(function() {
-        var glide = new Glide('#intro', {
-            type: 'carousel',
-            perView: 4,
-            focusAt: 'center',
-            breakpoints: {
-                1024: {
-                    preview: 3
-                },
-                800: {
-                    perView: 2
-                },
-                480: {
-                    perView: 1
-                }
-            }
-        })
-        glide.mount()
-
-        $('.today-archive-card').on('click', function() {
-            window.location.href = `/arsip/${$(this).data('id')}`
-        })
-    })
-</script>
 </html>

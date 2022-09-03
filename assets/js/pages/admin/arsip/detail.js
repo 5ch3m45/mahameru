@@ -23,7 +23,7 @@ $(async function() {
                 data-id="${lampiran.id}" 
                 data-url="${lampiran.url}" 
                 class="lampiran lampiran-${lampiran.id} my-masonry-grid-item p-1" 
-                style="max-width: 100%" 
+                style="max-width: 100%;" 
                 src="${lampiran.url}">`
         } else if(['video/mp4'].includes(lampiran.type)) {
             return `<img 
@@ -42,7 +42,7 @@ $(async function() {
                 $('#nomor-arsip-breadcrumb').text(item.nomor ? '#'+item.nomor : '');
                 $('#nomor-arsip-title').text(item.nomor ? '#'+item.nomor : '');
 
-                if(item.is_published) {
+                if(item.is_published == 1) {
                     $('#draftBtn').show();
                 } else {
                     $('#is-draft-flag').show();
@@ -55,6 +55,7 @@ $(async function() {
                 $('#pencipta-arsip-text').html(item.pencipta ? item.pencipta : '-')
                 $('#tahun-arsip-text').html(item.tahun ? item.tahun : '-')
                 $('#last-updated-text').html(item.last_updated);
+                $('#level-text').html(item.level == 'public' ? '<span class="badge bg-success">Publik</span>' : '<span class="badge bg-danger">Rahasia</span>')
 
                 // set form value
                 $('#nomorInput').val(item.nomor);
@@ -62,6 +63,7 @@ $(async function() {
                 if(item.klasifikasi_id) {
                     $('#klasifikasiSelect').val(item.klasifikasi_id).trigger('change')
                 }
+                $('#level-select').val(item.level)
                 $('#penciptaInput').val(item.pencipta);
                 $('#informasiTextarea').val(item.informasi);
 
@@ -98,28 +100,30 @@ $(async function() {
             this.on('success', function(res) {
                 let response = JSON.parse(res.xhr.response)
                 $('meta[name=token_hash]').attr('content', response.csrf)
-
-                if(res.type == 'image/png') {
-                    // todo data-id lampiran
-                    let random = Math.floor(Math.random() * 2) + 1;
-                    $('.masonry-grid-column-'+random).append(`
-                        <img data-id="${response.data.id}" data-url="${response.data.url}" class="lampiran my-masonry-grid-item p-1" style="max-width: 100%" src="${res.dataURL}" alt="">
-                    `)
-                }
-                if(res.type == 'image/jpeg') {
-                    // todo data-id lampiran
-                    let random = Math.floor(Math.random() * 2) + 1;
-                    $('.masonry-grid-column-'+random).append(`
-                        <img data-id="${response.data.id}" data-url="${response.data.url}" class="lampiran my-masonry-grid-item p-1" style="max-width: 100%" src="${res.dataURL}" alt="">
-                    `)
-                }
-                if(res.type == 'video/mp4') {
-                    // todo data-id lampiran
-                    let random = Math.floor(Math.random() * 2) + 1;
-                    $('.masonry-grid-column-'+random).append(`
-                        <img data-id="${response.data.id}" data-url="/assets/images/mp4.png" class="lampiran my-masonry-grid-item p-1" style="max-width: 100%" src="/assets/images/mp4.png" alt="">
-                    `)
-                }
+                setTimeout(() => {
+                    if(res.type == 'image/png') {
+                        // todo data-id lampiran
+                        let random = Math.floor(Math.random() * 2) + 1;
+                        $('.masonry-grid-column-'+random).append(`
+                            <img data-id="${response.data.id}" data-url="${response.data.url}" class="lampiran my-masonry-grid-item p-1" style="max-width: 100%;" src="${response.data.url}" alt="">
+                        `)
+                    }
+                    if(res.type == 'image/jpeg') {
+                        // todo data-id lampiran
+                        let random = Math.floor(Math.random() * 2) + 1;
+                        $('.masonry-grid-column-'+random).append(`
+                            <img data-id="${response.data.id}" data-url="${response.data.url}" class="lampiran my-masonry-grid-item p-1" style="max-width: 100%;" src="${response.data.url}" alt="">
+                        `)
+                    }
+                    if(res.type == 'video/mp4') {
+                        // todo data-id lampiran
+                        let random = Math.floor(Math.random() * 2) + 1;
+                        $('.masonry-grid-column-'+random).append(`
+                            <img data-id="${response.data.id}" data-url="/assets/images/mp4.png" class="lampiran my-masonry-grid-item p-1" style="max-width: 100%;" src="/assets/images/mp4.png" alt="">
+                        `)
+                    }
+                }, 1000);
+                
             })
 
             this.on('error', function(file, response) {
@@ -137,7 +141,7 @@ $(async function() {
                 </video>
             `)
         } else {
-            $('#lampiranFile').html(`<img src="${$(this).data('url')}" style="max-width: 100%">`)
+            $('#lampiranFile').html(`<img src="${$(this).data('url')}" style="max-width: 100%; max-height: 80vh">`)
         }
         $('#hapusLampiranBtn').data('id', $(this).data('id'))
         $('#lampiranDetailModal').modal('show')
@@ -159,13 +163,14 @@ $(async function() {
                     $('#lampiranDetailModal').modal('hide');
                     $('.lampiran-'+LAMPIRAN_ID).hide()
                 }, 1000);
+                $('meta[name=token_hash]').attr('content', res.data.csrf)
             })
             .catch(e => {
                 alert(e.response.data.message)
+                $('meta[name=token_hash]').attr('content', e.response.csrf)
             })
             .finally(() => {
                 $(':input').attr('disabled', false)
-                $('meta[name=token_hash]').attr('content', response.csrf)
             })
     })
     $('#ubahInformasiBtn').on('click', function() {
@@ -195,26 +200,29 @@ $(async function() {
         data.append('informasi', $('#informasiTextarea').val());
         data.append('pencipta', $('#penciptaInput').val());
         data.append('klasifikasi', $('#klasifikasiSelect').val());
+        data.append('level', $('#level-select').val());
         axios.post(`/api/arsip/${ARSIP_ID}/update`, data)
             .then(res => {
                 let item = res.data.data;
+                if(item.level == 'private') {
+                    location.reload()
+                }
                 if(item.informasi) {
-                    $('#informasi-arsip-text').html(item.informasi);
+                    $('#informasi-text').html(item.informasi);
                 }
                 $('#nomor-arsip-text').html(item.nomor);
                 $('#nomor-arsip-title').html('#'+item.nomor);
                 $('#nomor-arsip-breadcrumb').html('#'+item.nomor);
-                $('#tahun-arsip-text').html(item.tahun);
+                $('#tahun-arsip-text').html(item.tahun ? item.tahun : '-');
                 if(item.klasifikasi_id) {
                     $('#klasifikasi-arsip-text').html(item.klasifikasi.kode+' | '+item.klasifikasi.nama)
                 }
-                $('#pencipta-arsip-text').html(item.pencipta);
-
-                setTimeout(() => {
-                    $('#ubahInformasiModal').modal('hide');
-                }, 1000);
+                $('#pencipta-arsip-text').html(item.pencipta ? item.pencipta : '-');
+                $('#level-text').html(item.level == 'public' ? '<span class="badge bg-success">Publik</span>' : '<span class="badge bg-danger">Rahasia</span>')
+                $('#ubahInformasiModal').modal('hide');
 
                 $('meta[name=token_hash]').attr('content', res.data.csrf)
+                console.log($('meta[name=token_hash]').attr('content'))
             })
             .catch(e => {
                 console.log(e)
@@ -236,11 +244,10 @@ $(async function() {
                     }
                 }
                 $('meta[name=token_hash]').attr('content', e.response.data.csrf)
+                console.log($('meta[name=token_hash]').attr('content'))
             })
             .finally(() => {
-                setTimeout(() => {
-                    $(this).html('Simpan').attr('disabled', false);
-                }, 1000);
+                $(this).html('Simpan').attr('disabled', false);
             })
     })
 

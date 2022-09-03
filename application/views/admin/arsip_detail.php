@@ -71,6 +71,8 @@
                     <div class="col-lg-4 col-xlg-3 col-md-5">
                         <div class="card">
                             <div class="card-body">
+                                <small class="text-muted">Level</small>
+                                <h6 id="level-text">{level_arsip}</h6>
                                 <small class="text-muted">Nomor</small>
                                 <h6 id="nomor-arsip-text">{nomor_arsip}</h6>
                                 <small class="text-muted p-t-30 db">Kode klasifikasi</small>
@@ -94,14 +96,10 @@
                         </div>
                     </div>
                 </div>
-            <footer class="footer text-center">
-                All Rights Reserved by Flexy Admin. Designed and Developed by <a
-                    href="https://www.wrappixel.com">WrapPixel</a>.
-            </footer>
         </div>
     </div>
     <div class="modal fade" id="lampiranDetailModal" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-labelledby="lampiranDetailModalLabel" aria-hidden="true">
-    	<div class="modal-dialog modal-dialog-centered d-flex justify-content-center">
+    	<div class="modal-dialog modal-dialog-centered modal-xl d-flex justify-content-center">
     		<div class="modal-content" style="width: auto">
                 <div id="lampiranFile"></div>
     			<div class="modal-body">
@@ -138,6 +136,14 @@
     				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     			</div>
     			<div class="modal-body">
+                    <div class="mb-3">
+                        <label for="">Level Arsip</label>
+                        <select name="level" id="level-select" class="form-select">
+                            <option value="public">Publik</option>
+                            <option value="private">Rahasia</option>
+                        </select>
+                        <div id="nomorError" class="error-text"></div>
+                    </div>
                     <div class="mb-3">
                         <label for="">Nomor</label>
                         <input id="nomorInput" type="text" class="form-control" value="">

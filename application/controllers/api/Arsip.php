@@ -1,9 +1,16 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+require_once APPPATH . 'third_party/ion_auth/controllers/Auth.php';
+require_once APPPATH . 'third_party/ion_auth/libraries/Ion_auth.php';
 class Arsip extends CI_Controller {
-    function __construct() {
+
+    protected $is_admin = FALSE;
+
+    public function __construct() {
         parent::__construct();
+        $this->load->library(['ion_auth']);
+        $this->lang->load('auth');
         $this->load->helper([
             'string'
         ]);
@@ -14,6 +21,8 @@ class Arsip extends CI_Controller {
             'lampiran_model',
             'klasifikasi_model'
         ]);
+
+        $this->is_admin = $this->ion_auth->is_admin();
     }
 
     public function index() {
@@ -27,8 +36,8 @@ class Arsip extends CI_Controller {
 			$page = 1;
 		}
 
-		$arsips = $this->arsip_model->getPaginated($page);
-
+        $arsips = $this->arsip_model->getPaginated($page, $this->is_admin);
+        
 		foreach ($arsips as $key => $arsip) {
 			// tambah key lampiran
 			$arsipLampirans = [];
@@ -82,7 +91,7 @@ class Arsip extends CI_Controller {
                 ], JSON_PRETTY_PRINT));
         }
 
-        $arsip = $this->arsip_model->getOneByID((int)$id);
+        $arsip = $this->arsip_model->getOneByID((int)$id, $this->is_admin);
 
         if(!$arsip) {
             return $this->output
@@ -161,7 +170,7 @@ class Arsip extends CI_Controller {
         }
 
         // cari arsip berdasarkan id
-        $arsip = $this->arsip_model->getFirst($id);
+        $arsip = $this->arsip_model->getOneByID($id, $this->is_admin);
 
         // jika arsip ditemukan
         if($arsip) {
@@ -176,7 +185,7 @@ class Arsip extends CI_Controller {
 
             // validasi kolom nomor
             if((int)$input['nomor'] != $arsip['nomor']) {
-                $nomor = $this->arsip_model->getFirstByNomor((int)$input['nomor']);
+                $nomor = $this->arsip_model->getOneByNomor((int)$input['nomor'], $this->is_admin);
                 if($nomor) {
                     $nomorError = 'Nomor telah terdaftar';
                 }
@@ -221,21 +230,33 @@ class Arsip extends CI_Controller {
             }
 
             // kemas data update dalam array
+            $user = $this->ion_auth->user()->row();
             $data = [
-                'nomor' => @$input['nomor'],
-                'tahun' => @$input['tahun'],
-                'pencipta' => @$input['pencipta'],
-                'informasi' => @$input['informasi'],
-                'klasifikasi_id' => @(int)$input['klasifikasi'],
-                'admin_id' => 1,
+                'admin_id' => $user->id,
+                'level' => $input['level'],
                 'updated_at' => date('c')
             ];
+            if($input['nomor']) {
+                $data['nomor'] = $input['nomor'];
+            }
+            if($input['tahun']) {
+                $data['tahun'] = $input['tahun'];
+            }
+            if($input['pencipta']) {
+                $data['pencipta'] = $input['pencipta'];
+            }
+            if($input['informasi']) {
+                $data['informasi'] = $input['informasi'];
+            }
+            if(is_int((int)$input['klasifikasi']) && (int)$input['klasifikasi'] > 0) {
+                $data['klasifikasi_id'] = $input['klasifikasi'];
+            }
             
             // jika update berhasil
             $this->arsip_model->update((int)$id, $data);
 
             // dapatkan data terbaru
-            $arsip = $this->arsip_model->getFirst($id);
+            $arsip = $this->arsip_model->getOneByID($id, $this->is_admin);
             
             if($arsip['admin_id']) {
                 $admin = $this->admin_model->getFirst($arsip['admin_id']);
@@ -274,6 +295,8 @@ class Arsip extends CI_Controller {
     }
 
     public function storeLampiran($id) {
+        $this->load->library('image_lib');
+
         $input = $this->input->post(NULL, TRUE);
 
         if(!$id) {
@@ -298,7 +321,7 @@ class Arsip extends CI_Controller {
         }
 
         // cari arsip berdasarkan id
-        $arsip = $this->arsip_model->getFirst($id);
+        $arsip = $this->arsip_model->getOneByID($id, $this->is_admin);
         if(!$arsip) {
             // return arsip tidak ditemukan 404
             return $this->output
@@ -317,7 +340,6 @@ class Arsip extends CI_Controller {
         $config['file_name']            = $random.'-'.$_FILES['file']['name'];
 
         $this->load->library('upload', $config);
-
         if(!$this->upload->do_upload('file')) {
             return $this->output
                 ->set_status_header(400)
@@ -329,6 +351,11 @@ class Arsip extends CI_Controller {
                 ]));
         } else {
             $uploadData = $this->upload->data();
+
+            $this->resizeImage($uploadData['full_path']);
+            $this->overlayWatermark($uploadData['full_path']);
+            $this->TextWatermark($uploadData['full_path']);
+            $this->Text2Watermark($uploadData['full_path']);
 
             $data = [
                 'url' => '/assets/uploads/'.$uploadData['file_name'],
@@ -355,11 +382,88 @@ class Arsip extends CI_Controller {
         }
     }
 
+    public function textWatermark($source_image)
+    {
+        $config['source_image'] = $source_image;
+        //The image path,which you would like to watermarking
+        $config['wm_text'] = 'Dinas Kearsipan dan Perpustakaan Daerah';
+        $config['wm_type'] = 'text';
+        // $config['wm_font_path'] = './fonts/atlassol.ttf';
+        $config['wm_font_size'] = 60;
+        $config['wm_font_color'] = 'FF5733';
+        $config['wm_vrt_alignment'] = 'bottom';
+        $config['wm_hor_alignment'] = 'left';
+        $config['wm_padding'] = 0;
+        $config['wm_vrt_offset'] = -40;
+        $config['wm_hor_offset'] = 100;
+
+        $this->image_lib->initialize($config);
+        if (!$this->image_lib->watermark()) {
+            return $this->image_lib->display_errors();
+        }
+    }
+    public function text2Watermark($source_image)
+    {
+        $config['source_image'] = $source_image;
+        //The image path,which you would like to watermarking
+        $config['wm_text'] = 'Kabupaten Wonosobo';
+        $config['wm_type'] = 'text';
+        // $config['wm_font_path'] = './fonts/atlassol.ttf';
+        $config['wm_font_size'] = 60;
+        $config['wm_font_color'] = 'FF5733';
+        $config['wm_vrt_alignment'] = 'bottom';
+        $config['wm_hor_alignment'] = 'left';
+        $config['wm_padding'] = 0;
+        $config['wm_vrt_offset'] = -20;
+        $config['wm_hor_offset'] = 100;
+
+        $this->image_lib->initialize($config);
+        if (!$this->image_lib->watermark()) {
+            return $this->image_lib->display_errors();
+        }
+    }
+
+    public function resizeImage($source_image)
+    {
+        $config['image_library'] = 'gd2';
+        $config['source_image'] = $source_image;
+        $config['create_thumb'] = FALSE;
+        $config['maintain_ratio'] = TRUE;
+        $config['width']         = 1920;
+        $config['height']       = 1920;
+        $this->image_lib->initialize($config);
+        if (!$this->image_lib->resize()) 
+        {
+            echo $this->image_lib->display_errors();
+        }
+    }
+    
+    public function overlayWatermark($source_image)
+    {
+        $config['image_library'] = 'gd2';
+        $config['source_image'] = $source_image;
+        $config['wm_type'] = 'overlay';
+        $config['wm_overlay_path'] = APPPATH.'/../assets/images/wmlogo.png';     //the overlay image
+        // $config['wm_x_transp'] = 0;
+        // $config['wm_y_transp'] = 0;
+        $config['wm_vrt_offset'] = 0;
+        $config['wm_hor_offset'] = 20;
+        $config['wm_quality'] = 80;
+        $config['wm_opacity'] = 90;
+        $config['wm_vrt_alignment'] = 'bottom';
+        $config['wm_hor_alignment'] = 'left';
+        $this->image_lib->initialize($config);
+        if (!$this->image_lib->watermark()) 
+        {
+            echo $this->image_lib->display_errors();
+        }
+    }
+
     public function destroyLampiran($arsipID, $lampiranID) {
         // hanya post request
         $this->onlyPOSTRequest();
         // cari arsip
-        $arsip = $this->arsip_model->getOne($arsipID);
+        $arsip = $this->arsip_model->getOneByID($arsipID, $this->is_admin);
         // cek apakah arsip ditemukan
         if(!$arsip['id']) {
             // jika tidak ditemukan, return not found
@@ -419,7 +523,7 @@ class Arsip extends CI_Controller {
         // hanya post request
         $this->onlyPOSTRequest();
         // cari arsip
-        $arsip = $this->arsip_model->getOne($arsipID);
+        $arsip = $this->arsip_model->getOneByID($arsipID, $this->is_admin);
         // cek apakah arsip ditemukan
         if(!$arsip['id']) {
             // jika tidak ditemukan, return not found
@@ -459,7 +563,7 @@ class Arsip extends CI_Controller {
         // hanya post request
         $this->onlyPOSTRequest();
         // cari arsip
-        $arsip = $this->arsip_model->getOne($arsipID);
+        $arsip = $this->arsip_model->getOneByID($arsipID, $this->is_admin);
         // cek apakah arsip ditemukan
         if(!$arsip['id']) {
             // jika tidak ditemukan, return not found
@@ -499,7 +603,7 @@ class Arsip extends CI_Controller {
         // hanya post request
         $this->onlyPOSTRequest();
         // cari arsip
-        $arsip = $this->arsip_model->getOne($arsipID);
+        $arsip = $this->arsip_model->getOneByID($arsipID, $this->is_admin);
         // cek apakah arsip ditemukan
         if(!$arsip['id']) {
             // jika tidak ditemukan, return not found
@@ -536,7 +640,7 @@ class Arsip extends CI_Controller {
     }
 
     public function last5() {
-        $arsips = $this->arsip_model->getLast5();
+        $arsips = $this->arsip_model->getLast5($this->is_admin);
         foreach($arsips as $key => $arsip) {
             // tambahkan klasifikasi
             if($arsip['klasifikasi_id']) {

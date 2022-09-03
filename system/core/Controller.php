@@ -50,6 +50,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @author		EllisLab Dev Team
  * @link		https://codeigniter.com/userguide3/general/controllers.html
  */
+require_once APPPATH . 'third_party/ion_auth/controllers/Auth.php';
+require_once APPPATH . 'third_party/ion_auth/libraries/Ion_auth.php';
 class CI_Controller {
 
 	/**
@@ -85,6 +87,11 @@ class CI_Controller {
 
 		$this->load =& load_class('Loader', 'core');
 		$this->load->initialize();
+		$this->load->library([
+            'form_validation', 
+            'ion_auth'
+        ]);
+        $this->lang->load('auth');
 		log_message('info', 'Controller Class Initialized');
 	}
 

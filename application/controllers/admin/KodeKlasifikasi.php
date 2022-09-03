@@ -1,10 +1,16 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+require_once APPPATH . 'third_party/ion_auth/controllers/Auth.php';
+require_once APPPATH . 'third_party/ion_auth/libraries/Ion_auth.php';
 class KodeKlasifikasi extends CI_Controller {
 	function __construct() {
 		parent::__construct();
-
+		$this->load->library(['ion_auth']);
+        $this->lang->load('auth');
+		if (!$this->ion_auth->logged_in()) {
+			redirect('/signin');
+		}
 		$this->load->model([
 			'arsip_model',
 			'klasifikasi_model',

@@ -30,11 +30,11 @@ $(function() {
                     $('#admin-table>tbody').append(`
                         <tr>
                             <td>
-                                <a href="/admin/pengelola/detail/${item.id}">${item.nama}</a>
+                                <a href="/admin/pengelola/detail/${item.id}">${item.name}</a>
                             </td>
                             <td>${item.email}</td>
                             <td>${item.arsip_count}</td>
-                            <td>${item.last_login}</td>
+                            <td>${item.last_login_formatted}</td>
                         </tr>
                     `)
                 })
@@ -49,10 +49,47 @@ $(function() {
 
     loadAdmin(current_page);
 
-    $('#prev-table').attr('disabled', true);
-
+    $('#orev-table').on('click', function() {
+        current_page--;
+        loadAdmin(current_page);
+    });
     $('#next-table').on('click', function() {
         current_page++;
         loadAdmin(current_page);
+    });
+
+    $('#pengelolaBaruBtn').on('click', function() {
+        $('#pengelolaBaruModal').modal('show')
+    })
+
+    $('#pengelola-baru-form').on('submit', function(e) {
+        e.preventDefault();
+
+        let data = new FormData();
+        data.append($('meta[name=token_name]').attr('content'), $('meta[name=token_hash]').attr('content'))
+        data.append('nama', $('#nama-input').val())
+        data.append('email', $('#email-input').val())
+
+        $('#pengelolaBaruModal :input').attr('disabled', true)
+
+        axios.post(`/api/admin/baru`, data)
+            .then(res => {
+                $('meta[name=token_hash]').attr('content', res.data.csrf)
+                $('#pengelolaBaruModal').modal('hide')
+                $('#nama-input').val('')
+                $('#email-input').val('')
+                loadAdmin(1)
+            })
+            .catch(e => {
+                $('meta[name=token_hash]').attr('content', e.response.data.csrf)
+                if(e.response.data.validation) {
+                    Object.entries(e.response.data.validation).forEach(([k, v]) => {
+                        $(`#${k}Error`).html(v);
+                    })
+                }
+            })
+            .finally(() => {
+                $('#pengelolaBaruModal :input').attr('disabled', false)
+            })
     })
 })

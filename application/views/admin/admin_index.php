@@ -29,7 +29,7 @@
                     </div>
                     <div class="col-6">
                         <div class="text-end upgrade-btn">
-                            <button id="kodeBaruBtn" class="btn btn-primary text-white">
+                            <button id="pengelolaBaruBtn" class="btn btn-primary text-white">
                                 Tambah Baru
                             </button>
                         </div>
@@ -65,35 +65,56 @@
                     </div>
                 </div>
             </div>
-            <footer class="footer text-center">
-                All Rights Reserved by Flexy Admin. Designed and Developed by <a
-                    href="https://www.wrappixel.com">WrapPixel</a>.
-            </footer>
         </div>
     </div>
-    <div class="modal fade" id="pengelolaBaruModal" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-labelledby="pengelolaBaruModalLabel" aria-hidden="true">
+    <div class="modal fade rounded-corner" id="pengelolaBaruModal" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-labelledby="pengelolaBaruModalLabel" aria-hidden="true">
     	<div class="modal-dialog modal-dialog-centered">
-    		<div class="modal-content">
-                <div class="modal-header">
+    		<div class="modal-content rounded-corner">
+                <div class="modal-header rounded-corner">
     				<h5 class="modal-title" id="pengelolaBaruModalLabel">Tambah Pengelola Baru</h5>
     				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     			</div>
-    			<div class="modal-body">
+    			<form id="pengelola-baru-form" action="/api/admin/baru" method="post" class="modal-body rounded-corner">
                     <div class="mb-3">
                         <label for="">Nama</label>
-                        <input id="namaInput" type="text" class="form-control">
-                        <div id="namaError" class="error-text"></div>
+                        <input id="nama-input" type="text" class="form-control">
+                        <div id="namaError"></div>
                     </div>
                     <div class="mb-3">
                         <label for="">Email</label>
-                        <input id="emailInput" type="email" class="form-control">
-                        <div id="emailError" class="error-text"></div>
+                        <input id="email-input" type="email" class="form-control">
+                        <div id="emailError"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="">Otoritas Pengelola</label>
+                        <br>
+                        <small><strong>Arsip</strong></small>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="" id="otoritas-arsip-publik" checked>
+                            <label class="form-check-label" for="otoritas-arsip-publik">
+                                Mengelola hanya arsip publik
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="" id="otoritas-arsip-rahasia" >
+                            <label class="form-check-label" for="otoritas-arsip-rahasia">
+                                Mengelola arsip publik dan rahasia
+                            </label>
+                        </div>
+                        <small><strong>Aduan</strong></small>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="otoritas-aduan">
+                            <label class="form-check-label" for="otoritas-aduan">
+                                Mengelola aduan
+                            </label>
+                        </div>
+                        <div id="emailError"></div>
                     </div>
                     <div class="d-flex justify-content-end">
                         <button type="button" class="btn btn-light me-2" data-bs-dismiss="modal">Batal</button>
-                        <button id="submitKodeBtn" type="button" class="btn btn-primary">Simpan</button>
+                        <button id="submitKodeBtn" type="submit" class="btn btn-primary">Simpan</button>
                     </div>
-    			</div>
+    			</form>
     		</div>
     	</div>
     </div>

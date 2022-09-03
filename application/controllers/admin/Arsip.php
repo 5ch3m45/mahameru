@@ -1,14 +1,25 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+require_once APPPATH . 'third_party/ion_auth/controllers/Auth.php';
+require_once APPPATH . 'third_party/ion_auth/libraries/Ion_auth.php';
 class Arsip extends CI_Controller {
+
+	protected $is_admin;
+
 	function __construct() {
 		parent::__construct();
+		$this->load->library(['ion_auth']);
+        $this->lang->load('auth');
+		if (!$this->ion_auth->logged_in()) {
+			redirect('signin');
+		}
 		$this->load->model([
 			'arsip_model',
 			'lampiran_model',
 			'klasifikasi_model'
 		]);
+		$this->is_admin = $this->ion_auth->is_admin();
 	}
 	public function index() {
 		$this->load->view('admin/arsip_index');
@@ -16,8 +27,13 @@ class Arsip extends CI_Controller {
 
 	public function create() {
 		$this->load->model('arsip_model');
+		$last_arsip = $this->arsip_model->getLastNumberArsip();
+
+		$admin = $this->ion_auth->user()->row();
+
 		$arsip_id = $this->arsip_model->create([
-			'admin_id' => 1,
+			'nomor' => $last_arsip['nomor'] + 1,
+			'admin_id' => $admin->id,
 			'created_at' => date('c'),
 			'updated_at' => date('c')
 		]);
@@ -27,7 +43,7 @@ class Arsip extends CI_Controller {
 	public function detail($id) {
 		$this->load->model('arsip_model');
 
-		$arsip = $this->arsip_model->first($id);
+		$arsip = $this->arsip_model->getOneByID($id, $this->is_admin);
 		
 		if(!$arsip) {
 			echo 'Not found';

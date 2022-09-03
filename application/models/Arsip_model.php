@@ -9,51 +9,41 @@ class Arsip_model extends CI_Model
         return $this->db->insert_id();
     }
 
-    function first($id) {
+    function getOneByID($id, $is_admin = FALSE) {
+        $where = [
+            'id' => $id,
+            'is_deleted' => 0
+        ];
+
+        if(!$is_admin) {
+            $where = array_merge($where, [
+                'level' => 'public'
+            ]);
+        }
+
         return $this->db->select('*')
-            ->from('tbl_arsip')
-            ->where('id', $id)
-            ->where('is_deleted', 0)
+            ->from($this->table)
+            ->where($where)
             ->limit(1)
             ->get()
             ->row_array();
     }
 
-    function getFirst($id) {
-        return $this->db->select('*')
-            ->from('tbl_arsip')
-            ->where('id', $id)
-            ->where('is_deleted', 0)
-            ->limit(1)
-            ->get()
-            ->row_array();
-    }
+    function getOneByNomor($nomor, $is_admin = FALSE) {
+        $where = [
+            'nomor' => $nomor,
+            'is_deleted' => 0
+        ];
 
-    function getOne($id) {
-        return $this->db->select('*')
-            ->from('tbl_arsip')
-            ->where('id', $id)
-            ->where('is_deleted', 0)
-            ->limit(1)
-            ->get()
-            ->row_array();
-    }
+        if(!$is_admin) {
+            $where = array_merge($where, [
+                'level' => 'public'
+            ]);
+        }
 
-    function getOneByID($id) {
         return $this->db->select('*')
-            ->from('tbl_arsip')
-            ->where('id', $id)
-            ->where('is_deleted', 0)
-            ->limit(1)
-            ->get()
-            ->row_array();
-    }
-
-    function getFirstByNomor($nomor) {
-        return $this->db->select('*')
-            ->from('tbl_arsip')
-            ->where('nomor', $nomor)
-            ->where('is_deleted', 0)
+            ->from($this->table)
+            ->where($where)
             ->limit(1)
             ->get()
             ->row_array();
@@ -78,23 +68,43 @@ class Arsip_model extends CI_Model
             ->count_all_results();
     }
 
-    function getBatchByKlasifikasi($klasifikasiID, $page) {
+    function getBatchByKlasifikasi($klasifikasiID, $page, $is_admin = FALSE) {
+        $where = [
+            'klasifikasi_id' => $klasifikasiID,
+            'is_deleted' => 0
+        ];
+
+        if(!$is_admin) {
+            $where = array_merge($where, [
+                'level' => 'public'
+            ]);
+        }
+
         $offset = 10 * ($page - 1);
         return $this->db->select('*')
             ->from($this->table)
-            ->where('klasifikasi_id', $klasifikasiID)
-            ->where('is_deleted', 0)
+            ->where($where)
             ->limit(10, $offset)
             ->order_by('id', 'desc')
             ->get()
             ->result_array();
     }
 
-    function getPaginated($page) {
+    function getPaginated($page, $is_admin = FALSE) {
+        $where = [
+            'is_deleted' => 0
+        ];
+
+        if(!$is_admin) {
+            $where = array_merge($where, [
+                'level' => 'public'
+            ]);
+        }
+
         $offset = 10 * ($page -1);
         return $this->db->select('*')
             ->from($this->table)
-            ->where('is_deleted', 0)
+            ->where($where)
             ->order_by('id', 'desc')
             ->limit(10, $offset)
             ->get()
@@ -119,11 +129,22 @@ class Arsip_model extends CI_Model
         ]);
     }
 
-    function getLast5() {
+    function getLast5($is_admin = FALSE) {
+        $where = [
+            'id' => $id,
+            'is_published' => 1,
+            'is_deleted' => 0
+        ];
+
+        if(!$is_admin) {
+            $where = array_merge($where, [
+                'level' => 'public'
+            ]);
+        }
+
         return $this->db->select('*')
             ->from($this->table)
-            ->where('is_published', 1)
-            ->where('is_deleted', 0)
+            ->where($where)
             ->order_by('id', 'desc')
             ->limit(5)
             ->get()
@@ -131,7 +152,7 @@ class Arsip_model extends CI_Model
     }
 
     function getLast30DaysPerDay($begin) {
-        return $this->db->select('strftime("%Y-%m-%d", created_at) as date, count(id) as count')
+        return $this->db->select('DATE_FORMAT(created_at, "%Y-%m-%d") as date, count(id) as count')
             ->from($this->table)
             ->where('created_at IS NOT NULL', null, false)
             ->where('created_at >=', $begin)
@@ -149,5 +170,16 @@ class Arsip_model extends CI_Model
         ], [
             'id' => $id
         ]);
+    }
+
+    function getLastNumberArsip() {
+        return $this->db->select('nomor')
+            ->from($this->table)
+            ->where('is_deleted', 0)
+            ->where('nomor is not null', null, false)
+            ->order_by('nomor', 'desc')
+            ->limit(1)
+            ->get()
+            ->row_array();
     }
 }

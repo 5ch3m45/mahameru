@@ -87,6 +87,7 @@
                                                 <th class="border-top-0">Pencipta</th>
                                                 <th class="border-top-0">Tahun</th>
                                                 <th class="border-top-0">Status</th>
+                                                <th class="border-top-0">Level</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
@@ -101,19 +102,6 @@
                     </div>
                 </div>
             </div>
-            <!-- ============================================================== -->
-            <!-- End Container fluid  -->
-            <!-- ============================================================== -->
-            <!-- ============================================================== -->
-            <!-- footer -->
-            <!-- ============================================================== -->
-            <footer class="footer text-center">
-                All Rights Reserved by Flexy Admin. Designed and Developed by <a
-                    href="https://www.wrappixel.com">WrapPixel</a>.
-            </footer>
-            <!-- ============================================================== -->
-            <!-- End footer -->
-            <!-- ============================================================== -->
         </div>
         <!-- ============================================================== -->
         <!-- End Page wrapper  -->

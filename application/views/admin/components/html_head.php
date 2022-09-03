@@ -16,6 +16,7 @@
     <link href="<?= assets_url() ?>libs/select2-4.0.13/css/select2.min.css" rel="stylesheet">
     <link href="<?= assets_url() ?>libs/select2-4.0.13/css/select2-bootstrap-5-theme.min.css" rel="stylesheet">
     <link href="<?= assets_url() ?>css/style.min.css?v=<?= time() ?>" rel="stylesheet">
+    <link href="<?= assets_url() ?>css/custom.css?v=<?= time() ?>" rel="stylesheet">
     <style>
         ul.avatars {
             display: flex ; /* Causes LI items to display in row. */

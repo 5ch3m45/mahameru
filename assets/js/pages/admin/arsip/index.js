@@ -12,6 +12,13 @@ $(function() {
         }
     }
 
+    const getInitialName = (name) => {
+        if(name) {
+            return name.split(" ").map((n)=>n[0]).join(".");
+        } 
+        return '-';
+    }
+
     const load = (page) => {
         console.log(page)
         $('#arsip-table>tbody').html('')
@@ -37,7 +44,7 @@ $(function() {
                         <tr role="button" data-id="${item.id}">
                             <td>${counter}</td>
                             <td>${item.nomor ? item.nomor : ''}</td>
-                            <td>${item.admin_id ? item.admin.nama : ''}</td>
+                            <td>${item.admin_id ? getInitialName(item.admin.name) : '-'}</td>
                             <td>
                                 ${item.klasifikasi_id
                                     ? `
@@ -59,7 +66,7 @@ $(function() {
                             <td>${item.pencipta ? item.pencipta : ''}</td>
                             <td>${item.tahun ? item.tahun : ''}</td>
                             <td>
-                                ${item.is_published
+                                ${item.is_published == 1
                                     ? `
                                     <span class="badge bg-success">Terpublikasi</span>
                                     `
@@ -68,6 +75,10 @@ $(function() {
                                     `
                                 }
                             </td>
+                            <td>${item.level == 'public'
+                                ? `<span class="badge bg-success">Publik</span>`
+                                : `<span class="badge bg-danger">Rahasia</span>`
+                            }</td>
                         </tr>
                     `)
                 })

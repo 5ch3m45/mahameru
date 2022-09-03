@@ -50,23 +50,27 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |		my-controller/my-method	-> my_controller/my_method
 */
 $route['default_controller'] = 'Landingpage';
+$route['encrypt'] = 'Landingpage/encrypt';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 $route['assets/(:any)'] = 'assets/$1';
 
 // auth
-$route['signin'] = 'admin/Auth/signin';
+// $route[LOGIN_PAGE] = 'examples/login';
+$route['signin'] = 'admin/Authentication/signin';
 
 // public side
 $route['arsip'] = 'public/Arsip/index';
 $route['arsip/(:num)'] = 'public/Arsip/show/$1';
 $route['artikel'] = 'public/Artikel/index';
 $route['artikel/(:num)'] = 'public/Artikel/show/$1';
+$route['aduan'] = 'public/aduan/show';
 
 // admin side
 $route['admin'] = 'admin/Dashboard/toIndex';
 $route['admin/dashboard'] = 'admin/Dashboard/index';
-$route['admin/arsip'] = 'admin/Arsip/index';
+$route['admin/aduan'] = 'admin/aduan/index';
+$route['admin/aduan/detail/(:num)'] = 'admin/aduan/detail/$1';
 $route['admin/arsip/baru'] = 'admin/Arsip/create';
 $route['admin/arsip/detail/(:num)'] = 'admin/Arsip/detail/$1';
 $route['admin/kode-klasifikasi'] = 'admin/KodeKlasifikasi/index';
@@ -78,9 +82,20 @@ $route['admin/pengelola/detail/(:num)'] = 'admin/Admin/detail/$1';
 $route['admin/lampiran-arsip/upload'] = 'admin/Arsip/do_upload';
 
 // ===== api =====
+$route['api/signin'] = 'api/authentication/signin';
+$route['api/login-info'] = 'api/authentication/loginInfo';
+$route['api/logout'] = 'api/authentication/logout';
 // admin
 $route['api/admin'] = 'api/admin/index';
+$route['api/admin/baru'] = 'api/admin/create';
 $route['api/admin/(:num)'] = 'api/admin/show/$1';
+
+// aduan
+$route['api/aduan'] = 'api/aduan/index';
+$route['api/aduan/create'] = 'api/aduan/store';
+$route['api/aduan/find'] = 'api/aduan/find';
+$route['api/aduan/(:num)'] = 'api/aduan/show/$1';
+$route['api/aduan/(:num)/update'] = 'api/aduan/update/$1';
 
 // arsip
 $route['api/arsip'] = 'api/arsip/index';
@@ -95,5 +110,7 @@ $route['api/arsip/(:num)/lampiran'] = 'api/arsip/storeLampiran/$1';
 $route['api/arsip/(:num)/lampiran/(:num)/hapus'] = 'api/arsip/destroyLampiran/$1/$2';
 // klasifikasi
 $route['api/klasifikasi'] = 'api/klasifikasi/index';
+$route['api/klasifikasi/(:num)/update'] = 'api/klasifikasi/update/$1';
 $route['api/klasifikasi/baru'] = 'api/klasifikasi/store';
 $route['api/klasifikasi/top5'] = 'api/klasifikasi/top5';
+// signin

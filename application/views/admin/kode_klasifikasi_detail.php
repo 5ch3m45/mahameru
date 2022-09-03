@@ -77,10 +77,10 @@
                             <div class="card-body">
                                 <center class="m-t-30"> 
                                     <div style="height: 150px; width: 150px; border-radius: 150px;" class="bg-primary d-flex justify-content-center align-items-center">
-                                        <h1 class="text-white mb-0"><?= $klasifikasi['kode'] ?></h1>
+                                        <h1 id="kode-text" class="text-white mb-0"><?= $klasifikasi['kode'] ?></h1>
                                     </div>
-                                    <h4 class="card-title m-t-10"><?= $klasifikasi['nama'] ?></h4>
-                                    <h6 class="card-subtitle"><?= $klasifikasi['deskripsi'] ?></h6>
+                                    <h4 id="nama-text" class="card-title m-t-10"><?= $klasifikasi['nama'] ?></h4>
+                                    <h6 id="deskripsi-text" class="card-subtitle"><?= $klasifikasi['deskripsi'] ?></h6>
                                     <a id="editKodeKlasifikasiBtn" href="javascript:void(0)"><small><i class="mdi mdi-pencil"></i> Ubah</small></a>
                                 </center>
                             </div>
@@ -161,19 +161,6 @@
                 <!-- End Right sidebar -->
                 <!-- ============================================================== -->
             </div>
-            <!-- ============================================================== -->
-            <!-- End Container fluid  -->
-            <!-- ============================================================== -->
-            <!-- ============================================================== -->
-            <!-- footer -->
-            <!-- ============================================================== -->
-            <footer class="footer text-center">
-                All Rights Reserved by Flexy Admin. Designed and Developed by <a
-                    href="https://www.wrappixel.com">WrapPixel</a>.
-            </footer>
-            <!-- ============================================================== -->
-            <!-- End footer -->
-            <!-- ============================================================== -->
         </div>
         <!-- ============================================================== -->
         <!-- End Page wrapper  -->
@@ -186,22 +173,22 @@
     				<h5 class="modal-title" id="editKodeKlasifikasiModalLabel">Ubah data</h5>
     				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     			</div>
-    			<div class="modal-body">
+    			<form id="edit-klasifikasi-form" method="post" class="modal-body">
     				<div class="mb-3">
                         <label for="">Kode</label>
-                        <input type="text" class="form-control" value="210">
+                        <input id="kode-input" type="text" class="form-control" value="<?= $klasifikasi['kode'] ?>">
                     </div>
     				<div class="mb-3">
                         <label for="">Nama</label>
-                        <input type="text" class="form-control" value="Kepegawaian">
+                        <input id="nama-input" type="text" class="form-control" value="<?= $klasifikasi['nama'] ?>">
                     </div>
     				<div class="mb-3">
                         <label for="">Deskripsi</label>
-                        <textarea name="" id="" rows="2" class="form-control">Lorem ipsum dolor sit amet</textarea>
+                        <textarea name="" id="deskripsi-textarea" rows="2" class="form-control"><?= $klasifikasi['deskripsi'] ?></textarea>
                     </div>
                     <div class="d-flex justify-content-end">
                         <button type="button" class="btn btn-light me-2" data-bs-dismiss="modal">Batal</button>
-                        <button type="button" class="btn btn-primary">Simpan</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
                     </div>
     			</div>
     		</div>
@@ -214,7 +201,7 @@
     <!-- All Jquery -->
     <!-- ============================================================== -->
     <?php include_once(__DIR__.'/components/base_js.php'); ?>
-    <script src="<?= assets_url() ?>js/pages/dashboards/dashboard1.js?v=<?= time() ?>"></script>
+    <script src="<?= assets_url() ?>js/pages/admin/klasifikasi/detail.js?v=<?= time() ?>"></script>
     <script>
         $('#editKodeKlasifikasiBtn').on('click', function() {
             $('#editKodeKlasifikasiModal').modal('show')

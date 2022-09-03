@@ -116,4 +116,53 @@ class Klasifikasi extends CI_Controller {
                 'csrf' => $this->security->get_csrf_hash()
             ]));
     }
+
+    public function update($id) {
+        $klasifikasi = $this->klasifikasi_model->getOneByID($id);
+
+        if(!$klasifikasi) {
+            return $this->output
+                ->set_status_header(400)
+                ->set_content_type('application/json', 'utf-8')
+                ->set_output(json_encode([
+                    'success' => true,
+                    'data' => $klasifikasis,
+                    'csrf' => $this->security->get_csrf_hash()
+                ]));
+        }
+
+        $input = $this->input->post(NULL, TRUE);
+        $data = [
+            'updated_at' => date('c')
+        ];
+        if($input['kode']) {
+            $data['kode'] = $input['kode'];
+        }
+        if($input['nama']) {
+            $data['nama'] = $input['nama'];
+        }
+        if($input['deskripsi']) {
+            $data['deskripsi'] = $input['deskripsi'];
+        }
+
+        $update = $this->klasifikasi_model->update($id, $data);
+
+        if(!$update) {
+            return $this->output
+                ->set_status_header(400)
+                ->set_content_type('application/json', 'utf-8')
+                ->set_output(json_encode([
+                    'success' => false,
+                    'csrf' => $this->security->get_csrf_hash()
+                ]));
+        }
+
+        return $this->output
+                ->set_status_header(200)
+                ->set_content_type('application/json', 'utf-8')
+                ->set_output(json_encode([
+                    'success' => true,
+                    'csrf' => $this->security->get_csrf_hash()
+                ]));
+    }
 }

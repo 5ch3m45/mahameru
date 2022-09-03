@@ -26,11 +26,19 @@
 					</a>
 				</li>
 				<li class="sidebar-item">
+					<a class="sidebar-link waves-effect waves-dark sidebar-link" href="<?= base_url() ?>admin/aduan" aria-expanded="false">
+						<i class="mdi mdi-email-alert"></i>
+						<span class="hide-menu">Aduan</span>
+					</a>
+				</li>
+				<?php if ($this->ion_auth->is_admin()){ ?>
+				<li class="sidebar-item">
 					<a class="sidebar-link waves-effect waves-dark sidebar-link" href="<?= base_url() ?>admin/pengelola" aria-expanded="false">
 						<i class="mdi mdi-account-circle"></i>
 						<span class="hide-menu">Pengelola</span>
 					</a>
 				</li>
+				<?php } ?>
 				<?php if(false) { ?>
 				<li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
 						href="table-basic.html" aria-expanded="false"><i class="mdi mdi-border-all"></i><span
