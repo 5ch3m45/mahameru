@@ -56,8 +56,9 @@ $route['translate_uri_dashes'] = FALSE;
 $route['assets/(:any)'] = 'assets/$1';
 
 // auth
-// $route[LOGIN_PAGE] = 'examples/login';
-$route['signin'] = 'admin/Authentication/signin';
+$route['login'] = 'admin/Authentication/login';
+$route['forgot-password'] = 'admin/Authentication/forgotPassword';
+$route['forgot-password/(:any)'] = 'admin/Authentication/resetPassword/$1';
 
 // public side
 $route['arsip'] = 'public/Arsip/index';
@@ -66,39 +67,45 @@ $route['artikel'] = 'public/Artikel/index';
 $route['artikel/(:num)'] = 'public/Artikel/show/$1';
 $route['aduan'] = 'public/aduan/show';
 
-// admin side
+// ===== admin =====
+// dashboard
 $route['admin'] = 'admin/Dashboard/toIndex';
 $route['admin/dashboard'] = 'admin/Dashboard/index';
+// aduan
 $route['admin/aduan'] = 'admin/aduan/index';
 $route['admin/aduan/detail/(:num)'] = 'admin/aduan/detail/$1';
+// arsip
+$route['admin/arsip'] = 'admin/Arsip/index';
 $route['admin/arsip/baru'] = 'admin/Arsip/create';
 $route['admin/arsip/detail/(:num)'] = 'admin/Arsip/detail/$1';
-$route['admin/kode-klasifikasi'] = 'admin/KodeKlasifikasi/index';
-$route['admin/kode-klasifikasi/detail/(:num)'] = 'admin/KodeKlasifikasi/detail/$1';
-
+// kode klasifikasi
+$route['admin/kode-klasifikasi'] = 'admin/Klasifikasi/index';
+$route['admin/kode-klasifikasi/detail/(:num)'] = 'admin/Klasifikasi/detail/$1';
+// pengelola
 $route['admin/pengelola'] = 'admin/Admin/index';
 $route['admin/pengelola/detail/(:num)'] = 'admin/Admin/detail/$1';
-
+// lampiran
 $route['admin/lampiran-arsip/upload'] = 'admin/Arsip/do_upload';
 
-// ===== api =====
+// ===== admin api =====
+// auth
 $route['api/signin'] = 'api/authentication/signin';
-$route['api/login-info'] = 'api/authentication/loginInfo';
+$route['api/user'] = 'api/authentication/user';
 $route['api/logout'] = 'api/authentication/logout';
+$route['api/forgot-password'] = 'api/authentication/forgotPassword';
+$route['api/reset-password'] = 'api/authentication/resetPassword';
 // admin
 $route['api/admin'] = 'api/admin/index';
 $route['api/admin/baru'] = 'api/admin/create';
 $route['api/admin/(:num)'] = 'api/admin/show/$1';
-
 // aduan
 $route['api/aduan'] = 'api/aduan/index';
 $route['api/aduan/create'] = 'api/aduan/store';
 $route['api/aduan/find'] = 'api/aduan/find';
 $route['api/aduan/(:num)'] = 'api/aduan/show/$1';
 $route['api/aduan/(:num)/update'] = 'api/aduan/update/$1';
-
 // arsip
-$route['api/arsip'] = 'api/arsip/index';
+$route['api/admin/arsip'] = 'api/arsip/admin_index';
 $route['api/arsip/chart-data'] = 'api/arsip/chartData';
 $route['api/arsip/last5'] = 'api/arsip/last5';
 $route['api/arsip/(:num)'] = 'api/arsip/show/$1';
@@ -111,6 +118,11 @@ $route['api/arsip/(:num)/lampiran/(:num)/hapus'] = 'api/arsip/destroyLampiran/$1
 // klasifikasi
 $route['api/klasifikasi'] = 'api/klasifikasi/index';
 $route['api/klasifikasi/(:num)/update'] = 'api/klasifikasi/update/$1';
+$route['api/klasifikasi/page/(:num)'] = 'api/klasifikasi/index/$1';
 $route['api/klasifikasi/baru'] = 'api/klasifikasi/store';
 $route['api/klasifikasi/top5'] = 'api/klasifikasi/top5';
 // signin
+
+// ===== public api =====
+// arsip
+$route['api/arsip'] = 'api/arsip/index';
