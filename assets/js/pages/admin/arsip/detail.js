@@ -33,6 +33,14 @@ $(async function() {
                 class="lampiran lampiran-${lampiran.id} my-masonry-grid-item p-1" 
                 style="max-width: 100%" 
                 src="/assets/images/mp4.png">`
+        } else if(['application/pdf'].includes(lampiran.type)) {
+            return `<img 
+                data-id="${lampiran.id}" 
+                data-url="${lampiran.url}" 
+                data-type="${lampiran.type}" 
+                class="lampiran lampiran-${lampiran.id} my-masonry-grid-item p-1" 
+                style="max-width: 100%" 
+                src="/assets/images/pdf.png">`
         }
     }
     const loadArsip = () => {
@@ -53,13 +61,13 @@ $(async function() {
                 $('#nomor-arsip-text').html(item.nomor ? item.nomor : '-');
                 $('#klasifikasi-arsip-text').html(item.klasifikasi.id ? item.klasifikasi.kode+' | '+item.klasifikasi.nama : '-');
                 $('#pencipta-arsip-text').html(item.pencipta ? item.pencipta : '-')
-                $('#tahun-arsip-text').html(item.tahun ? item.tahun : '-')
+                $('#tanggal-arsip-text').html(item.tanggal_formatted ? item.tanggal_formatted : '-')
                 $('#last-updated-text').html(item.last_updated);
-                $('#level-text').html(item.level == 'public' ? '<span class="badge bg-success">Publik</span>' : '<span class="badge bg-danger">Rahasia</span>')
+                $('#level-text').html(item.level == '2' ? '<span class="badge bg-success">Publik</span>' : '<span class="badge bg-danger">Rahasia</span>')
 
                 // set form value
                 $('#nomorInput').val(item.nomor);
-                $('#tahunInput').val(item.tahun);
+                $('#tanggalInput').val(item.tanggal);
                 if(item.klasifikasi_id) {
                     $('#klasifikasiSelect').val(item.klasifikasi_id).trigger('change')
                 }
@@ -183,8 +191,8 @@ $(async function() {
     $('#nomorInput').on('keyup', function() {
         $('#nomorError').html('')
     })
-    $('#tahunInput').on('keyup', function() {
-        $('#tahunError').html('')
+    $('#tanggalInput').on('keyup', function() {
+        $('#tanggalError').html('')
     })
 
     $('#informasiTextarea').on('keyup', function() {
@@ -196,7 +204,7 @@ $(async function() {
         let data = new FormData();
         data.append($('meta[name=token_name]').attr('content'), $('meta[name=token_hash]').attr('content'))
         data.append('nomor', $('#nomorInput').val());
-        data.append('tahun', $('#tahunInput').val());
+        data.append('tanggal', $('#tanggalInput').val());
         data.append('informasi', $('#informasiTextarea').val());
         data.append('pencipta', $('#penciptaInput').val());
         data.append('klasifikasi', $('#klasifikasiSelect').val());
@@ -213,12 +221,12 @@ $(async function() {
                 $('#nomor-arsip-text').html(item.nomor);
                 $('#nomor-arsip-title').html('#'+item.nomor);
                 $('#nomor-arsip-breadcrumb').html('#'+item.nomor);
-                $('#tahun-arsip-text').html(item.tahun ? item.tahun : '-');
+                $('#tanggal-arsip-text').html(item.tanggal_formatted ? item.tanggal_formatted : '-');
                 if(item.klasifikasi_id) {
                     $('#klasifikasi-arsip-text').html(item.klasifikasi.kode+' | '+item.klasifikasi.nama)
                 }
                 $('#pencipta-arsip-text').html(item.pencipta ? item.pencipta : '-');
-                $('#level-text').html(item.level == 'public' ? '<span class="badge bg-success">Publik</span>' : '<span class="badge bg-danger">Rahasia</span>')
+                $('#level-text').html(item.level == '2' ? '<span class="badge bg-success">Publik</span>' : '<span class="badge bg-danger">Rahasia</span>')
                 $('#ubahInformasiModal').modal('hide');
 
                 $('meta[name=token_hash]').attr('content', res.data.csrf)
@@ -230,8 +238,8 @@ $(async function() {
                     if(e.response.data.validation.nomor) {
                         $('#nomorError').html(`<span>${e.response.data.validation.nomor}</span>`);
                     }
-                    if(e.response.data.validation.tahun) {
-                        $('#tahunError').html(`<span>${e.response.data.validation.tahun}</span>`);
+                    if(e.response.data.validation.tanggal) {
+                        $('#tanggalError').html(`<span>${e.response.data.validation.tanggal}</span>`);
                     }
                     if(e.response.data.validation.klasifikasi) {
                         $('#klasifikasiError').html(`<span>${e.response.data.validation.klasifikasi}</span>`);
@@ -312,5 +320,10 @@ $(async function() {
                     $(this).attr('disabled', false)
                 }, 1000);
             })
+    })
+
+    $('#doneUploadLampiran').on('click', function() {
+        $('#uploadNewImageModal').modal('hide');
+        loadArsip();
     })
 })

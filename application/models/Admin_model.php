@@ -31,11 +31,40 @@ class Admin_model extends CI_Model
     }
 
     function getOneByEmail($email) {
-        return $this->db->select('id, email')
+        return $this->db->select('*')
             ->from($this->table)
             ->where('email', $email)
             ->limit(1)
             ->get()
             ->row_array();
+    }
+
+    function setForgotPasswordCredential($email, $selector, $token_hashed) {
+        return $this->db->update($this->table, [
+            'forgotten_password_selector' => $selector,
+            'forgotten_password_code' => $token_hashed,
+            'forgotten_password_time' => time()
+        ], [
+            'email' => $email
+        ]);
+    }
+
+    function getOneByForgotPasswordSelector($selector) {
+        return $this->db->select('id, email, forgotten_password_selector, forgotten_password_code, forgotten_password_time')
+            ->from($this->table)
+            ->where('forgotten_password_selector', $selector)
+            ->limit(1)
+            ->get()
+            ->row_array();
+    }
+
+    function updateAdminPassword($id, $hashed_password) {
+        return $this->db->update($this->table, [
+            'password' => $hashed_password,
+            'forgotten_password_code' => '',
+            'forgotten_password_time' => '',
+        ], [
+            'id' => $id
+        ]);
     }
 }

@@ -10,7 +10,7 @@ class Aduan extends CI_Controller {
 	}
 
 	public function index() {
-		$this->load->view('admin/aduan_index');
+		$this->load->view('admin_panel/aduan/index');
 	}
 
 	public function detail($id) {
@@ -24,6 +24,6 @@ class Aduan extends CI_Controller {
 			return show_404();
 		}
 		
-		$this->load->view('admin/aduan_detail');
+		$this->load->view('admin_panel/aduan/detail');
 	}
 }

@@ -27,6 +27,15 @@ class Klasifikasi_model extends CI_Model
             ->row_array();
     }
 
+    function getOneByIDPublic($id) {
+        return $this->db->select('kode, nama')
+            ->from($this->table)
+            ->where('id', $id)
+            ->limit(1)
+            ->get()
+            ->row_array();
+    }
+
     function getOneByKode($kode) {
         return $this->db->select('*')
             ->from($this->table)

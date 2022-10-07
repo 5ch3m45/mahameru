@@ -3,16 +3,24 @@ $(function() {
         e.preventDefault();
         $(':input').attr('disabled', true)
         let data = new FormData();
-        data.append('identity', $('#email-input').val());
+        data.append('email', $('#email-input').val());
         data.append('password', $('#password-input').val());
+        data.append('phrase', $('#captcha-input').val());
         data.append($('#csrf-token').attr('name'), $('#csrf-token').val());
 
         axios.post(`/api/signin`, data)
             .then(res => {
-                window.location.href = '/admin';
+                if(res.data.success) {
+                    window.location.href = '/admin';
+                }
             })
             .catch(e => {
-                $('#login-error').html('<small class="text-danger">Email atau password salah.</small>').show();
+                if(e.response.data.validation) {
+                    Object.entries(e.response.data.validation).forEach(([k, v]) => {
+                        $('#'+k+'-error').text(v)
+                    })
+                }
+                $('#captcha-image').attr('src', e.response.data.captcha)
                 $('#csrf-token').val(e.response.data.csrf)
             })
             .finally(() => {

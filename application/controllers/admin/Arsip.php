@@ -9,31 +9,30 @@ class Arsip extends CI_Controller {
 
 	function __construct() {
 		parent::__construct();
-		$this->load->library(['ion_auth']);
-        $this->lang->load('auth');
-		if (!$this->ion_auth->logged_in()) {
-			redirect('signin');
-		}
+		$this->load->library('session');
 		$this->load->model([
 			'arsip_model',
 			'lampiran_model',
 			'klasifikasi_model'
 		]);
-		$this->is_admin = $this->ion_auth->is_admin();
+
+		if(!$this->session->is_logged_in) {
+			redirect(base_url('login'));
+		}
+
+		$this->is_admin = in_array('admin', $this->session->user_groups);
 	}
+	
 	public function index() {
-		$this->load->view('admin/arsip_index');
+		$this->load->view('admin_panel/arsip/index');
 	}
 
 	public function create() {
-		$this->load->model('arsip_model');
 		$last_arsip = $this->arsip_model->getLastNumberArsip();
-
-		$admin = $this->ion_auth->user()->row();
 
 		$arsip_id = $this->arsip_model->create([
 			'nomor' => $last_arsip['nomor'] + 1,
-			'admin_id' => $admin->id,
+			'admin_id' => $this->session->user_id,
 			'created_at' => date('c'),
 			'updated_at' => date('c')
 		]);
@@ -52,7 +51,7 @@ class Arsip extends CI_Controller {
 		$klasifikasis = $this->klasifikasi_model->getAll();
 		$lampirans = $this->lampiran_model->getBatchByArsip($arsip['id']);
 
-		$this->load->view('admin/arsip_detail', compact('arsip', 'klasifikasis', 'lampirans'));
+		$this->load->view('admin_panel/arsip/detail', compact('arsip', 'klasifikasis', 'lampirans'));
 	}
 
 	public function do_upload() {

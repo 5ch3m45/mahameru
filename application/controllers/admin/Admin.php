@@ -6,19 +6,17 @@ require_once APPPATH . 'third_party/ion_auth/libraries/Ion_auth.php';
 class Admin extends CI_Controller {
 	function __construct() {
 		parent::__construct();
-		$this->load->library(['ion_auth']);
         $this->lang->load('auth');
-		if (!$this->ion_auth->logged_in()) {
-			redirect('signin');
-		}
-		if (!$this->ion_auth->is_admin()) {
-			redirect(base_url('admin/dashboard'));
-		}
+		$this->load->library('session');
 		$this->load->model('admin_model');
+
+		if(!$this->session->is_logged_in) {
+			redirect(base_url('login'));
+		}
 	}
 
 	public function index() {
-		$this->load->view('admin/admin_index');
+		$this->load->view('admin_panel/admin/index');
 	}
 
 	public function detail($id) {
@@ -32,6 +30,6 @@ class Admin extends CI_Controller {
 			return show_404();
 		}
 		
-		$this->load->view('admin/admin_detail');
+		$this->load->view('admin_panel/admin/detail');
 	}
 }

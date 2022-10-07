@@ -18,20 +18,33 @@ class Aduan extends CI_Controller {
     function index() {
         $page = $this->input->get('page', true);
 
+        // validasi page start
+        $page = preg_replace('/[^0-9]/i', '', $page);
+        $page = (int)$page;
         if(!$page) {
             $page = 1;
         }
+        // validasi page end
 
-        if(!is_int((int)$page)) {
-            $page = 1;
-        }
+        $offset = PERPAGE * ($page -1);
+        $aduans = $this->db->select('*')
+            ->from('tbl_aduan')
+            ->where('is_deleted', 0)
+            ->limit(PERPAGE, $offset)
+            ->get()
+            ->result_array();
 
-        $page = (int)$page;
-
-        $aduans = $this->aduan_model->getPaginated($page);
         foreach ($aduans as $key => $aduan) {
             $aduans[$key]['status'] = $this->aduan_timeline_model->getLastStatusAduanByAduanID($aduan['id']);
         }
+
+        // count pagination
+        $records = $this->db->select('count(id) as record')
+            ->from('tbl_aduan')
+            ->where('is_deleted', 0)
+            ->get()
+            ->row_array();
+        $total_page = ceil($records['record'] / PERPAGE);
 
         return $this->output
             ->set_status_header(200)
@@ -39,7 +52,9 @@ class Aduan extends CI_Controller {
             ->set_output(json_encode([
                 'success' => true,
                 'data' => $aduans,
-                'csrf' => $this->security->get_csrf_hash()
+                'current_page' => (int)$page,
+                'total_page' => (int)$total_page,
+                'csrf' => $this->security->get_csrf_hash(),
             ], JSON_PRETTY_PRINT));
     }
 
@@ -193,11 +208,12 @@ class Aduan extends CI_Controller {
         foreach ($aduanStatus as $key => $status) {
             $aduanStatus[$key]['created_at_formatted'] = date('d M Y', strtotime($status['created_at']));
         }
-        $aduan['status']['timeline'] = $aduanStatus;
-        $aduan['status']['last_status'] = $this->aduan_timeline_model->getLastStatusAduanByAduanID($aduan['id']);
-        if($aduan['status']['last_status']) {
-            $aduan['status']['last_status']['created_at_formatted'] = date('d M Y H:i:s', strtotime($aduan['status']['last_status']['created_at']));
+        $aduan['timeline'] = $aduanStatus;
+        $aduan['last_status'] = $this->aduan_timeline_model->getLastStatusAduanByAduanID($aduan['id']);
+        if($aduan['last_status']) {
+            $aduan['last_status']['created_at_formatted'] = date('d M Y H:i:s', strtotime($aduan['last_status']['created_at']));
         }
+        
         return $this->output
             ->set_status_header(200)
             ->set_content_type('application/json', 'utf-8')
@@ -223,7 +239,6 @@ class Aduan extends CI_Controller {
 
         $input = $this->input->post(null, true);
 
-        
         $deleted = [];
         if($input['status'] < $last_status['status']) {
             for ($i=$last_status['status']; $i > $input['status']; $i--) { 

@@ -22,10 +22,96 @@ class Arsip extends CI_Controller {
             'klasifikasi_model'
         ]);
 
-        $this->is_admin = $this->ion_auth->is_admin();
+        $this->is_admin = false;
+        if($this->session->is_logged_in) {
+            $this->is_admin = in_array('admin', $this->session->user_groups);
+        }
     }
 
     public function index() {
+        $page = $this->input->get('p', true);
+        $search = $this->input->get('q', true);
+        $sort = $this->input->get('s', true);
+
+        // validasi page start
+        $page = preg_replace('/[^0-9]/i', '', $page);
+        $page = (int)$page;
+        if(!$page) {
+            $page = 1;
+        }
+        // validasi page end
+
+        // validasi search start
+        $search = preg_replace('/[^a-zA-Z\d\s:]/i', '', $search);
+        // validasi search end
+
+        // validasi sort start
+        $sort = in_array($sort, ['terbaru', 'terlama']) ? $sort : '';
+        // validasi sort end
+
+        // set offset
+        $offset = PERPAGE * ($page -1);
+        $query = $this->db->select('id, informasi, klasifikasi_id, nomor, pencipta, tanggal')
+            ->from('tbl_arsip')
+            ->where('level', 2)
+            ->where('is_published', 1)
+            ->where('is_deleted', 0);
+
+        if($search) {
+            $query = $query->where('informasi LIKE', '%'.$search.'%')
+                ->or_where('pencipta LIKE', '%'.$search.'%')
+                ->or_where('tanggal LIKE', '%'.$search.'%');
+        }
+
+        if($sort) {
+            if($sort == 'terlama') {
+                $query = $query->order_by('nomor', 'asc');
+            } else {
+                $query = $query->order_by('nomor', 'desc');
+            }
+        } else {
+            $query = $query->order_by('nomor', 'desc');
+        }
+
+        // generate arsips
+        $arsips = $query->limit(PERPAGE, $offset)
+            ->get()
+            ->result_array();
+        foreach ($arsips as $key => $value) {
+            // add klasifikasi detail
+            $arsips[$key]['klasifikasi'] = $this->db->select('kode, nama')
+                ->from('tbl_klasifikasi')
+                ->where('id', $value['klasifikasi_id'])
+                ->get()
+                ->row_array();
+            // add lampiran detail
+            $arsips[$key]['lampirans'] = $this->db->select('type, url')
+                ->from('tbl_lampiran')
+                ->where('arsip_id', $value['id'])
+                ->where('is_deleted', 0)
+                ->get()
+                ->result_array();
+            // format tahun
+            $arsips[$key]['tahun'] = date('Y', strtotime($value['tanggal']));
+        }
+
+
+        // count total page
+        $records = $query->count_all_results();
+        $total_page = ceil($records/PERPAGE);
+
+        return $this->output
+            ->set_status_header(200)
+            ->set_content_type('application/json', 'utf-8')
+            ->set_output(json_encode([
+                'success' => true,
+                'data' => $arsips,
+                'current_page' => (int)$page,
+                'total_page' => (int)$total_page,
+            ], JSON_PRETTY_PRINT));
+    }
+
+    public function admin_index() {
         $page = $this->input->get('page', TRUE);
 
 		if(!$page) {
@@ -36,7 +122,11 @@ class Arsip extends CI_Controller {
 			$page = 1;
 		}
 
-        $arsips = $this->arsip_model->getPaginated($page, $this->is_admin);
+        if($this->session->is_logged_in) { 
+            $arsips = $this->arsip_model->getPaginated($page, $this->is_admin);
+        } else {
+            $arsips = $this->arsip_model->getPaginatedPublic($page, $this->is_admin);
+        }
         
 		foreach ($arsips as $key => $arsip) {
 			// tambah key lampiran
@@ -62,13 +152,28 @@ class Arsip extends CI_Controller {
 			// tambah key klasifikasi
             $arsips[$key]['klasifikasi'] = [];
 			if($arsip['klasifikasi_id']) {
-				$arsips[$key]['klasifikasi'] = $this->klasifikasi_model->getOne($arsip['klasifikasi_id']);
+                if($this->session->is_logged_in) { 
+                    $arsips[$key]['klasifikasi'] = $this->klasifikasi_model->getOne($arsip['klasifikasi_id']);
+                } else {
+                    $arsips[$key]['klasifikasi'] = $this->klasifikasi_model->getOneByIDPublic($arsip['klasifikasi_id']);
+                }
 			}
 
-            // tambah key admin
-            $arsips[$key]['admin'] = [];
-            if($arsip['admin_id']) {
-                $arsips[$key]['admin'] = $this->admin_model->getOneByID($arsip['admin_id']);
+            if($this->session->is_logged_in) {
+                // tambah key admin jika data ditampilkan ke admin
+                $arsips[$key]['admin'] = [];
+                if($arsip['admin_id']) {
+                    $arsips[$key]['admin'] = $this->admin_model->getOneByID($arsip['admin_id']);
+                }
+            }
+            
+            // format key tanggal
+            if($arsip['tanggal']) {
+                if($this->session->is_logged_in) {
+                    $arsips[$key]['tanggal_formatted'] = date('d M Y', strtotime($arsip['tanggal']));
+                } else {
+                    $arsips[$key]['tahun'] = date('Y', strtotime($arsip['tanggal']));
+                }
             }
 		}
         return $this->output
@@ -112,6 +217,9 @@ class Arsip extends CI_Controller {
         // tambah key lampiran
         $arsip['lampirans'] = $this->lampiran_model->getAllByArsipID($arsip['id']);
 
+        // format tanggal
+        $arsip['tanggal_formatted'] = date('d M Y', strtotime($arsip['tanggal']));
+         
         // format last updated
         $arsip['last_updated'] = date('d M Y H:i:s', strtotime($arsip['updated_at']));
 
@@ -178,9 +286,9 @@ class Arsip extends CI_Controller {
             $this->form_validation->set_rules('nomor', 'Nomor', 'numeric', [
                 'numeric' => 'Nomor tidak valid'
             ]);
-            // validasi kolom tahun
-            $this->form_validation->set_rules('tahun', 'Tahun', 'numeric', [
-                'numeric' => 'Tahun tidak valid'
+            // validasi kolom tanggal
+            $this->form_validation->set_rules('tanggal', 'Tanggal', 'valid_date', [
+                'date' => 'Tanggal tidak valid'
             ]);
 
             // validasi kolom nomor
@@ -221,7 +329,7 @@ class Arsip extends CI_Controller {
                         'success' => false,
                         'validation' => [
                             'nomor' => form_error('nomor'),
-                            'tahun' => form_error('tahun'),
+                            'tanggal' => form_error('tanggal'),
                             'klasifikasi' => @$klasifikasiError,
                             'pencipta' => @$penciptaError
                         ],
@@ -239,8 +347,8 @@ class Arsip extends CI_Controller {
             if($input['nomor']) {
                 $data['nomor'] = $input['nomor'];
             }
-            if($input['tahun']) {
-                $data['tahun'] = $input['tahun'];
+            if($input['tanggal']) {
+                $data['tanggal'] = $input['tanggal'];
             }
             if($input['pencipta']) {
                 $data['pencipta'] = $input['pencipta'];
@@ -269,6 +377,11 @@ class Arsip extends CI_Controller {
                 $klasifikasi = $this->klasifikasi_model->getOne($arsip['klasifikasi_id']);
                 // tambahkan ke array arsip
                 $arsip['klasifikasi'] = $klasifikasi;
+            }
+
+            if($arsip['tanggal']) {
+                // format tanggal
+                $arsip['tanggal_formatted'] = date('d M Y', strtotime($arsip['tanggal']));
             }
 
             // return json 200
@@ -349,37 +462,39 @@ class Arsip extends CI_Controller {
                     'validation' => $this->upload->display_errors(),
                     'csrf' => $this->security->get_csrf_hash()
                 ]));
-        } else {
-            $uploadData = $this->upload->data();
+        }
+        
+        $uploadData = $this->upload->data();
 
+        if(in_array($uploadData['file_ext'], ['.jpg', '.png', '.jpeg'])) {
             $this->resizeImage($uploadData['full_path']);
             $this->overlayWatermark($uploadData['full_path']);
             $this->TextWatermark($uploadData['full_path']);
             $this->Text2Watermark($uploadData['full_path']);
-
-            $data = [
-                'url' => '/assets/uploads/'.$uploadData['file_name'],
-                'type' => $uploadData['file_type'],
-                'arsip_id' => $arsip['id'],
-                'admin_id' => 1,
-                'created_at' => date('c'),
-                'updated_at' => date('c')
-            ];
-
-            $lampiranID = $this->lampiran_model->store($data);
-
-            $lampiran = $this->lampiran_model->getOne($lampiranID);
-
-            return $this->output
-                ->set_status_header(200)
-                ->set_content_type('application/json', 'utf-8')
-                ->set_output(json_encode([
-                    'success' => true,
-                    'data' => $lampiran,
-                    'upload' => $this->upload->data(),
-                    'csrf' => $this->security->get_csrf_hash()
-                ]));
         }
+
+        $data = [
+            'url' => '/assets/uploads/'.$uploadData['file_name'],
+            'type' => $uploadData['file_type'],
+            'arsip_id' => $arsip['id'],
+            'admin_id' => 1,
+            'created_at' => date('c'),
+            'updated_at' => date('c')
+        ];
+
+        $lampiranID = $this->lampiran_model->store($data);
+
+        $lampiran = $this->lampiran_model->getOne($lampiranID);
+
+        return $this->output
+            ->set_status_header(200)
+            ->set_content_type('application/json', 'utf-8')
+            ->set_output(json_encode([
+                'success' => true,
+                'data' => $lampiran,
+                'upload' => $this->upload->data(),
+                'csrf' => $this->security->get_csrf_hash()
+            ]));
     }
 
     public function textWatermark($source_image)
@@ -668,6 +783,8 @@ class Arsip extends CI_Controller {
 					'url' => $lampiransCount - 2
 				]);
 			}
+            // format tanggal
+            $arsips[$key]['tanggal_formatted'] = $arsip['tanggal'] ? date('d M Y', strtotime($arsip['tanggal'])) : '';
         }
         return $this->output
             ->set_status_header(200)

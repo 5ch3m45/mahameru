@@ -1,4 +1,91 @@
-$(document).ready(function() {
+$(function() {
+    var current_page = 1;
+    var total_page = 1;
+    var is_fetching = false;
+    var search = $('#search-table').val();
+    var sort = $('#sort-table').val();
+
+    const getData = (page, query, sort) => {
+        if(is_fetching) {
+            return;
+        }
+
+        // set fetching state
+        $('#prev-table').attr('disabled', true);
+        $('#next-table').attr('disabled', true);
+        is_fetching = true;
+
+        axios.get(`/api/klasifikasi?page=${page}&search=${query}&sort=${sort}`)
+        .then(res => {
+            // reset table
+            $('#klasifikasi-table>tbody').html('');
+
+            // set page
+            $('#page-table').text(res.data.current_page+'/'+res.data.total_page);
+            current_page = res.data.current_page;
+            total_page = res.data.total_page;
+
+            // batasin min page
+            if(current_page == 1) {
+                $('#prev-table').attr('disabled', true);
+            } else {
+                $('#prev-table').attr('disabled', false);
+            }
+
+            // batasin max page
+            if(current_page == total_page) {
+                $('#next-table').attr('disabled', true);
+            } else {
+                $('#next-table').attr('disabled', false);
+            }
+
+            // set content
+            res.data.data.forEach(item => {
+                $('#klasifikasi-table>tbody').append(`
+                <tr role="button" data-id="${item.id}">
+                    <td>
+                        <div>
+                            <strong>${item.kode}: ${item.nama}</strong>
+                        </div>
+                        <div>
+                            <small>${item.deskripsi}</small>
+                        </div>
+                    </td>
+                    <td>${item.arsip_count}</td>
+                </tr>
+                `)
+            })
+        })
+        .finally(() => {
+            is_fetching = false;
+        })
+    }
+
+    // get data on ready
+    getData(current_page, search, sort);
+
+    // get data on prevpage
+    $('#prev-table').on('click', function() {
+        getData(current_page-1, search, sort);
+    })
+
+    // get data on nextpage
+    $('#next-table').on('click', function() {
+        getData(current_page+1, search, sort);
+    })
+
+    // get data on pencarian
+    $('#search-table').on('keyup', debounce(function() {
+        search = $('#search-table').val();
+        getData(1, search, sort);
+    }))
+
+    // get data on sort
+    $('#sort-table').on('change', function() {
+        sort = $('#sort-table').val();
+        getData(current_page, search, sort);
+    })
+
     $('#kodeBaruBtn').on('click', function() {
         $('#kodeBaruModal').modal('show')
     })
@@ -15,7 +102,8 @@ $(document).ready(function() {
         $('#deskripsiError').html('')
     })
 
-    $('tr').on('click', function() {
+    // delegate tr click
+    $(document).on('click', 'tr', function() {
         window.location.href = '/admin/kode-klasifikasi/detail/'+$(this).data('id')
     })
 

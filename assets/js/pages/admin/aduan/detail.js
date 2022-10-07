@@ -24,12 +24,13 @@ $(function() {
         $('#selesai-btn').attr('disabled', false);
         axios.get(`/api/aduan/${ADUAN_ID}`)
         .then(res => {
+            console.log(res)
             $('#nomor-aduan-breadcrumb').text(res.data.data.kode ? '#'+res.data.data.kode : '-');
             $('#nomor-aduan-title').text(res.data.data.kode ? '#'+res.data.data.kode : '-');
             $('#nama-aduan-text').text(res.data.data.nama ? res.data.data.nama : '-')
             $('#email-aduan-text').text(res.data.data.email ? res.data.data.email : '-')
-            $('#status-aduan-text').html(res.data.data.status.last_status ? statusAduanRender(res.data.data.status.last_status) : '-')
-            $('#last-updated-aduan-text').html(res.data.data.status.last_status ? res.data.data.status.last_status.created_at_formatted : '-')
+            $('#status-aduan-text').html(res.data.data.last_status ? statusAduanRender(res.data.data.last_status) : '-')
+            $('#last-updated-aduan-text').html(res.data.data.last_status ? res.data.data.last_status.created_at_formatted : '-')
             $('#aduan-text').html(res.data.data.aduan ? res.data.data.aduan : '-')
         })
         .catch(e => {

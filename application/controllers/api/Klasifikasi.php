@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Klasifikasi extends CI_Controller {
+class Klasifikasi extends CI_Controller { 
     function __construct() {
         parent::__construct();
 
@@ -10,15 +10,83 @@ class Klasifikasi extends CI_Controller {
     }
 
 	public function index() {
-        $klasifikasis = $this->klasifikasi_model->getAll();
+        $page = $this->input->get('page');
+        $search = $this->input->get('search');
+        $sort = $this->input->get('sort');
+
+        // validasi page start
+        $page = preg_replace('/[^0-9]/i', '', $page);
+        $page = (int)$page;
+        if(!$page) {
+            $page = 1;
+        }
+        // validasi page end
+
+        // validasi page start
+        $search = preg_replace('/[^a-zA-Z\d\s:]/i', '', $search);
+        // validasi page end
+
+        // validasi page start
+        $sort = in_array($sort, ['kode', 'nama', 'arsip-terbanyak', 'arsip-tersedikit']) ? $sort : '';
+        // validasi page end
         
-		return $this->output
-            ->set_status_header(200)
-            ->set_content_type('application/json', 'utf-8')
-            ->set_output(json_encode([
-                'success' => true,
-                'data' => $klasifikasis
-            ], JSON_PRETTY_PRINT));
+        if($page) {
+            $offset = PERPAGE * ($page -1);
+            $klasifikasis = $this->db->select('k.id, k.kode, k.nama, k.deskripsi, k.updated_at, count(a.id) as arsip_count')
+                ->from('tbl_klasifikasi k');
+
+            if($search) {
+                $klasifikasis = $klasifikasis->where('kode LIKE', '%'.$search.'%')
+                    ->or_where('nama LIKE', '%'.$search.'%');
+            }
+
+            $klasifikasis = $klasifikasis->limit(PERPAGE, $offset)
+                ->join('(SELECT * FROM tbl_arsip WHERE is_deleted = 0) a', 'a.klasifikasi_id = k.id', 'left')
+                ->group_by('k.id');
+
+            if($sort == 'nama') {
+                $klasifikasis = $klasifikasis->order_by('k.nama', 'asc');
+            } else if($sort == 'arsip-terbanyak') {
+                $klasifikasis = $klasifikasis->order_by('arsip_count', 'desc');
+            } else if($sort == 'arsip-tersedikit') {
+                $klasifikasis = $klasifikasis->order_by('arsip_count', 'asc');
+            } else {
+                $klasifikasis = $klasifikasis->order_by('kode', 'asc');
+            }
+
+            $klasifikasis = $klasifikasis->where('k.is_deleted', 0)
+                ->get()
+                ->result_array();
+
+            // var_dump($this->db->last_query()); die();
+            
+            $records = $this->db->select('count(id) as record')
+                ->from('tbl_klasifikasi')
+                ->where('is_deleted', 0)
+                ->get()
+                ->row_array();
+            $total_page = ceil($records['record'] / PERPAGE);
+
+            return $this->output
+                ->set_status_header(200)
+                ->set_content_type('application/json', 'utf-8')
+                ->set_output(json_encode([
+                    'success' => true,
+                    'data' => $klasifikasis,
+                    'current_page' => (int)$page,
+                    'total_page' => (int)$total_page,
+                ], JSON_PRETTY_PRINT));
+        } else {
+            $klasifikasis = $this->klasifikasi_model->getAll();
+            return $this->output
+                ->set_status_header(200)
+                ->set_content_type('application/json', 'utf-8')
+                ->set_output(json_encode([
+                    'success' => true,
+                    'data' => $klasifikasis
+                ], JSON_PRETTY_PRINT));
+        }
+        
 	}
 
     public function store() {

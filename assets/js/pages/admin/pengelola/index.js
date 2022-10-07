@@ -1,40 +1,50 @@
 $(function() {
     let current_page = 1;
-    let is_last_page = 0;
+    let total_page = 1;
+    let is_fetching = false;
 
-    const loadAdmin = (page) => {
-        if(page == 1) {
-            $('#admin-table>tbody').html('')
-            $('#prev-table').attr('disabled', true)
-        } else {
-            $('#prev-table').attr('disabled', true)
-        }
-
-        if(is_last_page) {
+    const getData = (page) => {
+        if(is_fetching) {
             return;
         }
 
+        // set fetching state
+        $('#prev-table').attr('disabled', true);
+        $('#next-table').attr('disabled', true);
+        is_fetching = true;
+
         axios.get(`/api/admin?page=${page}`)
             .then(res => {
-                if(res.data.data.length < 10) {
-                    is_last_page = 1;
-                }
+                // reset table
+                $('#admin-table>tbody').html('');
 
-                if(is_last_page) {
-                    $('#next-table').attr('disabled', true)
+                // set page
+                current_page = res.data.current_page;
+                total_page = res.data.total_page;
+                $('#page-table').text(current_page+'/'+total_page);
+
+                // batasin min page
+                if(current_page == 1) {
+                    $('#prev-page').attr('disabled', true);
                 } else {
-                    $('#next-table').attr('disabled', false)
+                    $('#prev-page').attr('disabled', false);
                 }
 
+                // batasin max page
+                if(current_page == 1) {
+                    $('#next-page').attr('disabled', true);
+                } else {
+                    $('#next-page').attr('disabled', false);
+                }
+
+                // set content
                 res.data.data.forEach(item => {
                     $('#admin-table>tbody').append(`
-                        <tr>
-                            <td>
-                                <a href="/admin/pengelola/detail/${item.id}">${item.name}</a>
-                            </td>
+                        <tr role="button" data-id="${item.id}">
+                            <td>${item.name}</td>
                             <td>${item.email}</td>
                             <td>${item.arsip_count}</td>
-                            <td>${item.last_login_formatted}</td>
+                            <td>${item.last_login ? item.last_login : '-'}</td>
                         </tr>
                     `)
                 })
@@ -43,20 +53,30 @@ $(function() {
                 alert(e.response.data.message)
             })
             .finally(() => {
-                //
+                is_fetching = false;
             })
     }
 
-    loadAdmin(current_page);
+    // load data on ready;
+    getData(current_page);
 
-    $('#orev-table').on('click', function() {
-        current_page--;
-        loadAdmin(current_page);
+    // get data on prev click
+    $('#prev-table').on('click', function() {
+        getData(current_page-1);
     });
+
+    // get data on next click
     $('#next-table').on('click', function() {
-        current_page++;
-        loadAdmin(current_page);
+        getData(current_page+1);
     });
+
+    // delegate tr click to detail
+    $(document).on('click', 'tr', function() {
+        let id = $(this).data('id');
+        if(id) {
+            window.location.href = '/admin/pengelola/detail/'+id;
+        }
+    })
 
     $('#pengelolaBaruBtn').on('click', function() {
         $('#pengelolaBaruModal').modal('show')

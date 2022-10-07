@@ -6,18 +6,20 @@ require_once APPPATH . 'third_party/ion_auth/libraries/Ion_auth.php';
 class Dashboard extends CI_Controller {
     public function __construct() {
         parent::__construct();
-        $this->load->library(['ion_auth']);
         $this->lang->load('auth');
-        if (!$this->ion_auth->logged_in()) {
-			redirect('signin');
-		}
+        $this->load->library('session');
+
+        if(!$this->session->is_logged_in) {
+            redirect(base_url('login'));
+        }
     }
+    
 	public function index() {
         $data = [
             'title' => 'Dashboard',
             'slug' => 'dashboard'
         ];
-		$this->load->view('admin/dashboard', $data);
+		$this->load->view('admin_panel/dashboard', $data);
 	}
 
     public function toIndex() {

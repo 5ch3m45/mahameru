@@ -23,25 +23,41 @@ class Admin extends CI_Controller {
 	public function index() {
         $page = $this->input->get('page', TRUE);
 
+        // validasi page start
+        $page = preg_replace('/[^0-9]/i', '', $page);
+        $page = (int)$page;
         if(!$page) {
             $page = 1;
         }
+        // validasi page end
 
-        if(!is_int((int)$page)) {
-            $page = 1;
-        }
+        // set offset 
+        $offset = PERPAGE * ($page -1);
 
-        $admins = $this->admin_model->getPaginated($page);
-        foreach ($admins as $key => $admin) {
-            $admins[$key]['arsip_count'] = $this->arsip_model->countArsipByAdmin($admin['id']);
-            $admins[$key]['last_login_formatted'] = $admin['last_login'] ? gmdate('d-m-Y H:i:s', $admin['last_login']) : date('d-m-Y H:i:s');
-        }
+        // get admin
+        $admins = $this->db->select('u.id, u.name, u.email, u.image, DATE_FORMAT(u.last_login, "%e %b %Y %H:%i:%s") as last_login, count(a.id) as arsip_count')
+            ->from('users u')
+            ->join('(SELECT id, admin_id, is_deleted FROM tbl_arsip WHERE is_deleted = 0) a', 'a.admin_id = u.id', 'left')
+            ->limit(PERPAGE, $offset)
+            ->group_by('u.id')
+            ->get()
+            ->result_array();
+
+        // get total_page info
+        $records = $this->db->select('count(id) as record')
+            ->from('users')
+            ->get()
+            ->row_array();
+        $total_page = ceil($records['record'] / PERPAGE);
+
 		return $this->output
             ->set_status_header(200)
             ->set_content_type('application/json', 'utf-8')
             ->set_output(json_encode([
                 'success' => true,
-                'data' => $admins
+                'data' => $admins,
+                'current_page' => (int)$page,
+                'total_page' => (int)$total_page
             ]));
 	}
     

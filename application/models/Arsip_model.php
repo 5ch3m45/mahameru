@@ -17,7 +17,7 @@ class Arsip_model extends CI_Model
 
         if(!$is_admin) {
             $where = array_merge($where, [
-                'level' => 'public'
+                'level' => '2'
             ]);
         }
 
@@ -37,7 +37,7 @@ class Arsip_model extends CI_Model
 
         if(!$is_admin) {
             $where = array_merge($where, [
-                'level' => 'public'
+                'level' => '2'
             ]);
         }
 
@@ -76,7 +76,7 @@ class Arsip_model extends CI_Model
 
         if(!$is_admin) {
             $where = array_merge($where, [
-                'level' => 'public'
+                'level' => '2'
             ]);
         }
 
@@ -97,7 +97,7 @@ class Arsip_model extends CI_Model
 
         if(!$is_admin) {
             $where = array_merge($where, [
-                'level' => 'public'
+                'level' => '2'
             ]);
         }
 
@@ -105,6 +105,28 @@ class Arsip_model extends CI_Model
         return $this->db->select('*')
             ->from($this->table)
             ->where($where)
+            ->order_by('id', 'desc')
+            ->limit(10, $offset)
+            ->get()
+            ->result_array();
+    }
+
+    function getPaginatedPublic($page, $is_admin = FALSE) {
+        $where = [
+            'is_deleted' => 0
+        ];
+
+        if(!$is_admin) {
+            $where = array_merge($where, [
+                'level' => '2'
+            ]);
+        }
+
+        $offset = 10 * ($page -1);
+        return $this->db->select('id, nomor, informasi, pencipta, tanggal, klasifikasi_id')
+            ->from($this->table)
+            ->where($where)
+            ->where('is_published', 1)
             ->order_by('id', 'desc')
             ->limit(10, $offset)
             ->get()
@@ -131,14 +153,13 @@ class Arsip_model extends CI_Model
 
     function getLast5($is_admin = FALSE) {
         $where = [
-            'id' => $id,
             'is_published' => 1,
             'is_deleted' => 0
         ];
 
         if(!$is_admin) {
             $where = array_merge($where, [
-                'level' => 'public'
+                'level' => '2'
             ]);
         }
 

@@ -19,7 +19,7 @@ p {
     -webkit-text-fill-color: transparent;
 }
 
-h1, h2, h3, h4, h5, h6, p, label, .form-select {
+h1, h2, h3, h4, h5, h6, p, label, th, td, .form-select {
     color: #000
 }
 .rounded-corner {
@@ -76,4 +76,68 @@ img.avatars__img.no-shadow {
 }
 span.avatars__others {
     background-color: #1E8FE1 ;
+}
+
+img.avatars__img-sm,
+span.avatars__initials-sm,
+span.avatars__others-sm {
+    height: 24px ;
+    line-height: 24px;
+    width: 24px ;
+}
+
+.error-container,
+.error-container p, 
+.error-container small {
+    font-size: .8rem;
+    color: red;
+}
+
+.success-container,
+.success-container p, 
+.success-container small {
+    font-size: .8rem;
+    color: var(--success);
+}
+
+.x-large-icon svg {
+    height: 3rem;
+    width: 3rem;
+}
+
+input:not(.input-landing), textarea, select:not(.select-landing), .modal-content {
+    border-radius: 8px!important;
+    border: 0px!important;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075)!important;
+}
+input:not([type=radio]):not([type=checkbox]):not(.input-landing), textarea, select:not(.select-landing) {
+    background-color: #fafafa!important;
+}
+
+button {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075)!important;
+}
+
+[role=button] {
+    cursor: pointer;
+}
+
+.swiper {
+    width: auto;
+    max-width: 90vw;
+    max-height: 80vh;
+}
+
+.table-responsive {
+    min-height: 400px
+}
+
+td {
+    max-width: 250px;
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+label {
+    font-weight: 500
 }

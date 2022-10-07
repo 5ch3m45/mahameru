@@ -1,45 +1,61 @@
 $(function() {
-    let currenct_page = 1;
-    let is_last_page = 0;
-    let is_fetching = 0;
+    let current_page = 1;
+    let total_page = 1;
+    let is_fetching = false;
 
-    const loadAduan = (page) => {
-        // $(':input').attr('disabled', true);
-        $('#aduan-table>tbody').html('')
-
+    const getData = (page) => {
+        if(is_fetching) {
+            return;
+        }
+        $('#prev-table').attr('disabled', false)
+        $('#next-table').attr('disabled', false)
+        is_fetching = true;
+        
         axios.get(`/api/aduan?page=${page}`)
             .then(res => {
-                $('#prev-table').attr('disabled', false)
-                $('#next-table').attr('disabled', false)
-                if(res.data.data.length < 10) {
-                    $('#next-table').attr('disabled', true)
+                console.log(res);
+                // reset table
+                $('#aduan-table>tbody').html('')
+
+                // set page
+                current_page = res.data.current_page;
+                total_page = res.data.total_page;
+                $('#page-table').text(current_page+'/'+total_page)
+
+                // batasin min page
+                if(current_page == 1) {
+                    $('#prev-table').attr('disabled', true);
+                } else {
+                    $('#prev-table').attr('disabled', false);
                 }
-                if(page == 1) {
-                    $('#prev-table').attr('disabled', true)
+                
+                // batasin max page
+                if(current_page == total_page) {
+                    $('#next-table').attr('disabled', true);
+                } else {
+                    $('#next-table').attr('disabled', false);
                 }
 
+                // set content
                 res.data.data.forEach((item) => {
                     $('#aduan-table>tbody').append(`
-                        <tr>
-                            <td class="">
-                                <a href="/admin/aduan/detail/${item.id}">
-                                ${item.kode}
-                                </a>
-                            <td class="">
+                        <tr role="button" data-id="${item.id}">
+                            <td>${item.kode}</td>
+                            <td>
                                 ${item.aduan.substr(0, 100)}${item.aduan.length > 100 ? '...' : '' }
                             </td>
-                            <td class="">${item.nama}</td>
-                            <td class="">${item.email}</td>
-                            <td class="">${statusAduanRender(item.status.status)}</td>
+                            <td>${item.nama}</td>
+                            <td>${item.email}</td>
+                            <td>${item.status ? statusAduanRender(item.status.status) : ''}</td>
                         </tr>
                     `)
                 })
             })
             .catch(e => {
-                console.log(e.response)
+                console.log(e)
             })
             .finally(() => {
-                // $(':input').attr('disabled', false)
+                is_fetching = false;
             })
     }
 
@@ -55,7 +71,24 @@ $(function() {
         }
     }
 
-    // $('#prev-table').on('click')
+    // get data on ready
+    getData(current_page);
 
-    loadAduan(currenct_page)
+    // get data on prevpage
+    $('#prev-table').on('click', function() {
+        getData(current_page-1);
+    });
+
+    // get data on nextpage
+    $('#next-table').on('click', function() {
+        getData(current_page-1);
+    })
+
+    // delegate tr click
+    $(document).on('click', 'tr', function() {
+        let id = $(this).data('id');
+        if(id) {
+            window.location.href = '/admin/aduan/detail/'+id;
+        }
+    })
 })

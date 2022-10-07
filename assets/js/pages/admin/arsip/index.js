@@ -27,7 +27,7 @@ $(function() {
         }
         
         is_fetching = 1;
-        axios.get(`/api/arsip?page=${page}`)
+        axios.get(`/api/admin/arsip?page=${page}`)
             .then(res => {
                 $('#prev-table').attr('disabled', false)
                 $('#next-table').attr('disabled', false)
@@ -44,7 +44,7 @@ $(function() {
                         <tr role="button" data-id="${item.id}">
                             <td>${counter}</td>
                             <td>${item.nomor ? item.nomor : ''}</td>
-                            <td>${item.admin_id ? getInitialName(item.admin.name) : '-'}</td>
+                            <td>${item.admin_id ? item.admin.name : '-'}</td>
                             <td>
                                 ${item.klasifikasi_id
                                     ? `
@@ -64,7 +64,7 @@ $(function() {
                                 </ul>
                             </td>
                             <td>${item.pencipta ? item.pencipta : ''}</td>
-                            <td>${item.tahun ? item.tahun : ''}</td>
+                            <td>${item.tanggal_formatted ? item.tanggal_formatted : ''}</td>
                             <td>
                                 ${item.is_published == 1
                                     ? `
@@ -75,7 +75,7 @@ $(function() {
                                     `
                                 }
                             </td>
-                            <td>${item.level == 'public'
+                            <td>${item.level == '2'
                                 ? `<span class="badge bg-success">Publik</span>`
                                 : `<span class="badge bg-danger">Rahasia</span>`
                             }</td>
@@ -100,6 +100,9 @@ $(function() {
     })
 
     $(document).on('click', 'tr', function() {
-        window.location.href = '/admin/arsip/detail/'+$(this).data('id')
+        let id = $(this).data('id');
+        if(id) {
+            window.location.href = '/admin/arsip/detail/'+id;
+        }
     })
 })

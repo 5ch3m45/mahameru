@@ -131,9 +131,8 @@ $(function() {
                 res.data.data.forEach(item => {
                     $('#arsip-table>tbody').append(`
                             <tr role="button" data-id="${item.id}">
-                                <td>${counter}</td>
                                 <td>${item.nomor ? item.nomor : ''}</td>
-                                <td>${item.admin_id ? item.admin.nama : ''}</td>
+                                <td>${item.admin_id ? item.admin.name : ''}</td>
                                 <td>
                                     ${item.klasifikasi_id
                                         ? `
@@ -153,7 +152,7 @@ $(function() {
                                     </ul>
                                 </td>
                                 <td>${item.pencipta ? item.pencipta : ''}</td>
-                                <td>${item.tahun ? item.tahun : ''}</td>
+                                <td>${item.tanggal ? item.tanggal_formatted : ''}</td>
                                 <td>
                                     ${item.is_published
                                         ? `
@@ -164,6 +163,10 @@ $(function() {
                                         `
                                     }
                                 </td>
+                                <td>${item.level == '2'
+                                ? `<span class="badge bg-success">Publik</span>`
+                                : `<span class="badge bg-danger">Rahasia</span>`
+                                }</td>
                             </tr>
                         `)
                 })
