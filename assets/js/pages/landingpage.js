@@ -4,23 +4,25 @@ $(function() {
         once: true
     });
 
-    var glide = new Glide('#intro', {
-        type: 'carousel',
-        perView: 4,
-        focusAt: 'center',
-        breakpoints: {
-            1024: {
-                preview: 3
-            },
-            800: {
-                perView: 2
-            },
-            480: {
-                perView: 1
+    if(IS_GLIDE > 0) {
+        var glide = new Glide('#intro', {
+            type: 'carousel',
+            perView: 4,
+            focusAt: 'center',
+            breakpoints: {
+                1024: {
+                    preview: 3
+                },
+                800: {
+                    perView: 2
+                },
+                480: {
+                    perView: 1
+                }
             }
-        }
-    })
-    glide.mount()
+        })
+        glide.mount()
+    }
 
     $('.today-archive-card').on('click', function() {
         window.location.href = `/arsip/${$(this).data('id')}`
@@ -58,7 +60,6 @@ $(function() {
                 $('meta[name=token_hash]').attr('content', res.data.csrf)
             })
             .catch(e => {
-                console.log(e.response.data)
                 if(e.response.data.error) {
                     Object.entries(e.response.data.error).forEach(([k, v]) => {
                         $('#'+k+'-error').text(v)
@@ -71,5 +72,12 @@ $(function() {
 
     $('#aduan-textarea').on('keyup', function() {
         $('#aduan-counter').text($(this).val().length+' karakter')
+    })
+
+    $('.search-go').on('click', function() {
+        let q = $('.search-arsip').val();
+        if(q) {
+            window.location.href = '/arsip?q='+q;
+        }
     })
 })

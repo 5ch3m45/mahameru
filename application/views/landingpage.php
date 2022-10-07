@@ -7,12 +7,30 @@
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex,nofollow">
-    <title>Home | MAHAMERU</title>
+    <title>Selamat Datang | MAHAMERU</title>
     <!-- Favicon icon -->    
+    <link rel="apple-touch-icon" sizes="57x57" href="/assets/images/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/assets/images/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/assets/images/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/assets/images/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/assets/images/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/assets/images/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/assets/images/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/assets/images/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/assets/images/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/assets/images/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <!-- End favicon icon -->
     <meta name="token_name" content="<?= $this->security->get_csrf_token_name() ?>">
     <meta name="token_hash" content="<?= $this->security->get_csrf_hash() ?>">
-    <link rel="icon" type="image/png" sizes="16x16" href="<?= assets_url() ?>/images/favicon.png">
     <!-- Custom CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
     <link href="<?= assets_url() ?>/css/landingpage.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -67,9 +85,9 @@
                         		<li class="nav-item">
                         			<a class="nav-link" href="#pencarian">Pencarian</a>
                         		</li>
-                        		<li class="nav-item">
+                        		<!-- <li class="nav-item">
                         			<a class="nav-link" href="#artikel-pilihan">Artikel Pilihan</a>
-                        		</li>
+                        		</li> -->
                         		<li class="nav-item">
                         			<a class="nav-link" href="#arsip-hari-ini">Arsip Hari Ini</a>
                         		</li>
@@ -88,9 +106,9 @@
                         		<li class="nav-item">
                         			<a class="nav-link" href="#pencarian">Pencarian</a>
                         		</li>
-                        		<li class="nav-item">
+                        		<!-- <li class="nav-item">
                         			<a class="nav-link" href="#artikel-pilihan">Artikel Pilihan</a>
-                        		</li>
+                        		</li> -->
                         		<li class="nav-item">
                         			<a class="nav-link" href="#arsip-hari-ini">Arsip Hari Ini</a>
                         		</li>
@@ -125,38 +143,38 @@
             <section id="pencarian" class="spacer bg-white">
                 <div class="container">
                     <div style="box-shadow: 0px 0px 20px #bbb; border-radius: 50px" data-aos="zoom-in" class="search-section p-2 d-none d-md-block animate__animated animate__fadeIn animate__slower">
-                        <form action="" class="d-flex">
-                            <input type="text" name="" id="" class="form-control form-control-lg" style="border: 0px"  placeholder="Cari arsip">
-                            <div class="mr-2" style="border: 0px; background-color: var(--primary); min-width: 170px; color: white; border-radius: 20px; padding-right: 1rem">
-                                <select name="" id="" class="form-control form-control-lg" style="border: 0px; background-color: var(--primary); color: white; border-radius: 20px;">
+                        <div class="d-flex">
+                            <input type="text" name="" id="" class="search-arsip form-control form-control-lg input-landing" style="border: 0px"  placeholder="Cari arsip">
+                            <!-- <div class="mr-2" style="border: 0px; background-color: var(--primary); min-width: 170px; color: white; border-radius: 20px; padding-right: 1rem">
+                                <select name="" id="" class="form-control form-control-lg select-landing" style="border: 0px; background-color: var(--primary); color: white; border-radius: 20px;">
                                     <option value="">Jenis Arsip</option>
                                     <option value="">Dokumen</option>
                                     <option value="">Foto</option>
                                     <option value="">Video</option>
                                 </select>
-                            </div>
-                            <button class="btn btn-primary" style="border-radius: 50px">
+                            </div> -->
+                            <button type="button" class="btn btn-primary search-go" style="border-radius: 50px">
                                 <i class="mdi mdi-magnify"></i>
                             </button>
-                        </form>
+                        </div>
                     </div>
-                    <form action="" data-aos="zoom-in-up" class="search-section d-block d-md-none animate__animated animate__fadeIn">
-                        <input type="text" name="" id="" class="form-control form-control-lg mb-2" style="border: 0px; box-shadow: 0px 0px 20px #bbb; border-radius: 50px"  placeholder="Cari arsip">
-                        <div class="mb-2" style="border: 0px; background-color: var(--primary); min-width: 170px; color: white; border-radius: 20px; padding-right: 1rem">
+                    <div data-aos="zoom-in-up" class="search-section d-block d-md-none animate__animated animate__fadeIn">
+                        <input type="text" name="" class="search-arsip form-control form-control-lg mb-2" style="border: 0px; box-shadow: 0px 0px 20px #bbb; border-radius: 50px"  placeholder="Cari arsip">
+                        <!-- <div class="mb-2" style="border: 0px; background-color: var(--primary); min-width: 170px; color: white; border-radius: 20px; padding-right: 1rem">
                             <select name="" id="" class="form-control form-control-lg" style="border: 0px; background-color: var(--primary); color: white; border-radius: 20px;">
                                 <option value="">Jenis Arsip</option>
                                 <option value="">Dokumen</option>
                                 <option value="">Foto</option>
                                 <option value="">Video</option>
                             </select>
-                        </div>
-                        <button class="btn btn-primary btn-block" style="border-radius: 50px">
+                        </div> -->
+                        <button type="button" class="search-go btn btn-primary btn-block" style="border-radius: 50px">
                             <i class="mdi mdi-magnify"></i>
                         </button>
-                    </form>
+                    </div>
                 </div>
             </section>
-            <section id="artikel-pilihan" class="spacer bg-white">
+            <!-- <section id="artikel-pilihan" class="spacer bg-white">
                 <div class="container">
                     <div class="d-md-flex d-block">
                         <div class="mr-4">
@@ -170,7 +188,7 @@
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> -->
             <section id="arsip-hari-ini" class="spacer bg-white">
                 <div class="container">
                     <div class="d-md-flex d-block justify-content-between mb-5">
@@ -179,80 +197,47 @@
                             <h2 class="text-dark display-text">HARI INI</h2>
                         </div>
                         <div class="d-flex align-items-end">
-                            <a href="/arsip">
-                                <button class="btn btn-sm btn-primary">Lebih banyak arsip</button>
-                            </a>
+                            <?php if($arsip_hari_ini) { ?>
+                                <a href="/arsip">
+                                    <button class="btn btn-sm btn-primary">Lebih banyak arsip</button>
+                                </a>
+                            <?php } ?>
                         </div>
                     </div>
+                    <?php if($arsip_hari_ini) { ?>
                     <div id="today-archive">
                         <div id="intro" class="glide">
                         	<div class="glide__track" data-glide-el="track">
                         		<ul class="glide__slides"  style="height:380px">
-                        			<li class="glide__slide">
-                                        <div class="today-archive-card card rounded-corner shadow" role="button" data-id="1" style="height:360px">
-                                            <div class="rounded-corner-card-image" style="height: 260px; background-image: url('https://images.unsplash.com/photo-1660665508252-29c504d48ce8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwxMHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60'); background-position: center; background-size: cover"></div>
-                                            <div class="card-body" style="font-size: .8rem; max-height: 120px;">
-                                                <div class="description" style="max-height: 100%; overflow: hidden; text-overflow: ellipsis;">
-                                                    <small>26/7/98</small><br>
-                                                    <strong>Lorem Ipsum</strong>
-                                                    <p class="mb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem beatae iste perspiciatis labore veniam asperiores, delectus ratione magnam in non. Molestias perspiciatis saepe dolorem illum, adipisci ea nesciunt quam suscipit.</p>
+                                    <?php foreach ($arsip_hari_ini as $key => $value) { ?>
+                                        <li class="glide__slide">
+                                            <div class="today-archive-card card rounded-corner shadow" role="button" data-id="<?= $value['id'] ?>" style="height:360px">
+                                                <div class="rounded-corner-card-image" style="height: 260px; background-image: url('<?= $value['lampiran'] ? $value['lampiran']['url'] : '/assets/images/no-img.png' ?>'); background-position: center; background-size: cover"></div>
+                                                <div class="card-body" style="font-size: .8rem; max-height: 120px;">
+                                                    <div class="description" style="max-height: 100%; overflow: hidden; text-overflow: ellipsis;">
+                                                        <small><?= $value['tanggal_formatted'] ?></small><br>
+                                                        <strong><?= $value['klasifikasi']['kode'] ?>: <?= $value['klasifikasi']['nama'] ?></strong>
+                                                        <p class="mb-0"><?= $value['informasi'] ?></p>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </li>
-                        			<li class="glide__slide">
-                                        <div class="today-archive-card card rounded-corner shadow" role="button" data-id="1" style="height:360px">
-                                            <div class="rounded-corner-card-image" style="height: 260px; background-image: url('https://images.unsplash.com/photo-1660673399641-0e1bc98a7cb4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwzM3x8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60'); background-position: center; background-size: cover"></div>
-                                            <div class="card-body" style="font-size: .8rem; max-height: 120px;">
-                                                <div class="description" style="max-height: 100%; overflow: hidden; text-overflow: ellipsis;">
-                                                    <small>26/7/98</small><br>
-                                                    <strong>Lorem Ipsum</strong>
-                                                    <p class="mb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem beatae iste perspiciatis labore veniam asperiores, delectus ratione magnam in non. Molestias perspiciatis saepe dolorem illum, adipisci ea nesciunt quam suscipit.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                        			<li class="glide__slide">
-                                        <div class="today-archive-card card rounded-corner shadow" role="button" data-id="1" style="height:360px">
-                                            <div class="rounded-corner-card-image" style="height: 260px; background-image: url('https://images.unsplash.com/photo-1660562924547-71ba91ccc4b6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0OHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60'); background-position: center; background-size: cover"></div>
-                                            <div class="card-body" style="font-size: .8rem; max-height: 120px;">
-                                                <div class="description" style="max-height: 100%; overflow: hidden; text-overflow: ellipsis;">
-                                                    <small>26/7/98</small><br>
-                                                    <strong>Lorem Ipsum</strong>
-                                                    <p class="mb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem beatae iste perspiciatis labore veniam asperiores, delectus ratione magnam in non. Molestias perspiciatis saepe dolorem illum, adipisci ea nesciunt quam suscipit.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                        			<li class="glide__slide">
-                                        <div class="today-archive-card card rounded-corner shadow" role="button" data-id="1" style="height:360px">
-                                            <div class="rounded-corner-card-image" style="height: 260px; background-image: url('https://images.unsplash.com/photo-1660586683391-a026c04de39e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw2OXx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60'); background-position: center; background-size: cover"></div>
-                                            <div class="card-body" style="font-size: .8rem; max-height: 120px;">
-                                                <div class="description" style="max-height: 100%; overflow: hidden; text-overflow: ellipsis;">
-                                                    <small>26/7/98</small><br>
-                                                    <strong>Lorem Ipsum</strong>
-                                                    <p class="mb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem beatae iste perspiciatis labore veniam asperiores, delectus ratione magnam in non. Molestias perspiciatis saepe dolorem illum, adipisci ea nesciunt quam suscipit.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                        			<li class="glide__slide">
-                                        <div class="today-archive-card card rounded-corner shadow" role="button" data-id="1" style="height:360px">
-                                            <div class="rounded-corner-card-image" style="height: 260px; background-image: url('https://images.unsplash.com/photo-1660625984667-dec9a1a67a89?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw4N3x8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60'); background-position: center; background-size: cover"></div>
-                                            <div class="card-body" style="font-size: .8rem; max-height: 120px;">
-                                                <div class="description" style="max-height: 100%; overflow: hidden; text-overflow: ellipsis;">
-                                                    <small>26/7/98</small><br>
-                                                    <strong>Lorem Ipsum</strong>
-                                                    <p class="mb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem beatae iste perspiciatis labore veniam asperiores, delectus ratione magnam in non. Molestias perspiciatis saepe dolorem illum, adipisci ea nesciunt quam suscipit.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                        			
+                                        </li>
+                                    <?php } ?>
                         		</ul>
                         	</div>
                         </div>
                     </div>
+                    <?php } else { ?>
+                        <div class="text-center">
+                            <img src="/assets/images/undraw_no_data_re_kwbl.svg" class="mb-3" style="max-height: 200px;" alt="">
+                            <p>
+                                Tidak ada arsip hari ini. Telusuri semua arsip?
+                            </p>
+                            <a href="<?= base_url('arsip') ?>">
+                                <button class="btn btn-primary"><i class="bi bi-search"></i> Telusuri</button>
+                            </a>
+                        </div>
+                    <?php } ?>
                 </div>
             </section>
             <section id="kolom-aduan" class="spacer bg-white">
@@ -270,27 +255,30 @@
                     </div>
                     <form id="aduan-form" action="/api/aduan/create" method="post">
                         <div class="mb-3">
-                            <label for="">Email</label>
-                            <input type="email" class="form-control" name="email" id="email-aduan-input">
+                            <label for="">Email<span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" name="email" id="email-aduan-input" placeholder="Email">
                             <small id="email-error" class="text-danger"></small>
                         </div>
                         <div class="mb-3">
-                            <label for="">Nama</label>
-                            <input type="text" name="nama" id="nama-aduan-input" class="form-control">
+                            <label for="">Nama<span class="text-danger">*</span></label>
+                            <input type="text" name="nama" id="nama-aduan-input" class="form-control" placeholder="Nama">
                             <small id="nama-error" class="text-danger"></small>
                         </div>
                         <div class="mb-4">
-                            <label for="">Aduan</label>
-                            <textarea name="aduan" id="aduan-textarea" rows="4" class="form-control"></textarea>
-                            <div id="aduan-counter" class="d-flex justify-content-end" style="font-size: .8rem; color: #666">0 karakter</div>
+                            <label for="">Aduan<span class="text-danger">*</span></label>
+                            <textarea name="aduan" id="aduan-textarea" rows="4" class="form-control" placeholder="Aduan"></textarea>
+                            <div class="d-flex justify-content-between">
+                                <small>Minimal 100 karakter</small>
+                                <div id="aduan-counter" class="d-flex justify-content-end" style="font-size: .8rem; color: #666">0 karakter</div>
+                            </div>
                             <small id="aduan-error" class="text-danger"></small>
                         </div>
                         <div class="mb-4">
-                            <label for="">Verifikasi</label>
+                            <label for="">Verifikasi<span class="text-danger">*</span></label>
                             <div class="mb-2">
                                 <img id="captcha-image" src="<?= $captcha ?>" alt="">
                             </div>
-                            <input id="captcha" name="captcha" type="text" class="form-control">
+                            <input id="captcha" name="captcha" type="text" class="form-control mb-2" placeholder="Verifikasi">
                             <small id="captcha-error" class="text-danger"></small>
                         </div>
                         <div class="d-flex justify-content-end">
@@ -300,9 +288,10 @@
                 </div>
             </section>
         </div>
-        <footer class="text-center p-4"> All Rights Reserved by Flexy Admin. Designed and Developed by <a
-                href="https://www.wrappixel.com">WrapPixel</a>. Illustration by <a href="https://icons8.com/illustrations/author/zD2oqC8lLBBA">Icons 8</a> from <a href="https://icons8.com/illustrations">Ouch!</a></footer>
     </div>
+    <script>
+        const IS_GLIDE = <?= count($arsip_hari_ini) ?>;
+    </script>
     <script src="<?= assets_url() ?>libs/jquery/dist/jquery.min.js"></script>
     <script src="<?= assets_url() ?>libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
