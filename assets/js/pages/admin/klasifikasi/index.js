@@ -1,39 +1,34 @@
 $(function() {
-    var current_page = 1;
-    var total_page = 1;
-    var is_fetching = false;
-    var search = $('#search-table').val();
-    var sort = $('#sort-table').val();
+    var _page = 1;
+    var _is_fetching = false;
+    var _search = $('#search-table').val();
+    var _sort = $('#sort-table').val();
 
-    const getData = (page, query, sort) => {
-        if(is_fetching) {
+    const load = () => {
+        $('#klasifikasi-table>tbody').html('<tr><td colspan="2" class="text-center"><image src="/assets/images/loader/loading.svg"/></td></tr>');
+        if(_is_fetching) {
             return;
         }
 
         // set fetching state
         $('#prev-table').attr('disabled', true);
         $('#next-table').attr('disabled', true);
-        is_fetching = true;
+        _is_fetching = true;
 
-        axios.get(`/api/klasifikasi?page=${page}&search=${query}&sort=${sort}`)
+        axios.get(`/api/dashboard/klasifikasi?page=${_page}&search=${_search}&sort=${_sort}`)
         .then(res => {
             // reset table
             $('#klasifikasi-table>tbody').html('');
 
-            // set page
-            $('#page-table').text(res.data.current_page+'/'+res.data.total_page);
-            current_page = res.data.current_page;
-            total_page = res.data.total_page;
-
             // batasin min page
-            if(current_page == 1) {
+            if(_page == 1) {
                 $('#prev-table').attr('disabled', true);
             } else {
                 $('#prev-table').attr('disabled', false);
             }
 
             // batasin max page
-            if(current_page == total_page) {
+            if(res.data.data.length < 10) {
                 $('#next-table').attr('disabled', true);
             } else {
                 $('#next-table').attr('disabled', false);
@@ -42,48 +37,54 @@ $(function() {
             // set content
             res.data.data.forEach(item => {
                 $('#klasifikasi-table>tbody').append(`
-                <tr role="button" data-id="${item.id}">
-                    <td>
-                        <div>
-                            <strong>${item.kode}: ${item.nama}</strong>
-                        </div>
-                        <div>
-                            <small>${item.deskripsi}</small>
-                        </div>
-                    </td>
-                    <td>${item.arsip_count}</td>
-                </tr>
+                    <tr role="button" data-id="${item.id}">
+                        <td>
+                            <div>
+                                <strong>${item.kode}: ${item.nama}</strong>
+                            </div>
+                            <div>
+                                <small>${item.deskripsi}</small>
+                            </div>
+                        </td>
+                        <td>${item.arsip_count} arsip</td>
+                    </tr>
                 `)
             })
         })
+        .catch(e => {
+            console.log(e)
+        })
         .finally(() => {
-            is_fetching = false;
+            _is_fetching = false;
         })
     }
 
     // get data on ready
-    getData(current_page, search, sort);
+    load();
 
     // get data on prevpage
     $('#prev-table').on('click', function() {
-        getData(current_page-1, search, sort);
+        _page--;
+        load();
     })
 
     // get data on nextpage
     $('#next-table').on('click', function() {
-        getData(current_page+1, search, sort);
+        _page++;
+        load();
     })
 
     // get data on pencarian
     $('#search-table').on('keyup', debounce(function() {
-        search = $('#search-table').val();
-        getData(1, search, sort);
+        _search = $('#search-table').val();
+        _page =1;
+        load();
     }))
 
     // get data on sort
     $('#sort-table').on('change', function() {
-        sort = $('#sort-table').val();
-        getData(current_page, search, sort);
+        _sort = $('#sort-table').val();
+        load();
     })
 
     $('#kodeBaruBtn').on('click', function() {
@@ -104,7 +105,7 @@ $(function() {
 
     // delegate tr click
     $(document).on('click', 'tr', function() {
-        window.location.href = '/admin/kode-klasifikasi/detail/'+$(this).data('id')
+        window.location.href = '/dashboard/kode-klasifikasi/detail/'+$(this).data('id')
     })
 
     $('#submitKodeBtn').on('click', function() {
@@ -116,11 +117,11 @@ $(function() {
         data.append('nama', $('#namaInput').val());
         data.append('deskripsi', $('#deskripsiTextarea').val());
 
-        axios.post(`/api/klasifikasi/baru`, data)
+        axios.post(`/api/dashboard/klasifikasi/baru`, data)
             .then(res => {
                 if(res.data.success == true) {
                     setTimeout(() => {
-                        window.location.href = '/admin/kode-klasifikasi/detail/'+res.data.data.id;
+                        window.location.href = '/dashboard/kode-klasifikasi/detail/'+res.data.data.id;
                         $('#ubahInformasiModal').modal('hide');
                     }, 1000);
                 }

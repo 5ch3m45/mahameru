@@ -15,8 +15,7 @@ class Landingpage extends CI_Controller {
 			->from('tbl_arsip')
 			->where('tanggal', date('Y-m-d'))
 			->where('level', 2)
-			->where('is_published', 1)
-			->where('is_deleted', 0)
+			->where('status', 2)
 			->get()
 			->result_array();
 

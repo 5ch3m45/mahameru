@@ -36,8 +36,8 @@
                             <div class="card-body">
                                 <div class="d-md-flex align-items-center">
                                     <div>
-                                        <h4 class="card-title">Jumlah Arsip Ditambahkan</h4>
-                                        <h6 class="card-subtitle">Jumlah arsip ditambahkan 2 minggu terakhir</h6>
+                                        <h4 class="card-title">Jumlah Arsip Dipublikasi</h4>
+                                        <h6 class="card-subtitle">Jumlah arsip dipublikasi 2 minggu terakhir</h6>
                                     </div>
                                     <div class="ms-auto d-flex no-block align-items-center">
                                         <ul class="list-inline dl d-flex align-items-center m-r-15 m-b-0">
@@ -55,7 +55,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <h4 class="card-title">Klasifikasi Terbanyak</h4>
-                                <h6 class="card-subtitle">Klasifikasi dengan Arsip Terbanyak</h6>
+                                <h6 class="card-subtitle">Klasifikasi dengan Arsip Dipublikasi Terbanyak</h6>
                                 <div id="klasifikasi-top5" class=""></div>
                             </div>
                         </div>
@@ -96,6 +96,7 @@
                         </div>
                     </div>
                 </div>
+                <?php if(false) { ?>
                 <div class="row">
                     <!-- column -->
                     <div class="col-lg-6">
@@ -224,6 +225,7 @@
                         </div>
                     </div>
                 </div>
+                <?php } ?>
         </div>
     </div>
     <?php include_once(__DIR__.'/components/base_js.php'); ?>

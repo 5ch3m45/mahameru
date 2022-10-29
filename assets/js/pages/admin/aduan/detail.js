@@ -1,14 +1,14 @@
 $(function() {
     const ADUAN_ID = window.location.pathname.split('/')[4]
     
-    const statusAduanRender = (item) => {
-        if(item.status == 1) {
+    const statusAduanRender = (status) => {
+        if(status == 1) {
             $('#diterima-btn').attr('disabled', true);
             return `<span class="badge fw-0 bg-danger text-white">Diterima</span>`
-        } else if(item.status == 2) {
+        } else if(status == 2) {
             $('#dibaca-btn').attr('disabled', true);
             return `<span class="badge fw-0 bg-warning text-white">Dibaca</span>`
-        } else if(item.status == 3) {
+        } else if(status == 3) {
             $('#ditindaklanjuti-btn').attr('disabled', true);
             return `<span class="badge fw-0 bg-success text-white">Ditindaklanjuti</span>`
         } else {
@@ -17,40 +17,40 @@ $(function() {
         }
     }
 
-    const loadAduan = () => {
+    const load = () => {
         $('#diterima-btn').attr('disabled', false);
         $('#dibaca-btn').attr('disabled', false);
         $('#ditindaklanjuti-btn').attr('disabled', false);
         $('#selesai-btn').attr('disabled', false);
-        axios.get(`/api/aduan/${ADUAN_ID}`)
+        axios.get(`/api/dashboard/aduan/${ADUAN_ID}`)
         .then(res => {
             console.log(res)
             $('#nomor-aduan-breadcrumb').text(res.data.data.kode ? '#'+res.data.data.kode : '-');
             $('#nomor-aduan-title').text(res.data.data.kode ? '#'+res.data.data.kode : '-');
             $('#nama-aduan-text').text(res.data.data.nama ? res.data.data.nama : '-')
             $('#email-aduan-text').text(res.data.data.email ? res.data.data.email : '-')
-            $('#status-aduan-text').html(res.data.data.last_status ? statusAduanRender(res.data.data.last_status) : '-')
-            $('#last-updated-aduan-text').html(res.data.data.last_status ? res.data.data.last_status.created_at_formatted : '-')
+            $('#status-aduan-text').html(res.data.data.status ? statusAduanRender(res.data.data.status) : '-')
+            $('#last-updated-aduan-text').html(res.data.data.updated_at ? res.data.data.updated_at : '-')
             $('#aduan-text').html(res.data.data.aduan ? res.data.data.aduan : '-')
         })
         .catch(e => {
             alert(e.response.data.message)
         })
         .finally(() => {
-
         })
     }
 
-    loadAduan();
+    load();
 
     $(document).on('click', '.update-btn', function() {
+        $(this).html('<image src="/assets/images/loader/loading.svg"/>')
         let data = new FormData();
         data.append($('meta[name=token_name]').attr('content'), $('meta[name=token_hash]').attr('content'))
         data.append('status', $(this).data('status'))
         
-        axios.post(`/api/aduan/${ADUAN_ID}/update`, data)
+        axios.post(`/api/dashboard/aduan/${ADUAN_ID}/update`, data)
             .then(res => {
-                loadAduan();
+                load();
                 $('meta[name=token_hash]').attr('content', res.data.csrf)
             })
             .catch(e => {
@@ -58,7 +58,7 @@ $(function() {
                 $('meta[name=token_hash]').attr('content', e.response.data.csrf)
             })
             .finally(() => {
-
+                $(this).html($(this).data('text'))
             })
     })
 })

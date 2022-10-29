@@ -8,32 +8,36 @@
 					<span>MENU</span>
 				</li>
 				<li class="sidebar-item">
-					<a class="sidebar-link waves-effect waves-dark sidebar-link" href="<?= base_url() ?>admin/dashboard" aria-expanded="false">
+					<a class="sidebar-link waves-effect waves-dark sidebar-link" href="<?= base_url() ?>dashboard" aria-expanded="false">
 						<i class="mdi mdi-view-dashboard"></i>
 						<span class="hide-menu">Dashboard</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a class="sidebar-link waves-effect waves-dark sidebar-link" href="<?= base_url() ?>admin/arsip" aria-expanded="false">
+					<a class="sidebar-link waves-effect waves-dark sidebar-link" href="<?= base_url() ?>dashboard/arsip" aria-expanded="false">
 						<i class="mdi mdi-archive"></i>
 						<span class="hide-menu">Arsip</span>
 					</a>
 				</li>
+				<?php if($this->myrole->is('klasifikasi')) { ?>
+					<li class="sidebar-item">
+						<a class="sidebar-link waves-effect waves-dark sidebar-link" href="<?= base_url() ?>dashboard/kode-klasifikasi" aria-expanded="false">
+							<i class="mdi mdi-folder"></i>
+							<span class="hide-menu">Kode Klasifikasi</span>
+						</a>
+					</li>
+				<?php } ?>
+				<?php if($this->myrole->is('aduan')) { ?>
 				<li class="sidebar-item">
-					<a class="sidebar-link waves-effect waves-dark sidebar-link" href="<?= base_url() ?>admin/kode-klasifikasi" aria-expanded="false">
-						<i class="mdi mdi-folder"></i>
-						<span class="hide-menu">Kode Klasifikasi</span>
-					</a>
-				</li>
-				<li class="sidebar-item">
-					<a class="sidebar-link waves-effect waves-dark sidebar-link" href="<?= base_url() ?>admin/aduan" aria-expanded="false">
+					<a class="sidebar-link waves-effect waves-dark sidebar-link" href="<?= base_url() ?>dashboard/aduan" aria-expanded="false">
 						<i class="mdi mdi-email-alert"></i>
 						<span class="hide-menu">Aduan</span>
 					</a>
 				</li>
-				<?php if ($this->ion_auth->is_admin()){ ?>
+				<?php } ?>
+				<?php if ($this->myrole->is('admin')){ ?>
 				<li class="sidebar-item">
-					<a class="sidebar-link waves-effect waves-dark sidebar-link" href="<?= base_url() ?>admin/pengelola" aria-expanded="false">
+					<a class="sidebar-link waves-effect waves-dark sidebar-link" href="<?= base_url() ?>dashboard/pengelola" aria-expanded="false">
 						<i class="mdi mdi-account-circle"></i>
 						<span class="hide-menu">Pengelola</span>
 					</a>

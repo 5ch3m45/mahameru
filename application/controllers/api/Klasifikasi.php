@@ -4,8 +4,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Klasifikasi extends CI_Controller { 
     function __construct() {
         parent::__construct();
-
         $this->load->library('form_validation');
+        $this->load->library('session');
         $this->load->model('klasifikasi_model');
     }
 
@@ -232,5 +232,93 @@ class Klasifikasi extends CI_Controller {
                     'success' => true,
                     'csrf' => $this->security->get_csrf_hash()
                 ]));
+    }
+
+    public function arsip($klasifikasiID) {
+        $page = $this->input->get('p', true);
+        $search = $this->input->get('q', true);
+        $sort = $this->input->get('s', true);
+
+        // validasi page start
+        $page = preg_replace('/[^0-9]/i', '', $page);
+        $page = (int)$page;
+        if(!$page) {
+            $page = 1;
+        }
+        // validasi page end
+
+        // validasi search start
+        $search = preg_replace('/[^a-zA-Z\d\s:]/i', '', $search);
+        // validasi search end
+
+        // validasi sort start
+        $sort = in_array($sort, ['terbaru', 'terlama']) ? $sort : '';
+        // validasi sort end
+
+        // set offset
+        $offset = PERPAGE * ($page -1);
+        $query = $this->db->select('id, informasi, klasifikasi_id, nomor, pencipta, tanggal, admin_id, level, is_published')
+            ->from('tbl_arsip')
+            ->where('is_deleted', 0)
+            ->where('klasifikasi_id', $klasifikasiID);
+        
+        // limitasi admin biasa
+        if(in_array('arsip_publik', $this->session->userdata('user_groups'))){
+            $query = $query->where('level', 2);
+        }
+
+        if($search) {
+            $query = $query->where('informasi LIKE', '%'.$search.'%')
+                ->or_where('pencipta LIKE', '%'.$search.'%')
+                ->or_where('tanggal LIKE', '%'.$search.'%');
+        }
+
+        if($sort) {
+            if($sort == 'terlama') {
+                $query = $query->order_by('nomor', 'asc');
+            } else {
+                $query = $query->order_by('nomor', 'desc');
+            }
+        } else {
+            $query = $query->order_by('nomor', 'desc');
+        }
+
+        // generate arsips
+        $arsips = $query->limit(PERPAGE, $offset)
+            ->get()
+            ->result_array();
+        foreach ($arsips as $key => $value) {
+            // add lampiran detail
+            $arsips[$key]['lampirans'] = $this->db->select('type, url')
+                ->from('tbl_lampiran')
+                ->where('arsip_id', $value['id'])
+                ->where('is_deleted', 0)
+                ->get()
+                ->result_array();
+            // format tahun
+            $arsips[$key]['tanggal_formatted'] = date('d M Y', strtotime($value['tanggal']));
+            // add admin detail
+            $arsips[$key]['admin_detail'] = $this->db->select('name')
+                ->from('users')
+                ->where('id', $value['admin_id'])
+                ->limit(1)
+                ->get()
+                ->row_array();
+        }
+
+
+        // count total page
+        $records = $query->count_all_results();
+        $total_page = ceil($records/PERPAGE);
+
+        return $this->output
+            ->set_status_header(200)
+            ->set_content_type('application/json', 'utf-8')
+            ->set_output(json_encode([
+                'success' => true,
+                'data' => $arsips,
+                'current_page' => (int)$page,
+                'total_page' => (int)$total_page,
+            ], JSON_PRETTY_PRINT));
     }
 }

@@ -1,6 +1,6 @@
 $(function() {
     const loadChart = () => {
-        axios.get(`/api/arsip/chart-data`)
+        axios.get(`/api/dashboard/arsip/chart-data`)
             .then(async res => {
                 let label = [];
                 let series = [];
@@ -88,7 +88,7 @@ $(function() {
     const loadTop5Klasifikasi = () => {
         $('#klasifikasi-top5').html('')
         const colors = ['primary', 'secondary', 'info', 'warning', 'danger', 'success'];
-        axios.get(`/api/klasifikasi/top5`)
+        axios.get(`/api/dashboard/klasifikasi/top5`)
             .then(res => {
                 res.data.data.forEach(item => {
                     let color = colors[Math.floor(Math.random()*colors.length)];
@@ -119,13 +119,31 @@ $(function() {
             return `<img src="${lampiran.url}" class="avatars__img" />`
         } else if(['video/mp4'].includes(lampiran.type)) {
             return `<img src="/assets/images/mp4.png" class="avatars__img" />`
+        } else if(['application/pdf'].includes(lampiran.type)) {
+            return `<img src="/assets/images/pdf.png" class="avatars__img avatars__img-sm" />`
         } else {
             return `<span class="avatars__others">+${lampiran.url}</span>`
         }
     }
 
+    const statusParser = (status) => {
+        switch (status) {
+            case '1':
+                return '<span class="badge bg-warning">Draft</span>';
+
+            case '2':
+                return '<span class="badge bg-success">Terpublikasi</span>';
+                
+            case '3':
+                return '<span class="badge bg-danger text-light">Dihapus</span>';
+        
+            default:
+                break;
+        }
+    }
+
     const loadLast5Arsip = () => {
-        axios.get(`/api/arsip/last5`)
+        axios.get(`/api/dashboard/arsip/last5`)
             .then(res => {
                 let counter = 1
                 res.data.data.forEach(item => {
@@ -153,16 +171,7 @@ $(function() {
                                 </td>
                                 <td>${item.pencipta ? item.pencipta : ''}</td>
                                 <td>${item.tanggal ? item.tanggal_formatted : ''}</td>
-                                <td>
-                                    ${item.is_published
-                                        ? `
-                                        <span class="badge bg-success">Terpublikasi</span>
-                                        `
-                                        : `
-                                        <span class="badge bg-warning">Draft</span>
-                                        `
-                                    }
-                                </td>
+                                <td>${statusParser(item.status)}</td>
                                 <td>${item.level == '2'
                                 ? `<span class="badge bg-success">Publik</span>`
                                 : `<span class="badge bg-danger">Rahasia</span>`

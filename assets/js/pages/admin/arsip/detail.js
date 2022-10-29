@@ -1,23 +1,70 @@
+// config Dropzone
 Dropzone.autoDiscover = false;
-$(async function() {
-    const ARSIP_ID = window.location.pathname.split('/')[4];
-    const loadKlasifikasiOption = () => {
-        axios.get(`/api/klasifikasi`)
-            .then(res => {
-                $('#klasifikasiSelect').html('<option>Pilih kode klasifikasi</option>');
-                res.data.data.forEach(item => {
-                    $('#klasifikasiSelect').append(`
-                    <option value="${item.id}">${item.kode} | ${item.nama}</option>
-                    `)
-                })
-            })
-            .finally(() => {
-                $('#klasifikasiSelect').select2({
-                    theme: 'bootstrap-5'
-                })
-            })
+// arsip
+$(function() {
+    let _id = window.location.pathname.split('/')[4];
+
+    function _templateResult(res) {
+        return res.kode+'. '+(res.nama ? res.nama.toUpperCase() : res.nama);
     }
-    const lampiranParser = (lampiran) => {
+    
+    function _templateSelection(res) {
+        if(res.text) {
+            return res.text.toUpperCase();
+        }
+
+        return res.kode+'. '+(res.nama ? res.nama.toUpperCase() : res.nama);
+    }
+
+    function _levelParser(level) {
+        if(level == 1) {
+            return '<span class="badge bg-danger">Rahasia</span>';
+        }
+        if(level == 2) {
+            return '<span class="badge bg-success">Publik</span>';
+        }
+    }
+
+    $('#klasifikasiSelect').select2({
+        ajax: {
+            delay: 300,
+            url: '/api/dashboard/klasifikasi',
+            data: function(params) {
+                var query = {
+                    search: params.term,
+                }
+
+                return query;
+            },
+            processResults: function(data) {
+                return {
+                    results: data.data
+                }
+            }
+        },
+        theme: 'bootstrap-5',
+        placeholder: 'Cari klasifikasi',
+        templateResult: _templateResult,
+        templateSelection: _templateSelection
+    })
+
+    function _statusParser(status) {
+        switch (status) {
+            case '1':
+                return '<span class="badge bg-warning">Draft</span>';
+
+            case '2':
+                return '<span class="badge bg-success">Terpublikasi</span>';
+                
+            case '3':
+                return '<span class="badge bg-danger text-light">Dihapus</span>';
+        
+            default:
+                break;
+        }
+    }
+
+    function _lampiranParser(lampiran) {
         if(['image/jpeg', 'image/png'].includes(lampiran.type)) {
             return `<img 
                 data-id="${lampiran.id}" 
@@ -43,63 +90,136 @@ $(async function() {
                 src="/assets/images/pdf.png">`
         }
     }
-    const loadArsip = () => {
-        axios.get(`/api/arsip/${ARSIP_ID}`)
+
+    function getArsip() {
+        axios.get('/api/dashboard/arsip/'+_id)
             .then(res => {
-                let item = res.data.data;
-                $('#nomor-arsip-breadcrumb').text(item.nomor ? '#'+item.nomor : '');
-                $('#nomor-arsip-title').text(item.nomor ? '#'+item.nomor : '');
+                const { 
+                    nomor, 
+                    status, 
+                    informasi, 
+                    klasifikasi, 
+                    pencipta, 
+                    tanggal,
+                    tanggal_formatted, 
+                    last_updated,
+                    level,
+                    lampirans
+                } = res.data.data;
 
-                if(item.is_published == 1) {
-                    $('#draftBtn').show();
-                } else {
-                    $('#is-draft-flag').show();
+                // set text
+                $('#nomor-arsip-breadcrumb').text(nomor ? '#'+nomor : '');
+                $('#nomor-arsip-title').text(nomor ? '#'+nomor : '');
+                $('#nomor-arsip-text').text(nomor ? nomor : '');
+                $('#informasi-text').html(informasi ? informasi : '<em class="text-secondary">Belum ada informasi</em>');
+                $('#klasifikasi-arsip-text').html(klasifikasi.id ? klasifikasi.kode+'. '+klasifikasi.nama : '-');
+                $('#pencipta-arsip-text').html(pencipta ? pencipta : '-');
+                $('#tanggal-arsip-text').html(tanggal_formatted ? tanggal_formatted : '-');
+                $('#last-updated-text').html(last_updated);
+                $('#level-text').html(_levelParser(level));
+                $('#status-flag').html(_statusParser(status));
+                // status
+                if(status == 1) {
                     $('#publikasiBtn').show();
+                    $('#draftBtn').hide();
+                    $('#delete-arsip-btn').show();
+                    $('#restore-btn').hide();
                 }
-
-                $('#informasi-text').html(item.informasi ? item.informasi : '<em class="text-secondary">Belum ada informasi</em>');
-                $('#nomor-arsip-text').html(item.nomor ? item.nomor : '-');
-                $('#klasifikasi-arsip-text').html(item.klasifikasi.id ? item.klasifikasi.kode+' | '+item.klasifikasi.nama : '-');
-                $('#pencipta-arsip-text').html(item.pencipta ? item.pencipta : '-')
-                $('#tanggal-arsip-text').html(item.tanggal_formatted ? item.tanggal_formatted : '-')
-                $('#last-updated-text').html(item.last_updated);
-                $('#level-text').html(item.level == '2' ? '<span class="badge bg-success">Publik</span>' : '<span class="badge bg-danger">Rahasia</span>')
-
-                // set form value
-                $('#nomorInput').val(item.nomor);
-                $('#tanggalInput').val(item.tanggal);
-                if(item.klasifikasi_id) {
-                    $('#klasifikasiSelect').val(item.klasifikasi_id).trigger('change')
+                if(status == 2) {
+                    $('#publikasiBtn').hide();
+                    $('#draftBtn').show();
+                    $('#delete-arsip-btn').show();
+                    $('#restore-btn').hide();
                 }
-                $('#level-select').val(item.level)
-                $('#penciptaInput').val(item.pencipta);
-                $('#informasiTextarea').val(item.informasi);
-
-                // lampiran
-                if(item.lampirans.length) {
-                    $('.my-masonry-grid').html('')
-                    item.lampirans.forEach(lampiran => {
-                        $('.my-masonry-grid').append(lampiranParser(lampiran))
-                    })
+                if(status == 3) {
+                    $('#publikasiBtn').hide();
+                    $('#draftBtn').hide();
+                    $('#delete-arsip-btn').hide();
+                    $('#restore-btn').show();
+                }
+                if(lampirans.length) {
+                    $('.my-masonry-grid').html('');
+                    lampirans.forEach(lampiran => {
+                        $('.my-masonry-grid').append(_lampiranParser(lampiran));
+                    });
                     $('.my-masonry-grid').masonryGrid({
                         'columns': 3
                     });
                 } else {
-                    $('.my-masonry-grid').html('')
-                    $('.my-masonry-grid').html('<em>Belum ada lampiran</em>')
+                    $('.my-masonry-grid').html('');
+                    $('.my-masonry-grid').html('<em>Belum ada lampiran</em>');
                 }
-
+                // set form value
+                $('#nomorInput').val(nomor);
+                $('#tanggalInput').val(tanggal);
+                if(klasifikasi.id) {
+                    let option = new Option(klasifikasi.kode+'. '+klasifikasi.nama, klasifikasi.id, true, true);
+                    $('#klasifikasiSelect').append(option).trigger('change');
+                }
+                $('#level-select').val(level);
+                $('#penciptaInput').val(pencipta);
+                $('#informasiTextarea').val(informasi);
             })
-            .finally(() => {
+            .catch(e => {
+                console.log(e.response)
+            })
+            .finally(function() {
                 
             })
     }
-    
-    await loadKlasifikasiOption();
-    loadArsip();
 
+    getArsip();
+
+    // show detail lampiran
+    $(document).on('click', '.lampiran', function() {
+        if($(this).data('type') == 'video/mp4') {
+            $('#lampiranFile').html(`
+                <video id="lampiranVideo" width="640" height="360" controls>
+                    <source src="${$(this).data('url')}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            `)
+        }else if($(this).data('type') == 'application/pdf') {
+            $('#lampiranFile').html(`<iframe src="${$(this).data('url')}" style="width: 80vw; height: 80vh">`)
+        } else {
+            $('#lampiranFile').html(`<img src="${$(this).data('url')}" style="max-width: 100%; max-height: 80vh">`)
+        }
+        $('#hapusLampiranBtn').data('id', $(this).data('id'))
+        $('#lampiranDetailModal').modal('show')
+    })
+
+    // delete lampiran
+    $('#hapusLampiranBtn').on('click', function() {
+        $('#hapusLampiranSubmit').data('id', $(this).data('id'))
+        $('#hapusLampiranConfirmModal').modal('show')
+    })
+    $('#hapusLampiranSubmit').on('click', function() {
+        $(this).html('<image src="/assets/images/loader/loading-light.svg"/> Hapus').attr('disabled', true);
+        let data = new FormData();
+        data.append($('meta[name=token_name]').attr('content'), $('meta[name=token_hash]').attr('content'))
+        axios.post(`/api/dashboard/arsip/${_id}/lampiran/${$(this).data('id')}/hapus`, data)
+            .then(res => {
+                $('#hapusLampiranConfirmModal').modal('hide');
+                $('#lampiranDetailModal').modal('hide');
+                $('meta[name=token_hash]').attr('content', res.data.csrf)
+                $.notify('Berhasil dihapus', 'success');
+            })
+            .catch(e => {
+                $('meta[name=token_hash]').attr('content', e.response.csrf)
+                $.notify('Terjadi kesalahan', 'error');
+            })
+            .finally(() => {
+                $(this).html('Hapus').attr('disabled', false);
+                getArsip();
+            })
+    })
+
+    // upload lampiran
+    $('#uploadNewImageBtn').on('click', function() {
+        $('#uploadNewImageModal').modal('show')
+    })
     $("#my-awesome-dropzone").dropzone({ 
-        url: `/api/arsip/${ARSIP_ID}/lampiran`, 
+        url: `/api/dashboard/arsip/${_id}/lampiran`, 
         init: function() {
             this.on('sending', function(filex, xhr, formData) {
                 formData.append($('meta[name=token_name]').attr('content'), $('meta[name=token_hash]').attr('content'))
@@ -131,63 +251,28 @@ $(async function() {
                         `)
                     }
                 }, 1000);
-                
+                $.notify('Berhasil tersimpan', 'success');
             })
 
             this.on('error', function(file, response) {
-                alert(JSON.stringify(response))
+                $('meta[name=token_hash]').attr('content', response.csrf);
+                if(response.validation) {
+                    $.notify(response.validation.replace(/(<([^>]+)>)/ig, ''), 'error');
+                } else {
+                    $.notify('Terjadi kesalahan', 'error');
+                }
             })
         }
     });
-
-    $(document).on('click', '.lampiran', function() {
-        if($(this).data('type') == 'video/mp4') {
-            $('#lampiranFile').html(`
-                <video id="lampiranVideo" width="640" height="360" controls>
-                    <source src="${$(this).data('url')}" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-            `)
-        } else {
-            $('#lampiranFile').html(`<img src="${$(this).data('url')}" style="max-width: 100%; max-height: 80vh">`)
-        }
-        $('#hapusLampiranBtn').data('id', $(this).data('id'))
-        $('#lampiranDetailModal').modal('show')
+    $('#doneUploadLampiran').on('click', function() {
+        $('#uploadNewImageModal').modal('hide');
+        loadArsip();
     })
 
-    $('#hapusLampiranBtn').on('click', function() {
-        $('#hapusLampiranSubmit').data('id', $(this).data('id'))
-        $('#hapusLampiranConfirmModal').modal('show')
-    })
-    $('#hapusLampiranSubmit').on('click', function() {
-        const LAMPIRAN_ID = $(this).data('id');
-        $(':input').attr('disabled', true)
-        let data = new FormData();
-        data.append($('meta[name=token_name]').attr('content'), $('meta[name=token_hash]').attr('content'))
-        axios.post(`/api/arsip/${ARSIP_ID}/lampiran/${LAMPIRAN_ID}/hapus`, data)
-            .then(res => {
-                setTimeout(() => {
-                    $('#hapusLampiranConfirmModal').modal('hide');
-                    $('#lampiranDetailModal').modal('hide');
-                    $('.lampiran-'+LAMPIRAN_ID).hide()
-                }, 1000);
-                $('meta[name=token_hash]').attr('content', res.data.csrf)
-            })
-            .catch(e => {
-                alert(e.response.data.message)
-                $('meta[name=token_hash]').attr('content', e.response.csrf)
-            })
-            .finally(() => {
-                $(':input').attr('disabled', false)
-            })
-    })
+    // edit info
     $('#ubahInformasiBtn').on('click', function() {
         $('#ubahInformasiModal').modal('show')
     })
-    $('#uploadNewImageBtn').on('click', function() {
-        $('#uploadNewImageModal').modal('show')
-    })
-
     $('#nomorInput').on('keyup', function() {
         $('#nomorError').html('')
     })
@@ -198,9 +283,8 @@ $(async function() {
     $('#informasiTextarea').on('keyup', function() {
         $('#informasiError').html('')
     })
-
     $('#submitArsipBtn').on('click', function() {
-        $(this).html('<div class="spinner-border spinner-border-sm"></div> Menyimpan').attr('disabled', true);
+        $(this).html('<image src="/assets/images/loader/loading-light.svg"/> Simpan').attr('disabled', true);
         let data = new FormData();
         data.append($('meta[name=token_name]').attr('content'), $('meta[name=token_hash]').attr('content'))
         data.append('nomor', $('#nomorInput').val());
@@ -209,7 +293,7 @@ $(async function() {
         data.append('pencipta', $('#penciptaInput').val());
         data.append('klasifikasi', $('#klasifikasiSelect').val());
         data.append('level', $('#level-select').val());
-        axios.post(`/api/arsip/${ARSIP_ID}/update`, data)
+        axios.post(`/api/dashboard/arsip/${_id}/update`, data)
             .then(res => {
                 let item = res.data.data;
                 if(item.level == 'private') {
@@ -227,10 +311,10 @@ $(async function() {
                 }
                 $('#pencipta-arsip-text').html(item.pencipta ? item.pencipta : '-');
                 $('#level-text').html(item.level == '2' ? '<span class="badge bg-success">Publik</span>' : '<span class="badge bg-danger">Rahasia</span>')
-                $('#ubahInformasiModal').modal('hide');
 
-                $('meta[name=token_hash]').attr('content', res.data.csrf)
-                console.log($('meta[name=token_hash]').attr('content'))
+                $('meta[name=token_hash]').attr('content', res.data.csrf);
+
+                $.notify('Berhasil tersimpan', 'success');
             })
             .catch(e => {
                 console.log(e)
@@ -252,78 +336,109 @@ $(async function() {
                     }
                 }
                 $('meta[name=token_hash]').attr('content', e.response.data.csrf)
-                console.log($('meta[name=token_hash]').attr('content'))
             })
             .finally(() => {
                 $(this).html('Simpan').attr('disabled', false);
             })
     })
 
+    // publish
     $('#publikasiBtn').on('click', function() {
+        $(this).html('<image src="/assets/images/loader/loading-light.svg"/>').attr('disabled', true);
+
         let data = new FormData();
         data.append($('meta[name=token_name]').attr('content'), $('meta[name=token_hash]').attr('content'))
-        $(this).attr('disabled', true)
-        axios.post(`/api/arsip/${ARSIP_ID}/publikasi`, data)
+
+        axios.post(`/api/dashboard/arsip/${_id}/publikasi`, data)
             .then(res => {
-                setTimeout(() => {
-                    location.reload()
-                }, 1000);
                 $('meta[name=token_hash]').attr('content', res.data.csrf)
+                $.notify('Berhasil tersimpan', 'success');
             })
             .catch(e => {
-                alert(e.response.message)
+                console.log(e);
+                $.notify('Terjadi kesalahan', 'error');
             })
             .finally(() => {
-                setTimeout(() => {
-                    $(this).attr('disabled', false)
-                }, 1000);
+                $(this).html('<i class="bi bi-share-fill"></i> Publikasi').attr('disabled', false);
+                getArsip();
             })
     })
 
+    //draft
     $('#draftBtn').on('click', function() {
+        $(this).html('<image src="/assets/images/loader/loading.svg"/>').attr('disabled', true);
+
         let data = new FormData();
         data.append($('meta[name=token_name]').attr('content'), $('meta[name=token_hash]').attr('content'))
-        $(this).attr('disabled', true)
-        axios.post(`/api/arsip/${ARSIP_ID}/draft`, data)
+        
+        axios.post(`/api/dashboard/arsip/${_id}/draft`, data)
             .then(res => {
-                setTimeout(() => {
-                    location.reload()
-                }, 1000);
                 $('meta[name=token_hash]').attr('content', res.data.csrf)
+                getArsip();
+                $.notify('Berhasil tersimpan', 'success');
             })
             .catch(e => {
-                alert(e.response.message)
+                console.log(e);
+                $.notify('Terjadi kesalahan', 'error');
             })
             .finally(() => {
-                setTimeout(() => {
-                    $(this).attr('disabled', false)
-                }, 1000);
+                $(this).html('<i class="bi bi-input-cursor-text"></i> Simpan sebagai draft').attr('disabled', false);
             })
     })
 
-    $('#delete-btn').on('click', function() {
+    //delete
+    $('#delete-arsip-btn').on('click', function() {
+        $('#deleteArsipModal').modal('show');
+    });
+    $('#delete-arsip-form').on('submit', function(e) {
+        e.preventDefault();
+
+        $('#delete-arsip-form [type=submit]').html('<image src="/assets/images/loader/loading.svg"/>').attr('disabled', true);
+
         let data = new FormData();
         data.append($('meta[name=token_name]').attr('content'), $('meta[name=token_hash]').attr('content'))
-        $(this).attr('disabled', true)
-        axios.post(`/api/arsip/${ARSIP_ID}/hapus`, data)
+
+        axios.post($(this).attr('action'), data)
             .then(res => {
-                setTimeout(() => {
-                    window.location.href = '/admin/arsip';
-                }, 1000);
-                $('meta[name=token_hash]').attr('content', res.data.csrf)
+                $('meta[name=token_hash]').attr('content', res.data.csrf);
+                $.notify('Berhasil dihapus', 'success');
+                $('#deleteArsipModal').modal('hide');
             })
             .catch(e => {
-                alert(e.response.message)
+                console.log(e);
+                $.notify('Terjadi kesalahan', 'error');
             })
             .finally(() => {
-                setTimeout(() => {
-                    $(this).attr('disabled', false)
-                }, 1000);
+                getArsip();
+                $('#delete-arsip-form [type=submit]').html('Hapus').attr('disabled', false);
             })
     })
 
-    $('#doneUploadLampiran').on('click', function() {
-        $('#uploadNewImageModal').modal('hide');
-        loadArsip();
+    // restore
+    $('#restore-btn').on('click', function() {
+        $('#restoreModal').modal('show');
+    });
+    $('#restore-form').on('submit', function(e) {
+        e.preventDefault();
+
+        $('#restore-form [type=submit]').html('<image src="/assets/images/loader/loading.svg"/>').attr('disabled', true);
+
+        let data = new FormData();
+        data.append($('meta[name=token_name]').attr('content'), $('meta[name=token_hash]').attr('content'))
+
+        axios.post($(this).attr('action'), data)
+            .then(res => {
+                $('meta[name=token_hash]').attr('content', res.data.csrf);
+                $.notify('Berhasil dikembalikan', 'success');
+                $('#restoreModal').modal('hide');
+            })
+            .catch(e => {
+                console.log(e);
+                $.notify('Terjadi kesalahan', 'error');
+            })
+            .finally(() => {
+                getArsip();
+                $('#restore-form [type=submit]').html('Kembalikan').attr('disabled', false);
+            })
     })
 })

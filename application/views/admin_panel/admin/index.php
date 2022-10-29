@@ -21,7 +21,7 @@
                     <div class="col-6">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb mb-0 d-flex align-items-center">
-                              <li class="breadcrumb-item"><a href="<?= base_url('/admin/dashboard') ?>" class="link"><i class="mdi mdi-home-outline fs-4"></i></a></li>
+                              <li class="breadcrumb-item"><a href="<?= base_url('dashboard') ?>" class="link"><i class="mdi mdi-home-outline fs-4"></i></a></li>
                               <li class="breadcrumb-item active" aria-current="page">Pengelola</li>
                             </ol>
                           </nav>
@@ -49,15 +49,17 @@
                                             <tr>
                                                 <th class="border-top-0">Nama</th>
                                                 <th class="border-top-0">Email</th>
-                                                <th class="border-top-0">Jumlah Arsip Dikelola</th>
+                                                <th class="border-top-0">Arsip Dikelola</th>
+                                                <th class="border-top-0">Status</th>
                                                 <th class="border-top-0">Terakhir Login</th>
                                             </tr>
                                         </thead>
-                                        <tbody></tbody>
+                                        <tbody>
+                                            <tr><td colspan="5" class="text-center"><image src="/assets/images/loader/loading.svg"/></td></tr>
+                                        </tbody>
                                     </table>
                                     <div class="d-flex justify-content-end">
                                         <button type="button" id="prev-table" class="btn btn-primary me-2">Sebelumnya</button>
-                                        <button type="button" disabled id="page-table" class="btn btn-light me-2">1/1</button>
                                         <button type="button" id="next-table" class="btn btn-primary">Selanjutnya</button>
                                     </div>
                                 </div>
@@ -75,7 +77,7 @@
     				<h5 class="modal-title" id="pengelolaBaruModalLabel">Tambah Pengelola Baru</h5>
     				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     			</div>
-    			<form id="pengelola-baru-form" action="/api/admin/baru" method="post" class="modal-body rounded-corner">
+    			<form id="pengelola-baru-form" action="/api/dashboard/admin/baru" method="post" class="modal-body rounded-corner">
                     <div class="mb-3">
                         <label for="">Nama</label>
                         <input id="nama-input" type="text" class="form-control">
@@ -90,17 +92,31 @@
                     <div class="mb-3">
                         <label for=""><strong>Otoritas Pengelola</strong></label>
                         <br>
+                        <small><strong>Pengelola</strong></small>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="otoritas-pengelola">
+                            <label class="form-check-label" for="otoritas-pengelola">
+                                Mengelola Pengelola
+                            </label>
+                        </div>
                         <small><strong>Arsip</strong></small>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="otoritas" id="otoritas-arsip-publik" checked>
+                            <input class="form-check-input" type="radio" name="otoritas_arsip" id="otoritas-arsip-publik" checked>
                             <label class="form-check-label" for="otoritas-arsip-publik">
                                 Mengelola hanya arsip publik
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="otoritas" id="otoritas-arsip-rahasia" >
+                            <input class="form-check-input" type="radio" name="otoritas_arsip" id="otoritas-arsip-rahasia" >
                             <label class="form-check-label" for="otoritas-arsip-rahasia">
-                                Mengelola arsip publik dan rahasia
+                                Mengelola semua arsip (publik dan rahasia)
+                            </label>
+                        </div>
+                        <small><strong>Klasifikasi</strong></small>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="otoritas-klasifikasi">
+                            <label class="form-check-label" for="otoritas-klasifikasi">
+                                Mengelola klasifikasi
                             </label>
                         </div>
                         <small><strong>Aduan</strong></small>

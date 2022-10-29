@@ -28,7 +28,7 @@
                         </nav>
                         <div class="d-flex justify-content-between">
                             <h1 class="mb-0 fw-bold">Arsip</h1> 
-                            <a href="/admin/arsip/baru">
+                            <a href="<?= base_url('dashboard/arsip/baru') ?>">
                                 <button class="btn btn-primary rounded-corner">Upload Baru</button>
                             </a>
                         </div>
@@ -48,8 +48,8 @@
                                         <input type="text" name="search" id="search-table" class="form-control" placeholder="Cari">
                                     </div>
                                     <div class="col-12 col-md-3">
-                                        <label for="search-table">Status</label>
-                                        <select name="sort" id="sort-table" class="form-control">
+                                        <label for="status-table">Status</label>
+                                        <select name="sort" id="status-table" class="form-control">
                                             <option value="semua">Semua</option>
                                             <option value="draft">Draft</option>
                                             <option value="publikasi">Publikasi</option>
@@ -57,20 +57,20 @@
                                         </select>
                                     </div>
                                     <div class="col-12 col-md-3">
-                                        <label for="search-table">Level</label>
-                                        <select name="sort" id="sort-table" class="form-control">
+                                        <label for="level-table">Level</label>
+                                        <select name="sort" id="level-table" class="form-control">
                                             <option value="semua">Semua</option>
                                             <option value="publik">Publik</option>
                                             <option value="rahasia">Rahasia</option>
                                         </select>
                                     </div>
                                     <div class="col-12 col-md-3">
-                                        <label for="search-table">Urutkan</label>
+                                        <label for="sort-table">Urutkan</label>
                                         <select name="sort" id="sort-table" class="form-control">
                                             <option value="terbaru">Terbaru</option>
                                             <option value="terlama">Terlama</option>
-                                            <option value="nomor">Nomor</option>
-                                            <option value="pencipta">Pencipta</option>
+                                            <option value="nomoraz">Nomor (A-Z)</option>
+                                            <option value="nomorza">Nomor (Z-A)</option>
                                         </select>
                                     </div>
                                 </div>
@@ -79,7 +79,6 @@
                                     <table id="arsip-table" class="table mb-4 table-hover align-middle text-nowrap">
                                         <thead>
                                             <tr>
-                                                <th class="border-top-0">#</th>
                                                 <th class="border-top-0">No</th>
                                                 <th class="border-top-0">Inisial Pengolah</th>
                                                 <th class="border-top-0">Kode Klasifikasi</th>
@@ -91,7 +90,9 @@
                                                 <th class="border-top-0">Level</th>
                                             </tr>
                                         </thead>
-                                        <tbody></tbody>
+                                        <tbody>
+                                            <tr><td colspan="9" class="text-center"><image src="/assets/images/loader/loading.svg"/></td></tr>
+                                        </tbody>
                                     </table>
                                 </div>
                                 <div class="d-flex justify-content-end mt-3">
@@ -108,11 +109,6 @@
     </div>
     <?php include_once(__DIR__.'/../components/base_js.php'); ?>
     <script src="<?= assets_url() ?>js/pages/admin/arsip/index.js?v=<?= time() ?>"></script>
-    <script>
-        $('tr').on('click', function() {
-            window.location.href = '<?= base_url() ?>admin/arsip/detail/'+$(this).data('id')
-        })
-    </script>
 </body>
 
 </html>

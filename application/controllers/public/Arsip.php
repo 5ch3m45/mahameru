@@ -98,4 +98,85 @@ class Arsip extends CI_Controller {
 		// var_dump($this->data); die();
 		$this->load->view('public/arsip/detail', $this->data);
 	}
+
+	public function API_index() {
+        $page = $this->input->get('p', true);
+        $search = $this->input->get('q', true);
+        $sort = $this->input->get('s', true);
+
+        // validasi page start
+        $page = preg_replace('/[^0-9]/i', '', $page);
+        if(!$page) {
+            $page = 1;
+        }
+        // validasi page end
+
+        // validasi search startn
+        $search = preg_replace('/[^a-zA-Z\d\s:]/i', '', $search);
+        // validasi search end
+
+        // validasi sort start
+        $sort = in_array($sort, ['terbaru', 'terlama']) ? $sort : '';
+        // validasi sort end
+
+        // set offset
+        $offset = PERPAGE * ($page -1);
+        $query = $this->db->select('id, informasi, klasifikasi_id, nomor, pencipta, tanggal')
+            ->from('tbl_arsip')
+            ->where('level', 2)
+            ->where('status', 2);
+
+        if($search) {
+            $query = $query->where('informasi LIKE', '%'.$search.'%')
+                ->or_where('pencipta LIKE', '%'.$search.'%')
+                ->or_where('tanggal LIKE', '%'.$search.'%');
+        }
+
+        if($sort) {
+            if($sort == 'terlama') {
+                $query = $query->order_by('nomor', 'asc');
+            } else {
+                $query = $query->order_by('nomor', 'desc');
+            }
+        } else {
+            $query = $query->order_by('nomor', 'desc');
+        }
+
+        // generate arsips
+        $arsips = $query->limit(PERPAGE, $offset)
+            ->get()
+            ->result_array();
+        foreach ($arsips as $key => $value) {
+            // add klasifikasi detail
+            $arsips[$key]['klasifikasi'] = $this->db->select('kode, nama')
+                ->from('tbl_klasifikasi')
+                ->where('id', $value['klasifikasi_id'])
+                ->get()
+                ->row_array();
+            // add lampiran detail
+            $arsips[$key]['lampirans'] = $this->db->select('type, url')
+                ->from('tbl_lampiran')
+                ->where('arsip_id', $value['id'])
+                ->where('is_deleted', 0)
+                ->get()
+                ->result_array();
+            // format tahun
+            $arsips[$key]['tahun'] = date('Y', strtotime($value['tanggal']));
+        }
+
+
+        // count total page
+        $records = $query->count_all_results();
+        $total_page = ceil($records/PERPAGE);
+
+        return $this->output
+            ->set_status_header(200)
+            ->set_content_type('application/json', 'utf-8')
+            ->set_output(json_encode([
+                'success' => true,
+                'data' => $arsips,
+                'current_page' => (int)$page,
+                'total_page' => (int)$total_page,
+            ], JSON_PRETTY_PRINT));
+    }
 }

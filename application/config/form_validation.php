@@ -71,7 +71,7 @@ $config = array(
             'label' => 'MessageBody',
             'rules' => 'required'
         )
-    )
+    ),
 );
 
 $config['error_prefix'] = '<small class="text-danger">';

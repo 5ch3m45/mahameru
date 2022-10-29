@@ -22,14 +22,14 @@
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb mb-0 d-flex align-items-center">
                               <li class="breadcrumb-item"><a href="<?= base_url() ?>" class="link"><i class="mdi mdi-home-outline fs-4"></i></a></li>
-                              <li class="breadcrumb-item"><a href="<?= base_url('admin/arsip') ?>" class="link">Arsip</a></li>
-                              <li id="nomor-arsip-breadcrumb" class="breadcrumb-item active" aria-current="page">{nomor_arsip}</li>
+                              <li class="breadcrumb-item"><a href="<?= base_url('dashboard/arsip') ?>" class="link">Arsip</a></li>
+                              <li id="nomor-arsip-breadcrumb" class="breadcrumb-item active" aria-current="page"><image src="/assets/images/loader/loading.svg"/></li>
                             </ol>
                         </nav>
                     </div>
                     <div class="col-6">
                         <div class="text-end upgrade-btn">
-                            <a href="<?= base_url('admin/arsip') ?>" class="btn btn-primary text-white">
+                            <a href="<?= base_url('dashboard/arsip') ?>" class="btn btn-primary text-white">
                                 <i class="mdi mdi-arrow-left"></i>
                                 Kembali
                             </a>
@@ -39,8 +39,8 @@
             </div>
             <div class="container-fluid">
                 <div class="d-flex">
-                    <h1 id="nomor-arsip-title" class="mb-0 fw-bold me-2">{nomor_arsip}</h1>
-                    <span id="is-draft-flag" style="display: none" class="badge bg-warning ms-1 my-auto py-auto">Draft</span>
+                    <h1 id="nomor-arsip-title" class="mb-0 fw-bold me-2"><image src="/assets/images/loader/loading.svg"/></h1>
+                    <div id="status-flag" class="ms-1 my-auto py-auto"></div>
                 </div>
                 <hr>            
                 <div class="d-flex justify-content-between">
@@ -49,9 +49,10 @@
                         <button id="uploadNewImageBtn" class="btn btn-text text-primary mb-2 mb-md-0"><i class="bi bi-cloud-arrow-up-fill"></i> Upload lampiran</button>
                     </div>
                     <div>
-                        <button id="publikasiBtn" style="display: none" class="btn btn-primary me-2 mb-2 mb-md-0"><i class="bi bi-share-fill"></i> Publikasi</button>
-                        <button id="draftBtn" style="display: none" class="btn btn-primary me-2 mb-2 mb-md-0"><i class="bi bi-input-cursor-text"></i> Simpan sebagai draft</button>
-                        <button id="delete-btn" class="btn btn-danger text-white mb-2 mb-md-0 me-2"><i class="bi bi-trash3-fill"></i> Hapus</button>
+                        <button id="publikasiBtn" style="display: none" class="btn btn-success text-white me-2 mb-2 mb-md-0"><i class="bi bi-share-fill"></i> Publikasi</button>
+                        <button id="draftBtn" style="display: none" class="btn btn-warning me-2 mb-2 mb-md-0"><i class="bi bi-input-cursor-text"></i> Simpan sebagai draft</button>
+                        <button id="delete-arsip-btn" style="display: none" class="btn btn-danger text-white mb-2 mb-md-0 me-2"><i class="bi bi-trash3-fill"></i> Hapus</button>
+                        <button id="restore-btn" style="display: none" class="btn btn-success text-white mb-2 mb-md-0 me-2"><i class="bi bi-arrow-counterclockwise"></i> Kembalikan</button>
                     </div>
                 </div>
                 <hr>
@@ -61,7 +62,7 @@
                     <div class="col-12">
                         <div class="card rounded-corner">
                             <div class="card-body">
-                                <p id="informasi-text">{informasi_arsip}</p>
+                                <p id="informasi-text"><image src="/assets/images/loader/loading.svg"/></p>
                             </div>
                         </div>
                     </div>
@@ -69,17 +70,17 @@
                         <div class="card">
                             <div class="card-body">
                                 <small class="text-muted">Level</small>
-                                <h6 id="level-text">{level_arsip}</h6>
+                                <h6 id="level-text"><image src="/assets/images/loader/loading.svg"/></h6>
                                 <small class="text-muted">Nomor</small>
-                                <h6 id="nomor-arsip-text">{nomor_arsip}</h6>
+                                <h6 id="nomor-arsip-text"><image src="/assets/images/loader/loading.svg"/></h6>
                                 <small class="text-muted p-t-30 db">Kode klasifikasi</small>
-                                <h6 id="klasifikasi-arsip-text">{klasifikasi_arsip}</h6>
+                                <h6 id="klasifikasi-arsip-text"><image src="/assets/images/loader/loading.svg"/></h6>
                                 <small class="text-muted p-t-30 db">Pencipta</small>
-                                <h6 id="pencipta-arsip-text">{pencipta_arsip}</h6>
+                                <h6 id="pencipta-arsip-text"><image src="/assets/images/loader/loading.svg"/></h6>
                                 <small class="text-muted p-t-30 db">Tanggal Arsip</small>
-                                <h6 id="tanggal-arsip-text">{tanggal_arsip}</h6>
+                                <h6 id="tanggal-arsip-text"><image src="/assets/images/loader/loading.svg"/></h6>
                                 <small class="text-muted p-t-30 db">Terakhir diupdate</small>
-                                <h6 id="last-updated-text">{last_update_arsip}</h6>
+                                <h6 id="last-updated-text"><image src="/assets/images/loader/loading.svg"/></h6>
                             </div>
                         </div>
                     </div>
@@ -88,7 +89,7 @@
                     <div class="col-lg-8 col-xlg-9 col-md-7">
                         <div class="card mb-0">
                             <div class="card-body">
-                            	<div class="my-masonry-grid">{lampiran_arsip}</div>
+                            	<div class="my-masonry-grid"><image src="/assets/images/loader/loading.svg"/></div>
                             </div>
                         </div>
                     </div>
@@ -125,6 +126,40 @@
     		</div>
     	</div>
     </div>
+    <div class="modal fade" id="restoreModal" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-labelledby="restoreModalLabel" aria-hidden="true">
+    	<div class="modal-dialog modal-dialog-centered">
+    		<form id="restore-form" action="/api/dashboard/arsip/<?= $arsip['id'] ?>/restore" method="POST" class="modal-content">
+                <div class="modal-header">
+    				<h5 class="modal-title" id="restoreModalLabel">Kembalikan Arsip</h5>
+    				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    			</div>
+    			<div class="modal-body">
+                    <p>Anda akan mengembalikan arsip ini. Yakin?</p>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-success text-white ms-2" data-id="">Kembalikan</button>
+                    </div>
+    			</div>
+            </form>
+    	</div>
+    </div>
+    <div class="modal fade" id="deleteArsipModal" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-labelledby="deleteArsipModalLabel" aria-hidden="true">
+    	<div class="modal-dialog modal-dialog-centered">
+    		<form id="delete-arsip-form" action="/api/dashboard/arsip/<?= $arsip['id'] ?>/delete" method="POST" class="modal-content">
+                <div class="modal-header">
+    				<h5 class="modal-title" id="deleteArsipModalLabel">Hapus Arsip</h5>
+    				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    			</div>
+    			<div class="modal-body">
+                    <p>Anda akan menghapus arsip ini. Yakin?</p>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-danger text-white ms-2" data-id="">Hapus</button>
+                    </div>
+    			</div>
+            </form>
+    	</div>
+    </div>
     <div class="modal fade" id="ubahInformasiModal" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="ubahInformasiModalLabel" aria-hidden="true">
     	<div class="modal-dialog modal-dialog-centered">
     		<div class="modal-content">
@@ -153,7 +188,9 @@
                     </div>
     				<div class="mb-3">
                         <label for="">Kode Klasifikasi</label>
-                        <select id="klasifikasiSelect" name="klasifikasi" class="form-select"></select>
+                        <select id="klasifikasiSelect" name="klasifikasi" class="form-select">
+                            <option selected></option>
+                        </select>
                         <div id="klasifikasiError" class="error-text"></div>
                     </div>
     				<div class="mb-3">

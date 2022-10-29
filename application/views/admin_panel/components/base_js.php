@@ -8,6 +8,7 @@
 <script src="<?= assets_url() ?>libs/dropzone/dropzone.min.js"></script>
 <script src="<?= assets_url() ?>libs/masonryGrid/jquery.masonryGrid.js"></script>
 <script src="<?= assets_url() ?>libs/select2-4.0.13/js/select2.full.min.js"></script>
+<script src="<?= assets_url() ?>libs/notifyjs/notify.min.js"></script>
 <script src="<?= assets_url() ?>js/app-style-switcher.js"></script>
 <script src="<?= assets_url() ?>js/waves.js"></script>
 <script src="<?= assets_url() ?>js/sidebarmenu.js"></script>

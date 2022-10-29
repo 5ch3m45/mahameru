@@ -21,7 +21,7 @@
                     <div class="col-6">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb mb-0 d-flex align-items-center">
-                              <li class="breadcrumb-item"><a href="<?= base_url('/admin/dashboard') ?>" class="link"><i class="mdi mdi-home-outline fs-4"></i></a></li>
+                              <li class="breadcrumb-item"><a href="<?= base_url('dashboard') ?>" class="link"><i class="mdi mdi-home-outline fs-4"></i></a></li>
                               <li class="breadcrumb-item active" aria-current="page">Aduan</li>
                             </ol>
                           </nav>
@@ -45,12 +45,21 @@
                                         <input type="text" name="search" id="search-table" class="form-control" placeholder="Cari">
                                     </div>
                                     <div class="col-12 col-md-3">
+                                        <label for="status-table">Status</label>
+                                        <!-- 1: terkirim; 2: dibaca; 3: tindak lanjutin; 4: selesai -->
+                                        <select name="status" id="status-table" class="form-control">
+                                            <option value="">Semua</option>
+                                            <option value="1">Diterima</option>
+                                            <option value="2">Dibaca</option>
+                                            <option value="3">Ditindaklanjuti</option>
+                                            <option value="4">Selesai</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12 col-md-3">
                                         <label for="search-table">Urutkan</label>
                                         <select name="sort" id="sort-table" class="form-control">
-                                            <option value="kode">Kode</option>
-                                            <option value="nama">Nama</option>
-                                            <option value="arsip-terbanyak">Arsip Terbanyak</option>
-                                            <option value="arsip-tersedikit">Arsip Tersedikit</option>
+                                            <option value="terbaru">Terbaru</option>
+                                            <option value="terlama">Terlama</option>
                                         </select>
                                     </div>
                                 </div>
@@ -66,12 +75,17 @@
                                                 <th class="border-top-0">Status</th>
                                             </tr>
                                         </thead>
-                                        <tbody></tbody>
+                                        <tbody>
+                                            <tr>
+                                                <td colspan="5" class="text-center">
+                                                    <image src="/assets/images/loader/loading.svg"/>
+                                                </td> 
+                                            </tr>
+                                        </tbody>
                                     </table>
                                 </div>
                                 <div class="d-flex justify-content-end">
                                     <button type="button" id="prev-table" class="btn btn-primary me-2">Sebelumnya</button>
-                                    <button type="button" id="page-table" disabled class="btn btn-light me-2">1/1</button>
                                     <button type="button" id="next-table" class="btn btn-primary">Selanjutnya</button>
                                 </div>
                             </div>

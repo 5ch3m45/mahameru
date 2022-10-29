@@ -64,7 +64,7 @@
                                     </a>
                         		</li>
                         		<li class="nav-item">
-                        			<a href="<?= base_url('login') ?>">
+                        			<a href="<?= base_url('dashboard') ?>">
                                         <button class="btn btn-primary">Upload Arsip</button>
                                     </a>
                         		</li>
@@ -76,7 +76,7 @@
                                     </a>
                         		</li>
                         		<li class="nav-item">
-                        			<a href="<?= base_url('login') ?>">
+                        			<a href="<?= base_url('dashboard') ?>">
                                         <button class="btn btn-primary">Upload Arsip</button>
                                     </a>
                         		</li>

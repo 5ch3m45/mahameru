@@ -10,6 +10,8 @@ $(function() {
             return `<img src="${lampiran.url}" class="avatars__img avatars__img-sm" />`
         } else if(['video/mp4'].includes(lampiran.type)) {
             return `<img src="/assets/images/mp4.png" class="avatars__img avatars__img-sm" />`
+        } else if(['application/pdf'].includes(lampiran.type)) {
+            return `<img src="/assets/images/pdf.png" class="avatars__img avatars__img-sm" />`
         } else {
             return `<span class="avatars__others avatars__others-sm">+${lampiran.url}</span>`
         }
@@ -25,7 +27,7 @@ $(function() {
         $('#next-table').attr('disabled', true);
         is_fetching = true;
 
-        axios.get(`/api/arsip?q=${q}&s=${s}&p=${page}`)
+        axios.get(`/api/public/arsip?q=${q}&s=${s}&p=${page}`)
             .then(res => {
                 // reset table
                 $('#arsip-table>tbody').html('')

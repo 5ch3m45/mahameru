@@ -105,12 +105,13 @@ span.avatars__others-sm {
     width: 3rem;
 }
 
-input:not(.input-landing), textarea, select:not(.select-landing), .modal-content {
+input:not(.input-landing), textarea, select:not(.select-landing), .modal-content, .select2-selection {
     border-radius: 8px!important;
     border: 0px!important;
     box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075)!important;
+    font-size: 0.9rem!important;
 }
-input:not([type=radio]):not([type=checkbox]):not(.input-landing), textarea, select:not(.select-landing) {
+input:not([type=radio]):not([type=checkbox]):not(.input-landing), textarea, select:not(.select-landing), .select2-selection {
     background-color: #fafafa!important;
 }
 
@@ -140,4 +141,9 @@ td {
 
 label {
     font-weight: 500
+}
+
+.light svg path,
+.light svg rect{
+  fill: #FF6700;
 }

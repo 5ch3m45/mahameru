@@ -66,12 +66,13 @@
                                                 <th class="border-top-0">Jumlah Arsip</th>
                                             </tr>
                                         </thead>
-                                        <tbody></tbody>
+                                        <tbody>
+                                            <tr><td colspan="2" class="text-center"><image src="/assets/images/loader/loading.svg"/></td></tr>
+                                        </tbody>
                                     </table>
                                 </div>
                                 <div class="d-flex justify-content-end mt-3">
                                     <button type="button" id="prev-table" class="btn btn-primary me-2">Sebelumnya</button>
-                                    <button type="button" id="page-table" disabled class="btn btn-light me-2">1/20</button>
                                     <button type="button" id="next-table" class="btn btn-primary">Selanjutnya</button>
                                 </div>
                             </div>

@@ -92,7 +92,7 @@
                         			<a class="nav-link" href="#arsip-hari-ini">Arsip Hari Ini</a>
                         		</li>
                         		<li class="nav-item">
-                        			<a href="/admin">
+                        			<a href="/dashboard">
                                         <button class="btn btn-primary">Upload Arsip</button>
                                     </a>
                         		</li>
@@ -113,7 +113,7 @@
                         			<a class="nav-link" href="#arsip-hari-ini">Arsip Hari Ini</a>
                         		</li>
                         		<li class="nav-item">
-                        			<a href="/admin">
+                        			<a href="/dashboard">
                                         <button class="btn btn-primary">Upload Arsip</button>
                                     </a>
                         		</li>

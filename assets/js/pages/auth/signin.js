@@ -11,7 +11,7 @@ $(function() {
         axios.post(`/api/signin`, data)
             .then(res => {
                 if(res.data.success) {
-                    window.location.href = '/admin';
+                    window.location.href = '/dashboard';
                 }
             })
             .catch(e => {
