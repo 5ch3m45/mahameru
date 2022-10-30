@@ -266,7 +266,7 @@ $(function() {
     });
     $('#doneUploadLampiran').on('click', function() {
         $('#uploadNewImageModal').modal('hide');
-        loadArsip();
+        getArsip();
     })
 
     // edit info
