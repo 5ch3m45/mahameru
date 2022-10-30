@@ -1,6 +1,6 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class MyRole
+class Myrole
 {
     protected $CI;
     protected $userID;
