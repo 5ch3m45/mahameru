@@ -201,12 +201,25 @@ class Arsip extends CI_Controller {
                 ->get()
                 ->row_array();
             // add lampiran detail
+            $lampiran_count = $this->db->select('id')
+                ->from('tbl_lampiran')
+                ->where('arsip_id', $value['id'])
+                ->where('is_deleted', 0)
+                ->count_all_results();
             $arsips[$key]['lampirans'] = $this->db->select('type, url')
                 ->from('tbl_lampiran')
                 ->where('arsip_id', $value['id'])
                 ->where('is_deleted', 0)
+                ->limit(2)
                 ->get()
                 ->result_array();
+            if($lampiran_count > 2) {
+                $lampiran_rest = $lampiran_count - count($arsips[$key]['lampirans']);
+                array_push($arsips[$key]['lampirans'], [
+                    'type' => 'rest',
+                    'url' => $lampiran_rest
+                ]);
+            }
             // format tahun
             if($value['tanggal']) {
                 if($this->session->is_logged_in) {
