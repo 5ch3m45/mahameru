@@ -685,7 +685,7 @@ class Arsip extends CI_Controller {
         }
 
         // delete file lampiran
-        unlink(APPPATH.DIRECTORY_SEPARATOR.'..'.$lampiran['url']);
+        is_file(APPPATH.DIRECTORY_SEPARATOR.'..'.$lampiran['url']) && unlink(APPPATH.DIRECTORY_SEPARATOR.'..'.$lampiran['url']);
         $this->db->where('id', $lampiran['id'])
             ->update('tbl_lampiran', [
                 'is_deleted' => 1,
