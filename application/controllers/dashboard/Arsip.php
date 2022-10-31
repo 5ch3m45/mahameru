@@ -29,7 +29,7 @@ class Arsip extends CI_Controller {
 	
 	// ===== VIEW START =====
 	public function index() {
-		$this->load->view('admin_panel/arsip/index');
+		$this->load->view('dashboard/arsip/index');
 	}
 
 	public function create() {
@@ -73,7 +73,7 @@ class Arsip extends CI_Controller {
 			return show_404();
 		}
 
-		$this->load->view('admin_panel/arsip/detail', compact('arsip'));
+		$this->load->view('dashboard/arsip/detail', compact('arsip'));
 	}
 
 	public function do_upload() {

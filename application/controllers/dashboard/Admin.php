@@ -22,7 +22,7 @@ class Admin extends CI_Controller {
 	
 	// ===== VIEW START =====
 	public function index() {
-		$this->load->view('admin_panel/admin/index');
+		$this->load->view('dashboard/admin/index');
 	}
 
 	public function detail($userID) {
@@ -38,7 +38,7 @@ class Admin extends CI_Controller {
 			return show_404();
 		}
 		
-		$this->load->view('admin_panel/admin/detail', compact('admin'));
+		$this->load->view('dashboard/admin/detail', compact('admin'));
 	}
 
 	// ===== API START =====

@@ -25,11 +25,11 @@ class Authentication extends CI_Controller {
 		$_SESSION['phrase'] = $captcha->getPhrase();
 		$data['captcha'] = $captcha->build()->inline();
 
-		$this->load->view('admin_panel/auth/login', $data);
+		$this->load->view('dashboard/auth/login', $data);
 	}
 
 	function forgotPassword() {
-		$this->load->view('admin_panel/auth/forgot_password');
+		$this->load->view('dashboard/auth/forgot_password');
 	}
 
 	function resetPassword($token) {
@@ -65,7 +65,7 @@ class Authentication extends CI_Controller {
 		}
 
 		$this->data['token'] = $token;
-		$this->load->view('admin_panel/auth/reset_password', $this->data);
+		$this->load->view('dashboard/auth/reset_password', $this->data);
 	}
 
 	// ===== API START =====

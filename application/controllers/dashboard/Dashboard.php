@@ -18,6 +18,6 @@ class Dashboard extends CI_Controller {
             'title' => 'Dashboard',
             'slug' => 'dashboard'
         ];
-		$this->load->view('admin_panel/dashboard', $data);
+		$this->load->view('dashboard/index', $data);
 	}
 }

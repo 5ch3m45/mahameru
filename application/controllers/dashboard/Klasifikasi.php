@@ -23,7 +23,7 @@ class Klasifikasi extends CI_Controller {
 	}
 
 	public function index() {
-		$this->load->view('admin_panel/klasifikasi/index');
+		$this->load->view('dashboard/klasifikasi/index');
 	}
 
 	public function detail($id) {
@@ -39,7 +39,7 @@ class Klasifikasi extends CI_Controller {
 			return show_404();
 		}
 		
-		$this->load->view('admin_panel/klasifikasi/detail', compact('klasifikasi'));
+		$this->load->view('dashboard/klasifikasi/detail', compact('klasifikasi'));
 	}
 
 	// ===== API START =====

@@ -13,7 +13,7 @@ class Aduan extends CI_Controller {
 	}
 
 	public function index() {
-		$this->load->view('admin_panel/aduan/index');
+		$this->load->view('dashboard/aduan/index');
 	}
 
 	public function detail($id) {
@@ -29,7 +29,7 @@ class Aduan extends CI_Controller {
 			return show_404();
 		}
 		
-		$this->load->view('admin_panel/aduan/detail');
+		$this->load->view('dashboard/aduan/detail');
 	}
 
 	// ===== API START =====
