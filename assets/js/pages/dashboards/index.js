@@ -120,7 +120,7 @@ $(function() {
         } else if(['video/mp4'].includes(lampiran.type)) {
             return `<img src="/assets/images/mp4.png" class="avatars__img" />`
         } else if(['application/pdf'].includes(lampiran.type)) {
-            return `<img src="/assets/images/pdf.png" class="avatars__img avatars__img-sm" />`
+            return `<img src="/assets/images/pdf.png" class="avatars__img" />`
         } else {
             return `<span class="avatars__others">+${lampiran.url}</span>`
         }
