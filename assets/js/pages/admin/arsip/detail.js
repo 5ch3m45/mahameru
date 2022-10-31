@@ -43,6 +43,7 @@ $(function() {
             }
         },
         theme: 'bootstrap-5',
+        dropdownParent: $('#ubahInformasiModal'),
         placeholder: 'Cari klasifikasi',
         templateResult: _templateResult,
         templateSelection: _templateSelection
