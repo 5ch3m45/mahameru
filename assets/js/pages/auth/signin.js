@@ -3,7 +3,7 @@ $(function() {
         e.preventDefault();
         $(':input').attr('disabled', true)
         let data = new FormData();
-        data.append('email', $('#email-input').val());
+        data.append('email', $('#email-input').val().trim());
         data.append('password', $('#password-input').val());
         data.append('phrase', $('#captcha-input').val());
         data.append($('#csrf-token').attr('name'), $('#csrf-token').val());
