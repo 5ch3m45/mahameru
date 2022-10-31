@@ -38,29 +38,23 @@
 				<?php if ($this->myrole->is('admin')){ ?>
 				<li class="sidebar-item">
 					<a class="sidebar-link waves-effect waves-dark sidebar-link" href="<?= base_url() ?>dashboard/pengelola" aria-expanded="false">
-						<i class="mdi mdi-account-circle"></i>
+						<i class="bi bi-diagram-3-fill"></i>
 						<span class="hide-menu">Pengelola</span>
 					</a>
 				</li>
 				<?php } ?>
-				<?php if(false) { ?>
-				<li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
-						href="table-basic.html" aria-expanded="false"><i class="mdi mdi-border-all"></i><span
-							class="hide-menu">Table</span></a></li>
-				<li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
-						href="icon-material.html" aria-expanded="false"><i class="mdi mdi-face"></i><span
-							class="hide-menu">Icon</span></a></li>
-				<li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
-						href="starter-kit.html" aria-expanded="false"><i class="mdi mdi-file"></i><span
-							class="hide-menu">Blank</span></a></li>
-				<li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
-						href="error-404.html" aria-expanded="false"><i class="mdi mdi-alert-outline"></i><span
-							class="hide-menu">404</span></a></li>
-				<li class="text-center p-40 upgrade-btn">
-					<a href="https://www.wrappixel.com/templates/flexy-bootstrap-admin-template/"
-						class="btn d-block w-100 btn-danger text-white" target="_blank">Upgrade to Pro</a>
+				<li class="sidebar-item">
+					<a class="sidebar-link waves-effect waves-dark sidebar-link" href="<?= base_url() ?>dashboard/profile" aria-expanded="false">
+						<i class="mdi mdi-account"></i>
+						<span class="hide-menu">Profile Anda</span>
+					</a>
 				</li>
-				<?php } ?>
+				<li class="sidebar-item mt-4">
+					<a class="sidebar-link bg-danger text-white waves-effect waves-dark sidebar-link" href="<?= base_url() ?>dashboard/profile" aria-expanded="false">
+						<i class="bi bi-power"></i>
+						<span class="hide-menu">Keluar</span>
+					</a>
+				</li>
 			</ul>
 
 		</nav>

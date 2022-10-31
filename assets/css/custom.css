@@ -114,6 +114,10 @@ input:not(.input-landing), textarea, select:not(.select-landing), .modal-content
 input:not([type=radio]):not([type=checkbox]):not(.input-landing), textarea, select:not(.select-landing), .select2-selection {
     background-color: #fafafa!important;
 }
+input:not([type=radio]):not([type=checkbox]):not(.input-landing):disabled, textarea:disabled, select:not(.select-landing):disabled, .select2-selection:disabled {
+    background-color: #f0f0f0!important;
+    box-shadow: 0!important;
+}
 
 button {
     box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075)!important;

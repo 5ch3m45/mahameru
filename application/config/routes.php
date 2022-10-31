@@ -83,8 +83,8 @@ $route['dashboard/kode-klasifikasi/detail/(:num)']          = 'dashboard/Klasifi
 // pengelola
 $route['dashboard/pengelola']                               = 'dashboard/Admin/index';
 $route['dashboard/pengelola/detail/(:num)']                 = 'dashboard/Admin/detail/$1';
-// lampiran
-$route['dashboard/lampiran-arsip/upload']                   = 'dashboard/Arsip/do_upload';
+// profile
+$route['dashboard/profile']                                 = 'dashboard/Profile/index';
 
 // ===== admin api =====
 // auth
@@ -124,7 +124,10 @@ $route['api/dashboard/klasifikasi/page/(:num)']             = 'dashboard/Klasifi
 $route['api/dashboard/klasifikasi/baru']                    = 'dashboard/Klasifikasi/API_store';
 $route['api/dashboard/klasifikasi/top5']                    = 'dashboard/Klasifikasi/API_top5';
 $route['api/dashboard/klasifikasi/(:num)/arsip']            = 'dashboard/Klasifikasi/API_arsip/$1';
-// signin
+// profile
+$route['api/dashboard/profile']                             = 'dashboard/Profile/API_index';
+$route['api/dashboard/profile/update/name']                 = 'dashboard/Profile/API_update_name';
+$route['api/dashboard/profile/update/password']             = 'dashboard/Profile/API_update_password';
 
 // ===== public api =====
 // arsip
