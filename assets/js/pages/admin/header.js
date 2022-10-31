@@ -19,7 +19,7 @@ $(function() {
             <a 
                 id="navbarDropdown" 
                 class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" 
-                href="#"
+                href="/dashboard/profile"
                 role="button" 
                 data-bs-toggle="dropdown" 
                 aria-expanded="false">
@@ -40,8 +40,7 @@ $(function() {
                     <i class="bi bi-person-circle m-r-5 m-l-5"></i> Profil Anda
                 </a>
 				<a 
-                    id="logout" 
-                    class="dropdown-item" 
+                    class="dropdown-item logout" 
                     href="javascript:void(0)">
                     <i class="bi bi-power m-r-5 m-l-5"></i> Logout
                 </a>
@@ -49,7 +48,7 @@ $(function() {
         `)
     }
 
-    $(document).on('click', '#logout', function() {
+    $(document).on('click', '.logout', function() {
         let data = new FormData();
         data.append($('meta[name=token_name]').attr('content'), $('meta[name=token_hash]').attr('content'));
     
