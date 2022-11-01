@@ -35,6 +35,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
     <link href="<?= assets_url() ?>/css/custom.css?v=<?= time() ?>" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/viewerjs/dist/viewer.css" crossorigin="anonymous">
     <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css"
@@ -115,25 +116,53 @@
                             </div>
                         </div>
                         <div class="col-12 col-md-9">
-                            <div class="row">
-                                <?php foreach($arsip['lampirans'] as $lampiran) { ?>
-                                    <div class="col-6 col-md-3">
-                                        <div class="card">
-                                            <div class="card-content">
-                                                <div class="card-body card-body-lampiran lampiran" 
-                                                    data-id="<?= $lampiran['id'] ?>"
-                                                    data-type="<?= $lampiran['type'] ?>"
-                                                    data-url="<?= $lampiran['url'] ?>"
-                                                    style="
-                                                        background-image: url('<?= $lampiran['url_parsed'] ?>'); 
-                                                        background-size: cover;
-                                                        border-radius: 8px;
-                                                        ">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php } ?>
+                            <h3>Lampiran Dokumen & Video</h3>
+                            <hr>
+                            <table class="table mb-5">
+                                <thead>
+                                    <tr>
+                                        <th>Nama File</th>
+                                        <th>Tipe</th>
+                                        <th>Unduh</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php $counter = 0; ?>
+                                    <?php foreach($arsip['lampirans'] as $key => $lampiran) { 
+                                        if(!in_array($lampiran['type'], ['image/jpg', 'image/jpeg', 'image/png'])) {
+                                            $counter++; ?>
+                                            <tr>
+                                                <?php 
+                                                    $explodeURL = explode('/', $lampiran['url']); 
+                                                    $fileName = end($explodeURL);
+                                                    $explodeFileName = explode('-', $fileName);
+                                                    array_shift($explodeFileName); // hapus first element
+                                                    $finalFileName = implode('-', $explodeFileName);
+                                                ?>
+                                                <td style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;"><?= $finalFileName ?></td>
+                                                <td><?= $lampiran['type'] ?></td>
+                                                <td><a href="<?= $lampiran['url'] ?>"><i class="bi bi-cloud-arrow-down-fill"></i></a></td>
+                                            </tr>
+                                        <?php } ?>
+                                    <?php } ?>
+                                    <?php if($counter == 0) { ?>
+                                        <tr>
+                                            <td colspan="3" class="text-center">Belum ada lampiran dokumen & video</td>
+                                        </tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+                            <h3>Lampiran Foto</h3>
+                            <div>
+                                <ul class="docs-pictures mb-5">
+                                    <?php foreach($arsip['lampirans'] as $key => $lampiran) { ?>
+                                        <?php if(in_array($lampiran['type'], ['image/jpg', 'image/jpeg', 'image/png'])) { ?>
+                                            <li class="d-flex justify-content-center">
+                                                <img data-original="<?= $lampiran['url'] ?>" alt="img-<?= $key ?>" src="<?= $lampiran['url'] ?>" />
+                                            </li>
+                                        <?php } ?>
+                                    <?php } ?>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -162,4 +191,65 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="<?= assets_url() ?>js/pages/arsip/detail.js?v=<?= time() ?>"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+<script src="https://unpkg.com/viewerjs@1.11.0/dist/viewer.js"></script>
+<script src="<?= assets_url() ?>libs/jquery-viewer/dist/jquery-viewer.min.js"></script>
+<script type="text/javascript">
+    var $images = $('.docs-pictures');
+    var options = {
+    	// inline: true,
+    	url: 'data-original',
+    	ready: function (e) {
+    		console.log(e.type);
+    	},
+    	show: function (e) {
+    		console.log(e.type);
+    	},
+    	shown: function (e) {
+    		console.log(e.type);
+    	},
+    	hide: function (e) {
+    		console.log(e.type);
+    	},
+    	hidden: function (e) {
+    		console.log(e.type);
+    	},
+    	view: function (e) {
+    		console.log(e.type);
+    	},
+    	viewed: function (e) {
+    		console.log(e.type);
+    	}
+    };
+    $images.on({
+    	ready: function (e) {
+    		console.log(e.type);
+    	},
+    	show: function (e) {
+    		console.log(e.type);
+    	},
+    	shown: function (e) {
+    		console.log(e.type);
+    	},
+    	hide: function (e) {
+    		console.log(e.type);
+    	},
+    	hidden: function (e) {
+    		console.log(e.type);
+    	},
+    	view: function (e) {
+    		console.log(e.type);
+    	},
+    	viewed: function (e) {
+    		console.log(e.type);
+    	}
+    }).viewer(options);
+
+    $(function() {
+        setTimeout(() => {
+            $('.docs-pictures > li').height($('.docs-pictures > li').width());
+            $('.docs-pictures > li > img').height($('.docs-pictures > li').width());
+            $('.docs-pictures > li > img')
+        }, 1000);
+    })
+</script>
 </html>
