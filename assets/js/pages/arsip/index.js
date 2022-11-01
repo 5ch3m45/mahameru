@@ -56,7 +56,7 @@ $(function() {
                     $('#arsip-table>tbody').append(`
                     <tr data-id="${item.id}" role="button">
                         <td>${item.nomor}</td>
-                        <td>${item.klasifikasi.kode}</td>
+                        <td>${item.klasifikasi.kode}. ${item.klasifikasi.nama.toUpperCase()}</td>
                         <td>${item.informasi}</td>
                         <td>
                             <ul class="avatars">
