@@ -118,7 +118,7 @@
                                     <th>Uraian Informasi</th>
                                     <th>Lampiran</th>
                                     <th>Pencipta</th>
-                                    <th>Tahun</th>
+                                    <th>Tanggal</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
