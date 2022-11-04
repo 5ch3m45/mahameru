@@ -59,7 +59,7 @@ class Arsip extends CI_Controller {
 		}
 		
 		// cek apa arsip ada
-		$arsip = $this->db->select('id, klasifikasi_id, tanggal, nomor, informasi, pencipta')
+		$arsip = $this->db->select('id, klasifikasi_id, tanggal, nomor, informasi, pencipta, viewers, last_viewer_update')
 			->from('tbl_arsip')
 			->where('id', $id)
 			->limit(1)
@@ -69,6 +69,15 @@ class Arsip extends CI_Controller {
 		// jika tidak ada, 404
 		if(!$arsip) {
 			show_404();
+		}
+
+		// update jumlah viewer setiap 5 detik
+		if(time() - $arsip['last_viewer_update'] > 5) {
+			$this->db->where('id', $arsip['id'])
+				->update('tbl_arsip', [
+					'viewers' => $arsip['viewers']+1,
+					'last_viewer_update' => time()
+				]);
 		}
 
 		// cek apa ada klasifikasi

@@ -125,7 +125,7 @@ class Arsip extends CI_Controller {
 
         // set offset
         $offset = PERPAGE * ($page -1);
-        $query = $this->db->select('id, informasi, klasifikasi_id, nomor, pencipta, tanggal, level, status, admin_id')
+        $query = $this->db->select('id, informasi, klasifikasi_id, nomor, pencipta, tanggal, level, viewers, status, admin_id')
             ->from('tbl_arsip');
 
 		// search query

@@ -86,6 +86,7 @@
                                                 <th class="border-top-0">Lampiran</th>
                                                 <th class="border-top-0">Pencipta</th>
                                                 <th class="border-top-0">Tanggal</th>
+                                                <th class="border-top-0">Viewers</th>
                                                 <th class="border-top-0">Status</th>
                                                 <th class="border-top-0">Level</th>
                                             </tr>

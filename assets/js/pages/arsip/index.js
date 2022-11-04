@@ -78,7 +78,7 @@ $(function() {
     $(document).on('click', 'tr', function() {
         let id = $(this).data('id');
         if(id) {
-            window.open('/arsip/'+id)
+            window.location.href = '/arsip/'+id;
         }
     })
 

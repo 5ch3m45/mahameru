@@ -112,6 +112,8 @@
                                     <h6><?= $arsip['pencipta'] ?></h6>
                                     <small class="text-muted p-t-30 db">Tahun Arsip</small>
                                     <h6><?= $arsip['tahun'] ?? '-' ?></h6>
+                                    <small class="text-muted p-t-30 db">Dilihat sebanyak</small>
+                                    <h6><?= $arsip['viewers'] ?? '0' ?>&nbsp;kali</h6>
                                 </div>
                             </div>
                         </div>

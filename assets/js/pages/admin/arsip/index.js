@@ -78,6 +78,7 @@ $(function() {
                             </td>
                             <td>${item.pencipta ? item.pencipta : ''}</td>
                             <td>${item.tanggal_formatted ? item.tanggal_formatted : ''}</td>
+                            <td><i class="bi bi-eye"></i> ${Intl.NumberFormat('en', { notation: 'compact' }).format(item.viewers)}</td>
                             <td>${statusParser(item.status)}</td>
                             <td>${item.level == '2'
                                 ? `<span class="badge bg-success">Publik</span>`
