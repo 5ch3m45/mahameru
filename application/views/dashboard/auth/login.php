@@ -59,10 +59,10 @@
             <section class="spacer bg-white">
                 <div class="container">
                     <div class="row mb-5">
-                        <div class="col-6">
+                        <div class="col-12 col-md-6">
                             <img src="<?= assets_url() ?>images/example-29.svg" style="width: 100%" alt="" srcset="">
                         </div>
-                        <div class="col-6">
+                        <div class="col-12 col-md-6">
                             <div class="card rounded-corner shadow">
                                 <form id="signin-form" method="POST" class="card-body">
                                     <input type="hidden" id="csrf-token" name="<?= $this->security->get_csrf_token_name() ?>" value="<?= $this->security->get_csrf_hash() ?>">
