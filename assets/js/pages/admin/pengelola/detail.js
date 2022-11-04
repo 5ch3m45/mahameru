@@ -197,7 +197,7 @@ $(function() {
                     $('#arsip-table>tbody').append(`
                         <tr role="button" data-id="${item.id}">
                             <td>${item.nomor ? item.nomor : ''}</td>
-                            <td>
+                            <td class="nowrap-td">
                                 ${item.klasifikasi_id
                                     ? `
                                         <span class="badge bg-primary">

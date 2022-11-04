@@ -172,3 +172,8 @@ label {
 	cursor: zoom-in;
 	/* width: 100%; */
 }
+
+.nowrap-td {
+    white-space: nowrap;
+    overflow: hidden;
+}
