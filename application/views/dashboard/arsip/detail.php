@@ -43,12 +43,12 @@
                     <div id="status-flag" class="ms-1 my-auto py-auto"></div>
                 </div>
                 <hr>            
-                <div class="d-flex justify-content-between">
-                    <div>
+                <div class="row">
+                    <div class="col-12 col-md-6 mb-2 mb-md-0">
                         <button id="ubahInformasiBtn" class="btn btn-text text-primary me-2 mb-2 mb-md-0"><i class="bi bi-pencil-square"></i> Ubah informasi</button>
                         <button id="uploadNewImageBtn" class="btn btn-text text-primary mb-2 mb-md-0"><i class="bi bi-cloud-arrow-up-fill"></i> Upload lampiran</button>
                     </div>
-                    <div>
+                    <div class="col-12 col-md-6 d-md-flex justify-content-end">
                         <button id="publikasiBtn" style="display: none" class="btn btn-success text-white me-2 mb-2 mb-md-0"><i class="bi bi-share-fill"></i> Publikasi</button>
                         <button id="draftBtn" style="display: none" class="btn btn-warning me-2 mb-2 mb-md-0"><i class="bi bi-input-cursor-text"></i> Simpan sebagai draft</button>
                         <button id="delete-arsip-btn" style="display: none" class="btn btn-danger text-white mb-2 mb-md-0 me-2"><i class="bi bi-trash3-fill"></i> Hapus</button>
