@@ -34,4 +34,16 @@ $(function() {
     $('#password-input').on('keyup', function(){
         $('#login-error').hide()
     })
+
+    let show_pass = false;
+    $('#show-pass').on('click', function() {
+        if(show_pass) {
+            $(this).html('<i class="bi bi-eye-fill"></i>');
+            $('#password-input').attr('type', 'text');
+        } else {
+            $(this).html('<i class="bi bi-eye-slash-fill"></i>');
+            $('#password-input').attr('type', 'password');
+        }
+        show_pass = !show_pass;
+    })
 })

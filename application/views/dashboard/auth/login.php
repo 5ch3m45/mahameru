@@ -33,6 +33,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link href="<?= assets_url() ?>/libs/gridjs/gridjs.css" rel="stylesheet" />
     <link href="<?= assets_url() ?>/css/custom.css?v=<?= time() ?>" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
 </head>
 
 <body>
@@ -75,7 +76,10 @@
                                     <div id="email-error" class="mt-1 error-container"></div>
                                     <div class="mt-3">
                                         <label for="">Kata sandi</label>
-                                        <input type="password" name="login_pass" id="password-input" class="form-control rounded-corner" placeholder="Kata sandi">
+                                        <div class="input-group">
+                                            <input type="password" name="login_pass" id="password-input" class="form-control rounded-corner" placeholder="Kata sandi">
+                                            <span class="input-group-text" id="show-pass"><i class="bi bi-eye-slash-fill"></i></span>
+                                        </div>
                                     </div>
                                     <div id="password-error" class="mt-1 error-container"></div>
                                     <div class="mt-3">
