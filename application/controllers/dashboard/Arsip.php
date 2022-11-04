@@ -387,6 +387,7 @@ class Arsip extends CI_Controller {
 
         if(isset($input['klasifikasi']) && !empty($input['klasifikasi']) && $input['klasifikasi'] !== $arsip['klasifikasi_id']) {
             $klasifikasi = $this->db->select('id')
+                ->from('tbl_klasifikasi')
                 ->where('id', $input['klasifikasi'])
                 ->where('is_deleted', 0)
                 ->get()
@@ -403,7 +404,7 @@ class Arsip extends CI_Controller {
                     ]));
             }
 
-            $input['klasifikasi_id'] = $input['klasifikasi'];
+            $update['klasifikasi_id'] = $klasifikasi['id'];
         }
         
         if(isset($input['tanggal']) && !empty($input['tanggal'])) {
