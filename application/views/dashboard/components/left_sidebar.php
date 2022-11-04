@@ -51,7 +51,7 @@
 				</li>
 				<li class="sidebar-item mt-4">
 					<a class="sidebar-link bg-danger text-white waves-effect waves-dark sidebar-link logout" href="javascript:void(0)" aria-expanded="false">
-						<i class="bi bi-power"></i>
+						<i class="bi bi-power" style="color: white"></i>
 						<span class="hide-menu">Keluar</span>
 					</a>
 				</li>
