@@ -1,9 +1,8 @@
 $(function() {
-    let current_page = 1;
-    let total_page = 1;
     let is_fetching = false;
     let query = $('#search-input').val();
     let sort = $('#sort-input').val();
+    let page = $('#current-page').val();
 
     const lampiranParser = (lampiran) => {
         if(['image/jpeg', 'image/png'].includes(lampiran.type)) {
@@ -17,38 +16,42 @@ $(function() {
         }
     }
 
-    const getData = (page, q, s) => {
+    const getData = (q, s) => {
         if(is_fetching) {
             return;
         }
 
         // set fetching state
-        $('#prev-table').attr('disabled', true);
-        $('#next-table').attr('disabled', true);
+        $('#prev-page').attr('disabled', true);
+        $('#next-page').attr('disabled', true);
         is_fetching = true;
 
-        axios.get(`/api/public/arsip?q=${q}&s=${s}&p=${page}`)
+        axios.get(`/api/public/arsip?q=${q}&s=${s}&p=${$('#current-page').val()}`)
             .then(res => {
+                const { total_page, data } = res.data;
                 // reset table
                 $('#arsip-table>tbody').html('')
                 
                 // set page
-                current_page = res.data.current_page;
-                total_page = res.data.total_page;
-                $('#page-table').text(current_page+'/'+total_page);
+                $('#total-page').html('dari '+total_page)
 
                 // batasin min page
-                if(current_page == 1) {
-                    $('#prev-table').attr('disabled', true);
+                if($('#current-page').val() == 1) {
+                    $('#prev-page').attr('disabled', true);
                 } else {
-                    $('#prev-table').attr('disabled', false);
+                    $('#prev-page').attr('disabled', false);
                 }
 
                 // batasin max page
-                if(current_page == total_page) {
-                    $('#next-table').attr('disabled', true);
+                if($('#current-page').val() == total_page) {
+                    $('#next-page').attr('disabled', true);
                 } else {
-                    $('#next-table').attr('disabled', false);
+                    $('#next-page').attr('disabled', false);
+                }
+
+                if(data.length == 0) {
+                    $('#next-page').attr('disabled', true);
+                    $('#prev-page').attr('disabled', true);
                 }
 
                 // set content
@@ -83,7 +86,7 @@ $(function() {
     })
 
     // get data on ready
-    getData(current_page, query, sort);
+    getData(query, sort);
 
     // get data on search
     $('#search-input').on('keyup', debounce(function() {
@@ -97,24 +100,33 @@ $(function() {
     $('#sort-input').on('change', function() {
         query = $('#search-input').val();
         sort = $('#sort-input').val();
-        getData(current_page, query, sort);
+        getData(query, sort);
     })
 
     // get data on prev click
-    $('#prev-table').on('click', function() {
-        getData(current_page-1, query, sort);
+    $('#prev-page').on('click', function() {
+        $('#current-page').val($('#current-page').val()*1 - 1);
+        getData(query, sort);
     })
 
     // get data on next click
-    $('#next-table').on('click', function() {
-        getData(current_page+1, query, sort);
+    $('#next-page').on('click', function() {
+        $('#current-page').val($('#current-page').val()*1 + 1);
+        getData(query, sort);
+    });
+
+    $('#current-page').on('keyup paste', function() {
+        $(this).val($(this).val().replace(/[^0-9]/gi, ''))
     })
+    $('#current-page').on('keyup paste', debounce(function() {
+        getData(query, sort);
+    }, 300))
 
     //reset table
     $('#reset-table').on('click', function() {
-        current_page = 1;
+        $('#current-page').val(1);
         $('#search-input').val('');
         $('#sort-input').val('terbaru');
-        getData(1, '', 'terbaru');
+        getData('', 'terbaru');
     })
 })

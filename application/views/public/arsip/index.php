@@ -125,9 +125,13 @@
                         </table>
                     </div>
                     <div class="d-flex justify-content-end">
-                        <button id="prev-table" class="btn btn-primary me-2">Sebelumnya</button>
-                        <button id="page-table" disabled class="btn btn-light me-2">1/1</button>
-                        <button id="next-table" class="btn btn-primary me-2">Selanjutnya</button>
+                    	<button id="prev-page" class="btn btn-primary" style="border-radius: 10px 0 0 10px">Sebelumnya</button>
+                        <div class="input-group" style="width: auto">
+                            <span class="input-group-text" style="border-radius: 0!important">Halaman</span>
+                            <input type="text" id="current-page" value="1" style="max-width: 3rem; padding: 0 10px; border-radius: 0!important">
+                            <span class="input-group-text" id="total-page" style="border-radius: 0px!important">dari 10</span>
+                        </div>
+                    	<button id="next-page" class="btn btn-primary" style="border-radius: 0 10px 10px 0">Selanjutnya</button>
                     </div>
                 </div>
             </section>

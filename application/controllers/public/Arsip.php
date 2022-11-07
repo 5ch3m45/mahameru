@@ -128,33 +128,9 @@ class Arsip extends CI_Controller {
         $sort = in_array($sort, ['terbaru', 'terlama']) ? $sort : '';
         // validasi sort end
 
-        // set offset
-        $offset = PERPAGE * ($page -1);
-        $query = $this->db->select('id, informasi, klasifikasi_id, nomor, pencipta, tanggal')
-            ->from('tbl_arsip')
-            ->where('level', 2)
-            ->where('status', 2);
-
-        if($search) {
-            $query = $query->where('informasi LIKE', '%'.$search.'%')
-                ->or_where('pencipta LIKE', '%'.$search.'%')
-                ->or_where('tanggal LIKE', '%'.$search.'%');
-        }
-
-        if($sort) {
-            if($sort == 'terlama') {
-                $query = $query->order_by('nomor', 'asc');
-            } else {
-                $query = $query->order_by('nomor', 'desc');
-            }
-        } else {
-            $query = $query->order_by('nomor', 'desc');
-        }
-
         // generate arsips
-        $arsips = $query->limit(PERPAGE, $offset)
-            ->get()
-            ->result_array();
+        $arsips = $this->arsip_model->getArsipPublic($page, $search, $sort);
+		$count_arsips = $this->arsip_model->countArsipPublic($search);
         foreach ($arsips as $key => $value) {
             // add klasifikasi detail
             $arsips[$key]['klasifikasi'] = $this->db->select('kode, nama')
@@ -186,19 +162,14 @@ class Arsip extends CI_Controller {
             $arsips[$key]['tahun'] = date('d M Y', strtotime($value['tanggal']));
         }
 
-
-        // count total page
-        $records = $query->count_all_results();
-        $total_page = ceil($records/PERPAGE);
-
         return $this->output
             ->set_status_header(200)
             ->set_content_type('application/json', 'utf-8')
             ->set_output(json_encode([
-                'success' => true,
-                'data' => $arsips,
-                'current_page' => (int)$page,
-                'total_page' => (int)$total_page,
+                'success' 		=> true,
+                'data' 			=> $arsips,
+				'current_page'	=> (int)$page,
+				'total_page'	=> ceil($count_arsips/PERPAGE)
             ], JSON_PRETTY_PRINT));
     }
 }
