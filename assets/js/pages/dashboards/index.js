@@ -185,4 +185,11 @@ $(function() {
     loadChart();
     loadTop5Klasifikasi();
     loadLast5Arsip();
+
+    $(document).on('click', 'tr', function() {
+        let id = $(this).data('id');
+        if(id) {
+            window.location.href = '/arsip/'+id;
+        }
+    })
 })
