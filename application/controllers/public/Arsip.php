@@ -90,10 +90,7 @@ class Arsip extends CI_Controller {
 		}
 
 		// cek apa ada tanggal
-		if($arsip['tanggal']) {
-			// set data tahun arsip
-			$arsip['tahun'] = date('Y', strtotime($arsip['tanggal']));
-		}
+		$arsip['tanggal'] = date('d M Y', strtotime($arsip['tanggal']));
 
 		// dapatkan lampiran
 		$lampirans = $this->lampiran_model->getAllByArsipID($arsip['id']);
