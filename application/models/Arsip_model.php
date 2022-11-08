@@ -4,6 +4,11 @@ class Arsip_model extends CI_Model
 {
     protected $table = 'tbl_arsip';
 
+    function create($data) {
+        $this->db->insert('tbl_arsip', $data);
+        return $this->db->insert_id();
+    }
+
     function getArsipPublic($page, $search, $sort) {
         $query = $this->db->select('id, informasi, klasifikasi_id, nomor, pencipta, tanggal')
             ->from($this->table)
