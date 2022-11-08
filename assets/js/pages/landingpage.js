@@ -4,26 +4,6 @@ $(function() {
         once: true
     });
 
-    if(IS_GLIDE > 0) {
-        var glide = new Glide('#intro', {
-            type: 'carousel',
-            perView: 4,
-            focusAt: 'center',
-            breakpoints: {
-                1024: {
-                    preview: 3
-                },
-                800: {
-                    perView: 2
-                },
-                480: {
-                    perView: 1
-                }
-            }
-        })
-        glide.mount()
-    }
-
     $('.today-archive-card').on('click', function() {
         window.location.href = `/arsip/${$(this).data('id')}`
     })

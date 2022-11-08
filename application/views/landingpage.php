@@ -292,10 +292,37 @@
     <script>
         const IS_GLIDE = <?= count($arsip_hari_ini) ?>;
     </script>
+    <script type="module">
+        import Glide, { Autoplay, Controls, Swipe } from "https://unpkg.com/@glidejs/glide@3.2.3/dist/glide.modular.esm.js";
+
+        if(IS_GLIDE > 0) {
+            new Glide('#intro', {
+                type: 'slider',
+                perView: 4,
+                focusAt: 'center',
+                breakpoints: {
+                    1024: {
+                        preview: 3
+                    },
+                    800: {
+                        perView: 2
+                    },
+                    480: {
+                        perView: 1
+                    }
+                },
+                autoplay: true,
+            }).mount({
+                Autoplay,
+                Controls,
+                Swipe
+            })
+        }
+    </script>
     <script src="<?= assets_url() ?>libs/jquery/dist/jquery.min.js"></script>
     <script src="<?= assets_url() ?>libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="https://unpkg.com/@glidejs/glide"></script>
+    <script src="https://unpkg.com/@glidejs/glide@3.2.3/dist/glide.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="<?= assets_url() ?>js/pages/landingpage.js?v=<?= time() ?>"></script>
 </body>
