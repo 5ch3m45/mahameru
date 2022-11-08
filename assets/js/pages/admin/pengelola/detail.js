@@ -138,7 +138,7 @@ $(function() {
 })
 // load arsio by pengelola
 $(function() {
-    let _page = 1;
+    let _page = $('#current-page').val();
     let _query = '';
     let _status = '';
     let _level = '';
@@ -182,15 +182,30 @@ $(function() {
         _is_fetching = 1;
         axios.get(`/api/dashboard/arsip?user=${window.location.pathname.split('/')[4]}&page=${_page}&query=${_query}&status=${_status}&sort=${_sort}&level=${_level}`)
         .then(res => {
+                const { total_page } = res.data;
+
                 $('#arsip-table>tbody').html('')
-                $('#prev-table').attr('disabled', false)
-                $('#next-table').attr('disabled', false)
-                if(res.data.data.length < 10) {
-                    $('#next-table').attr('disabled', true)
+                $('#prev-page').attr('disabled', false)
+                $('#next-page').attr('disabled', false)
+                if($('#current-page').val() == total_page) {
+                    $('#next-page').attr('disabled', true)
                 }
-                if(_page == 1) {
-                    $('#prev-table').attr('disabled', true)
+                if($('#current-page').val() == 1) {
+                    $('#prev-page').attr('disabled', true)
                 }
+                if($('#current-page').val() < 1) {
+                    $('#current-page').val(1);
+                    _is_fetching = false;
+                    load();
+                    return;
+                }
+                if($('#current-page').val() > total_page) {
+                    $('#current-page').val(total_page);
+                    _is_fetching = false;
+                    load();
+                    return;
+                }
+                $('#total-page').html('dari '+ total_page);
                 let counter = 10 * (_page - 1);
                 res.data.data.forEach(item => {
                     counter++;
@@ -254,14 +269,21 @@ $(function() {
         load();
     });
 
-    $('#prev-table').on('click', function() {
-        _page--;
-        load(_page);
+    $('#prev-page').on('click', function() {
+        $('#current-page').val($('#current-page').val()*1-1)
+        load();
     })
-    $('#next-table').on('click', function() {
-        _page++;
-        load(_page);
+    $('#next-page').on('click', function() {
+        $('#current-page').val($('#current-page').val()*1+1)
+        load();
+    });
+
+    $('#current-page').on('keyup paste', function() {
+        $(this).val($(this).val().replace(/[^0-9]/gi, ''))
     })
+    $('#current-page').on('keyup paste', debounce(function() {
+        load();
+    }, 300))
 
     $(document).on('click', 'tr', function() {
         let id = $(this).data('id');
