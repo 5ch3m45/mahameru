@@ -13,7 +13,7 @@ class Landingpage extends CI_Controller {
 
 		$arsip_hari_ini = $this->db->select('id, informasi, klasifikasi_id, tanggal')
 			->from('tbl_arsip')
-			->where('tanggal', date('Y-m-d'))
+			->where('tanggal like', '%'.date('m').'-'.date('d'))
 			->where('level', 2)
 			->where('status', 2)
 			->get()
