@@ -119,4 +119,101 @@ class Klasifikasi_model extends CI_Model
 
         return $query->count_all_results();
     }
+
+    function getArsipKlasifikasiDashboard($admin_roles, $klasifikasi_id, $page, $search, $level, $status, $sort) {
+        $offset = PERPAGE * ($page -1);
+        $query = $this->db->select('id, informasi, klasifikasi_id, nomor, pencipta, tanggal, admin_id, level, status')
+            ->from('tbl_arsip')
+            ->where('status <>', 3)
+            ->where('klasifikasi_id', $klasifikasi_id);
+
+        if($search) {
+            $query = $query->where('informasi LIKE', '%'.$search.'%')
+                ->or_where('pencipta LIKE', '%'.$search.'%')
+                ->or_where('tanggal LIKE', '%'.$search.'%');
+        }
+
+        if(in_array($status, ['draft', 'publikasi', 'dihapus'])) {
+            if($status == 'draft') {
+                $query = $query->where('status', 1);
+            }
+            if($status == 'publikasi') {
+                $query = $query->where('status', 2);
+            }
+            if($status == 'dihapus') {
+                $query = $query->where('status', 3);
+            }
+        }
+
+        // limitasi admin biasa
+        if(in_array('arsip_publik', $admin_roles)){
+            $query = $query->where('level', 2);
+        } else {
+            if(in_array($level, ['rahasia', 'publik'])) {
+                if($level == 'rahasia') {
+                    $query = $query->where('level', 1);
+                }
+                if($level == 'publik') {
+                    $query = $query->where('level', 2);
+                }
+            }
+        }
+
+        if($sort) {
+            if($sort == 'terlama') {
+                $query = $query->order_by('tanggal', 'asc');
+            } else {
+                $query = $query->order_by('tanggal', 'desc');
+            }
+        } else {
+            $query = $query->order_by('tanggal', 'desc');
+        }
+
+        // generate arsips
+        return $query->limit(PERPAGE, $offset)
+            ->get()
+            ->result_array();
+    }
+
+    function countArsipKlasifikasiDashboard($admin_roles, $klasifikasi_id, $search, $level, $status) {
+        $query = $this->db->select('id, informasi, klasifikasi_id, nomor, pencipta, tanggal, admin_id, level, status')
+            ->from('tbl_arsip')
+            ->where('status <>', 3)
+            ->where('klasifikasi_id', $klasifikasi_id);
+
+        if($search) {
+            $query = $query->where('informasi LIKE', '%'.$search.'%')
+                ->or_where('pencipta LIKE', '%'.$search.'%')
+                ->or_where('tanggal LIKE', '%'.$search.'%');
+        }
+
+        if(in_array($status, ['draft', 'publikasi', 'dihapus'])) {
+            if($status == 'draft') {
+                $query = $query->where('status', 1);
+            }
+            if($status == 'publikasi') {
+                $query = $query->where('status', 2);
+            }
+            if($status == 'dihapus') {
+                $query = $query->where('status', 3);
+            }
+        }
+
+        // limitasi admin biasa
+        if(in_array('arsip_publik', $admin_roles)){
+            $query = $query->where('level', 2);
+        } else {
+            if(in_array($level, ['rahasia', 'publik'])) {
+                if($level == 'rahasia') {
+                    $query = $query->where('level', 1);
+                }
+                if($level == 'publik') {
+                    $query = $query->where('level', 2);
+                }
+            }
+        }
+
+        // generate arsips
+        return $query->count_all_results();
+    }
 }

@@ -307,59 +307,8 @@ class Klasifikasi extends CI_Controller {
         $sort = in_array($sort, ['terbaru', 'terlama']) ? $sort : '';
         // validasi sort end
 
-        // set offset
-        $offset = PERPAGE * ($page -1);
-        $query = $this->db->select('id, informasi, klasifikasi_id, nomor, pencipta, tanggal, admin_id, level, status')
-            ->from('tbl_arsip')
-            ->where('status <>', 3)
-            ->where('klasifikasi_id', $klasifikasiID);
-
-        if($search) {
-            $query = $query->where('informasi LIKE', '%'.$search.'%')
-                ->or_where('pencipta LIKE', '%'.$search.'%')
-                ->or_where('tanggal LIKE', '%'.$search.'%');
-        }
-
-        if(in_array($status, ['draft', 'publikasi', 'dihapus'])) {
-            if($status == 'draft') {
-                $query = $query->where('status', 1);
-            }
-            if($status == 'publikasi') {
-                $query = $query->where('status', 2);
-            }
-            if($status == 'dihapus') {
-                $query = $query->where('status', 3);
-            }
-        }
-
-        // limitasi admin biasa
-        if(in_array('arsip_publik', $this->myroles)){
-            $query = $query->where('level', 2);
-        } else {
-            if(in_array($level, ['rahasia', 'publik'])) {
-                if($level == 'rahasia') {
-                    $query = $query->where('level', 1);
-                }
-                if($level == 'publik') {
-                    $query = $query->where('level', 2);
-                }
-            }
-        }
-
-        if($sort) {
-            if($sort == 'terlama') {
-                $query = $query->order_by('tanggal', 'asc');
-            } else {
-                $query = $query->order_by('tanggal', 'desc');
-            }
-        } else {
-            $query = $query->order_by('tanggal', 'desc');
-        }
-
-        // generate arsips
-        $arsips = $query->limit(PERPAGE, $offset)
-            ->get()
-            ->result_array();
+        $arsips = $this->klasifikasi_model->getArsipKlasifikasiDashboard($this->myroles, $klasifikasiID, $page, $search, $level, $status, $sort);
+        $count_arsips = $this->klasifikasi_model->countArsipKlasifikasiDashboard($this->myroles, $klasifikasiID, $search, $level, $status);
         foreach ($arsips as $key => $value) {
             // add lampiran detail
             $arsips[$key]['lampirans'] = $this->db->select('type, url')
@@ -379,11 +328,6 @@ class Klasifikasi extends CI_Controller {
                 ->row_array();
         }
 
-
-        // count total page
-        $records = $query->count_all_results();
-        $total_page = ceil($records/PERPAGE);
-
         return $this->output
             ->set_status_header(200)
             ->set_content_type('application/json', 'utf-8')
@@ -391,7 +335,7 @@ class Klasifikasi extends CI_Controller {
                 'success' => true,
                 'data' => $arsips,
                 'current_page' => (int)$page,
-                'total_page' => (int)$total_page,
+                'total_page' => (int)ceil($count_arsips/PERPAGE),
             ], JSON_PRETTY_PRINT));
     }
 }

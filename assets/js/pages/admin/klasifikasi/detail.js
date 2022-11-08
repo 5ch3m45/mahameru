@@ -93,20 +93,35 @@ $(function() {
         $('#next-table').attr('disabled', false)
         _is_fetching = 1;
         
-        axios.get(`/api/dashboard/klasifikasi/${window.location.pathname.split('/')[4]}/arsip?page=${_page}&search=${_search}&status=${_status}&level=${_level}&sort=${_sort}`)
+        axios.get(`/api/dashboard/klasifikasi/${window.location.pathname.split('/')[4]}/arsip?page=${$('#current-page').val()}&search=${_search}&status=${_status}&level=${_level}&sort=${_sort}`)
             .then(res => {
+                const { total_page } = res.data;
                 $('#arsip-table>tbody').html('');
 
-                if(res.data.data.length < 10) {
-                    $('#next-table').attr('disabled', true)
+                if($('#current-page').val() == total_page) {
+                    $('#next-page').attr('disabled', true)
                 } else {
-                    $('#next-table').attr('disabled', false)
+                    $('#next-page').attr('disabled', false)
                 }
-                if(_page == 1) {
-                    $('#prev-table').attr('disabled', true)
+                if($('#current-page').val() == 1) {
+                    $('#prev-page').attr('disabled', true)
                 } else {
-                    $('#prev-table').attr('disabled', false)
+                    $('#prev-page').attr('disabled', false)
                 }
+
+                if($('#current-page').val() < 1) {
+                    $('#current-page').val(1);
+                    _is_fetching = false;
+                    load();
+                    return;
+                }
+                if($('#current-page').val() > total_page) {
+                    $('#current-page').val(total_page);
+                    _is_fetching = false;
+                    load();
+                    return;
+                }
+                $('#total-page').html('dari '+ total_page);
 
                 res.data.data.forEach(item => {
                     $('#arsip-table>tbody').append(`
@@ -160,14 +175,20 @@ $(function() {
         load();
     })
 
-    $('#prev-table').on('click', function() {
-        _page--;
+    $('#prev-page').on('click', function() {
+        $('#current-page').val($('#current-page').val()*1-1)
         load();
     })
-    $('#next-table').on('click', function() {
-        _page++;
+    $('#next-page').on('click', function() {
+        $('#current-page').val($('#current-page').val()*1+1)
         load();
     })
+    $('#current-page').on('keyup paste', function() {
+        $(this).val($(this).val().replace(/[^0-9]/gi, ''));
+    })
+    $('#current-page').on('keyup paste', debounce(function() {
+        load();
+    }, 300))
 
     $(document).on('click', 'tr', function() {
         let id = $(this).data('id');
