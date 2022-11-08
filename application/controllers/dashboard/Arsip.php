@@ -123,75 +123,10 @@ class Arsip extends CI_Controller {
         $search = preg_replace('/[^a-zA-Z\d\s:]/i', '', $search);
         // validasi search end
 
-        // set offset
-        $offset = PERPAGE * ($page -1);
-        $query = $this->db->select('id, informasi, klasifikasi_id, nomor, pencipta, tanggal, level, viewers, status, admin_id')
-            ->from('tbl_arsip');
-
-		// search query
-        if($search) {
-            $query = $query->where('informasi LIKE', '%'.$search.'%')
-                ->or_where('pencipta LIKE', '%'.$search.'%')
-                ->or_where('tanggal LIKE', '%'.$search.'%');
-        }
-
-		// status query
-		if($status && in_array($status, ['draft', 'publikasi', 'dihapus'])) {
-            if($status == 'draft') {
-                $query = $query->where('status', 1);
-            }
-            if($status == 'publikasi') {
-                $query = $query->where('status', 2);
-            }
-            if($status == 'dihapus') {
-                $query = $query->where('status', 3);
-            }
-		} else {
-            $query = $query->where('status <>', 3);
-        }
-
-		// pengelola arsip biasa ga bisa search arsip rahasia
-        if(in_array('arsip_semua', $this->myroles)) {
-            if($level && in_array($level, ['publik', 'rahasia'])) {
-                if($level == 'rahasia') {
-                    $query = $query->where('level', 1);
-                }
-                if($level == 'publik') {
-                    $query = $query->where('level', 2);
-                }
-            }
-        } else {
-            $query = $query->where('level', 2);
-        }
-
-        // user query
-        $user = preg_replace('/[^0-9]/i', '', $user);
-        if($user) {
-            $query = $query->where('admin_id', $user);
-        }
-
-        // sort query
-        if(in_array($sort, ['terbaru', 'terlama', 'nomoraz', 'nomorza'])) {
-            if($sort == 'terbaru') {
-                $query = $query->order_by('tanggal', 'desc');
-            }
-            if($sort == 'terlama') {
-                $query = $query->order_by('tanggal', 'asc');
-            }
-            if($sort == 'nomoraz') {
-                $query = $query->order_by('nomor', 'asc');
-            }
-            if($sort == 'nomorza') {
-                $query = $query->order_by('nomor', 'desc');
-            }
-        } else {
-            $query = $query->order_by('tanggal', 'desc');
-        }
-
         // generate arsips
-        $arsips = $query->limit(PERPAGE, $offset)
-            ->get()
-            ->result_array();
+        $role = in_array('arsip_semua', $this->myroles) ? 'arsip_semua' : 'arsip_publik';
+        $arsips = $this->arsip_model->getArsipDashboard($role, $page, $search, $level, $status, $sort);
+        $count_arsips = $this->arsip_model->countArsipDashboard($role, $search, $level, $status);
 
         foreach ($arsips as $key => $value) {
             // add klasifikasi detail
@@ -236,10 +171,6 @@ class Arsip extends CI_Controller {
                 ->row_array();
         }
 
-        // count total page
-        $records = $query->count_all_results();
-        $total_page = ceil($records/PERPAGE);
-
         return $this->output
             ->set_status_header(200)
             ->set_content_type('application/json', 'utf-8')
@@ -247,7 +178,7 @@ class Arsip extends CI_Controller {
                 'success' => true,
                 'data' => $arsips,
                 'current_page' => (int)$page,
-                'total_page' => (int)$total_page,
+                'total_page' => (int)ceil($count_arsips/PERPAGE),
             ], JSON_PRETTY_PRINT));
     }
 
