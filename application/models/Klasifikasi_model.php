@@ -79,4 +79,44 @@ class Klasifikasi_model extends CI_Model
     function update($id, $data) {
         return $this->db->update($this->table, $data, ['id' => $id]);
     }
+
+    function getKlasifikasiDashboard($page, $search, $sort) {
+        $query = $this->db->select('k.id, k.kode, k.nama, k.deskripsi, k.updated_at')
+            ->from('tbl_klasifikasi k');
+
+        if($search) {
+            $query = $query->where('kode LIKE', '%'.$search.'%')
+                ->or_where('nama LIKE', '%'.$search.'%');
+        }
+
+        $offset = PERPAGE * ($page -1);
+        $query = $query->limit(PERPAGE, $offset)
+			->group_by('k.id');
+
+        if($sort == 'nama') {
+            $query = $query->order_by('k.nama', 'asc');
+        } else if($sort == 'arsip-terbanyak') {
+            $query = $query->order_by('arsip_count', 'desc');
+        } else if($sort == 'arsip-tersedikit') {
+            $query = $query->order_by('arsip_count', 'asc');
+        } else {
+            $query = $query->order_by('kode', 'asc');
+        }
+
+        return $query->where('k.is_deleted', 0)
+            ->get()
+            ->result_array();
+    }
+
+    function countKlasifikasiDashboard($search) {
+        $query = $this->db->select('k.id, k.kode, k.nama, k.deskripsi, k.updated_at')
+            ->from('tbl_klasifikasi k');
+
+        if($search) {
+            $query = $query->where('kode LIKE', '%'.$search.'%')
+                ->or_where('nama LIKE', '%'.$search.'%');
+        }
+
+        return $query->count_all_results();
+    }
 }

@@ -1,5 +1,5 @@
 $(function() {
-    var _page = 1;
+    var _page = $('#current-page').val();
     var _is_fetching = false;
     var _search = $('#search-table').val();
     var _sort = $('#sort-table').val();
@@ -11,28 +11,44 @@ $(function() {
         }
 
         // set fetching state
-        $('#prev-table').attr('disabled', true);
-        $('#next-table').attr('disabled', true);
+        $('#prev-page').attr('disabled', true);
+        $('#next-page').attr('disabled', true);
         _is_fetching = true;
 
-        axios.get(`/api/dashboard/klasifikasi?page=${_page}&search=${_search}&sort=${_sort}`)
+        axios.get(`/api/dashboard/klasifikasi?page=${$('#current-page').val()}&search=${_search}&sort=${_sort}`)
         .then(res => {
+            const { total_page } = res.data;
             // reset table
             $('#klasifikasi-table>tbody').html('');
 
             // batasin min page
-            if(_page == 1) {
-                $('#prev-table').attr('disabled', true);
+            if($('#current-page').val() == 1) {
+                $('#prev-page').attr('disabled', true);
             } else {
-                $('#prev-table').attr('disabled', false);
+                $('#prev-page').attr('disabled', false);
             }
 
             // batasin max page
-            if(res.data.data.length < 10) {
-                $('#next-table').attr('disabled', true);
+            if($('#current-page').val() == total_page) {
+                $('#next-page').attr('disabled', true);
             } else {
-                $('#next-table').attr('disabled', false);
+                $('#next-page').attr('disabled', false);
             }
+
+            if($('#current-page').val() < 1) {
+                $('#current-page').val(1);
+                _is_fetching = false;
+                load();
+                return;
+            }
+            if($('#current-page').val() > total_page) {
+                $('#current-page').val(total_page);
+                _is_fetching = false;
+                load();
+                return;
+            }
+
+            $('#total-page').html('dari '+total_page)
 
             // set content
             res.data.data.forEach(item => {
@@ -63,16 +79,24 @@ $(function() {
     load();
 
     // get data on prevpage
-    $('#prev-table').on('click', function() {
-        _page--;
+    $('#prev-page').on('click', function() {
+        $('#current-page').val($('#current-page').val() * 1 - 1);
         load();
     })
 
     // get data on nextpage
-    $('#next-table').on('click', function() {
-        _page++;
+    $('#next-page').on('click', function() {
+        $('#current-page').val($('#current-page').val() * 1 + 1);
         load();
+    });
+
+    $('#current-page').on('keyup paste', function() {
+        $(this).val($(this).val().replace(/[^0-9]/gi, ''));
     })
+
+    $('#current-page').on('keyup paste', debounce(function() {
+        load();
+    }, 300))
 
     // get data on pencarian
     $('#search-table').on('keyup', debounce(function() {

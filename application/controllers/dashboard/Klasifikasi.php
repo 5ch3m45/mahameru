@@ -63,31 +63,8 @@ class Klasifikasi extends CI_Controller {
         $sort = in_array($sort, ['kode', 'nama', 'arsip-terbanyak', 'arsip-tersedikit']) ? $sort : '';
         // validasi page end
         
-		$offset = PERPAGE * ($page -1);
-		$query = $this->db->select('k.id, k.kode, k.nama, k.deskripsi, k.updated_at')
-			->from('tbl_klasifikasi k');
-
-		if($search) {
-			$query = $query->where('kode LIKE', '%'.$search.'%')
-				->or_where('nama LIKE', '%'.$search.'%');
-		}
-
-		$query = $query->limit(PERPAGE, $offset)
-			->group_by('k.id');
-
-		if($sort == 'nama') {
-			$query = $query->order_by('k.nama', 'asc');
-		} else if($sort == 'arsip-terbanyak') {
-			$query = $query->order_by('arsip_count', 'desc');
-		} else if($sort == 'arsip-tersedikit') {
-			$query = $query->order_by('arsip_count', 'asc');
-		} else {
-			$query = $query->order_by('kode', 'asc');
-		}
-
-		$klasifikasis = $query->where('k.is_deleted', 0)
-			->get()
-			->result_array();
+		$klasifikasis = $this->klasifikasi_model->getKlasifikasiDashboard($page, $search, $sort);
+		$count_klasifikasis = $this->klasifikasi_model->countKlasifikasiDashboard($search);
 
 		foreach ($klasifikasis as $key => $value) {
 			$klasifikasis[$key]['arsip_count'] = $this->db->select('id')
@@ -101,8 +78,10 @@ class Klasifikasi extends CI_Controller {
 			->set_status_header(200)
 			->set_content_type('application/json', 'utf-8')
 			->set_output(json_encode([
-				'success' => true,
-				'data' => $klasifikasis,
+				'success'       => true,
+				'data'          => $klasifikasis,
+                'current_page'  => (int)$page,
+                'total_page'    => (int)ceil($count_klasifikasis/PERPAGE)
 			], JSON_PRETTY_PRINT));
 	}
 
