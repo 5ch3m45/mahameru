@@ -3,40 +3,50 @@ $(function() {
     let total_page = 1;
     let is_fetching = false;
 
-    const getData = (page) => {
+    const getData = () => {
         $('#admin-table>tbody').html('<tr><td colspan="5" class="text-center"><image src="/assets/images/loader/loading.svg"/></td></tr>');
         if(is_fetching) {
             return;
         }
 
         // set fetching state
-        $('#prev-table').attr('disabled', true);
-        $('#next-table').attr('disabled', true);
+        $('#prev-page').attr('disabled', true);
+        $('#next-page').attr('disabled', true);
         is_fetching = true;
 
-        axios.get(`/api/dashboard/admin?page=${page}`)
+        axios.get(`/api/dashboard/admin?page=${$('#current-page').val()}`)
             .then(res => {
+                const { total_page } = res.data;
                 // reset table
                 $('#admin-table>tbody').html('');
 
-                // set page
-                current_page = res.data.current_page;
-                total_page = res.data.total_page;
-                $('#page-table').text(current_page+'/'+total_page);
-
                 // batasin min page
-                if(current_page == 1) {
+                if($('#current-page').val() == 1) {
                     $('#prev-page').attr('disabled', true);
                 } else {
                     $('#prev-page').attr('disabled', false);
                 }
 
                 // batasin max page
-                if(current_page == 1) {
+                if($('#current-page').val() == total_page) {
                     $('#next-page').attr('disabled', true);
                 } else {
                     $('#next-page').attr('disabled', false);
                 }
+
+                if($('#current-page').val() < 1) {
+                    $('#current-page').val(1);
+                    is_fetching = false;
+                    getData();
+                    return;
+                }
+                if($('#current-page').val() > total_page) {
+                    $('#current-page').val(total_page);
+                    is_fetching = false;
+                    getData();
+                    return;
+                }
+                $('#total-page').html('dari '+total_page);
 
                 // set content
                 res.data.data.forEach(item => {
@@ -63,15 +73,23 @@ $(function() {
     getData(current_page);
 
     // get data on prev click
-    $('#prev-table').on('click', function() {
-        getData(current_page-1);
+    $('#prev-page').on('click', function() {
+        $('#current-page').val($('#current-page').val()*1-1)
+        getData();
     });
 
     // get data on next click
-    $('#next-table').on('click', function() {
-        getData(current_page+1);
+    $('#next-page').on('click', function() {
+        $('#current-page').val($('#current-page').val()*1+1)
+        getData();
     });
 
+    $('#current-page').on('keyup paste', function() {
+        $(this).val($(this).val().replace(/[^0-9]/gi, ''));
+    })
+    $('#current-page').on('keyup paste', debounce(function() {
+        getData();
+    }, 300))
     // delegate tr click to detail
     $(document).on('click', 'tr', function() {
         let id = $(this).data('id');
