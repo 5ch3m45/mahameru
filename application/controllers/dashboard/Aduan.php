@@ -10,6 +10,10 @@ class Aduan extends CI_Controller {
 
 		// limitasi otoritas
 		$this->myrole->is('aduan', true);
+
+		$this->load->model([
+			'aduan_model'
+		]);
 	}
 
 	public function index() {
@@ -46,47 +50,18 @@ class Aduan extends CI_Controller {
         }
         // validasi page end
 
-        $offset = PERPAGE * ($page -1);
-        $query = $this->db->select('*')
-            ->from('tbl_aduan')
-            ->where('is_deleted', 0);
-
-		// search query
-		if($search) {
-			$query = $query->group_start()
-				->where('kode LIKE', '%'.$search.'%')
-				->or_where('nama LIKE', '%'.$search.'%')
-				->or_where('email LIKE', '%'.$search.'%')
-				->group_end();
-		}
-
-		// status
-		if($status && in_array($status, [1, 2, 3, 4])) {
-			$query = $query->where('status', $status);
-		}
-
-		// sort
-		if($sort && in_array($sort, ['terbaru', 'terlama'])) {
-			if($sort == 'terbaru') {
-				$query = $query->order_by('created_at', 'desc');
-			} else {
-				$query = $query->order_by('created_at', 'asc');
-			}
-		} else {
-			$query = $query->order_by('created_at', 'desc');
-		}
-		
-        $aduans = $query->limit(PERPAGE, $offset)
-            ->get()
-            ->result_array();
+        $aduans = $this->aduan_model->getAduanDashboard($page, $search, $status, $sort);
+        $count_aduans = $this->aduan_model->countAduanDashboard($search, $status);
 
         return $this->output
             ->set_status_header(200)
             ->set_content_type('application/json', 'utf-8')
             ->set_output(json_encode([
-                'success' => true,
-                'data' => $aduans,
-                'csrf' => $this->security->get_csrf_hash(),
+                'success' 		=> true,
+                'data' 			=> $aduans,
+				'current_page' 	=> (int)$page,
+				'total_page'	=> (int)ceil($count_aduans/PERPAGE),
+                'csrf' 			=> $this->security->get_csrf_hash(),
             ], JSON_PRETTY_PRINT));
     }
 
