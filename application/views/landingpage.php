@@ -206,7 +206,47 @@
                     </div>
                     <?php if($arsip_hari_ini) { ?>
                     <div id="today-archive">
-                        <div id="intro" class="glide">
+                        <div id="intro" class="glide d-none d-lg-block">
+                        	<div class="glide__track" data-glide-el="track">
+                        		<ul class="glide__slides"  style="height:380px">
+                                    <?php foreach ($arsip_hari_ini as $key => $value) { ?>
+                                        <li class="glide__slide">
+                                            <div class="today-archive-card card rounded-corner shadow" role="button" data-id="<?= $value['id'] ?>" style="height:360px">
+                                                <div class="rounded-corner-card-image" style="height: 260px; background-image: url('<?= $value['lampiran'] ? $value['lampiran']['url'] : '/assets/images/no-img.png' ?>'); background-position: center; background-size: cover"></div>
+                                                <div class="card-body" style="font-size: .8rem; max-height: 120px;">
+                                                    <div class="description" style="max-height: 100%; overflow: hidden; text-overflow: ellipsis;">
+                                                        <small><?= $value['tanggal_formatted'] ?></small><br>
+                                                        <strong><?= $value['klasifikasi']['kode'] ?>: <?= $value['klasifikasi']['nama'] ?></strong>
+                                                        <p class="mb-0"><?= $value['informasi'] ?></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    <?php } ?>
+                        		</ul>
+                        	</div>
+                        </div>
+                        <div id="intro2" class="glide d-none d-md-block d-lg-none">
+                        	<div class="glide__track" data-glide-el="track">
+                        		<ul class="glide__slides"  style="height:380px">
+                                    <?php foreach ($arsip_hari_ini as $key => $value) { ?>
+                                        <li class="glide__slide">
+                                            <div class="today-archive-card card rounded-corner shadow" role="button" data-id="<?= $value['id'] ?>" style="height:360px;">
+                                                <div class="rounded-corner-card-image" style="height: 260px; background-image: url('<?= $value['lampiran'] ? $value['lampiran']['url'] : '/assets/images/no-img.png' ?>'); background-position: center; background-size: cover"></div>
+                                                <div class="card-body" style="font-size: .8rem; max-height: 120px;">
+                                                    <div class="description" style="max-height: 100%; overflow: hidden; text-overflow: ellipsis;">
+                                                        <small><?= $value['tanggal_formatted'] ?></small><br>
+                                                        <strong><?= $value['klasifikasi']['kode'] ?>: <?= $value['klasifikasi']['nama'] ?></strong>
+                                                        <p class="mb-0"><?= $value['informasi'] ?></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    <?php } ?>
+                        		</ul>
+                        	</div>
+                        </div>
+                        <div id="intro3" class="glide d-block d-md-none">
                         	<div class="glide__track" data-glide-el="track">
                         		<ul class="glide__slides"  style="height:380px">
                                     <?php foreach ($arsip_hari_ini as $key => $value) { ?>
@@ -299,19 +339,31 @@
             new Glide('#intro', {
                 type: 'slider',
                 perView: 4,
-                focusAt: 'center',
-                breakpoints: {
-                    1024: {
-                        preview: 3
-                    },
-                    800: {
-                        perView: 2
-                    },
-                    480: {
-                        perView: 1
-                    }
-                },
-                autoplay: true,
+                focusAt: 0,
+                autoplay: 3000,
+                gap: 20
+            }).mount({
+                Autoplay,
+                Controls,
+                Swipe
+            })
+            new Glide('#intro2', {
+                type: 'slider',
+                perView: 3,
+                focusAt: 0,
+                autoplay: 3000,
+                gap: 20
+            }).mount({
+                Autoplay,
+                Controls,
+                Swipe
+            })
+            new Glide('#intro3', {
+                type: 'slider',
+                perView: 1,
+                focusAt: 0,
+                autoplay: 3000,
+                gap: 20
             }).mount({
                 Autoplay,
                 Controls,
