@@ -94,26 +94,26 @@
                         <h1 class="text-dark display-text">Database Arsip</h1>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-12 col-md-3">
+                        <div class="col-12 col-md-12 col-lg-3 mb-3 mb-lg-0">
                             <label for="search-input">Cari:</label>
                             <input id="search-input" name="search" type="text" placeholder="Ketik untuk mencari.." class="form-control rounded-lg" value="<?= isset($_GET['q']) ? $_GET['q'] : '' ?>">
                         </div>
-                        <div class="col-12 col-md-2">
-                            <label for="date-start">Tanggal:</label>
+                        <div class="col-12 col-md-6 col-lg-2 mb-3 mb-lg-0">
+                            <label for="date-start">Tanggal (awal-akhir):</label>
                             <input id="date-start" name="date_start" type="date" class="form-control rounded-lg">
                         </div>
-                        <div class="col-12 col-md-2">
-                            <label for="date-end">&nbsp;</label>
+                        <div class="col-12 col-md-6 col-lg-2 mb-3 mb-lg-0">
+                            <label for="date-end" class="d-none d-md-block">&nbsp;</label>
                             <input id="date-end" name="date_end" type="date" class="form-control rounded-lg">
                         </div>
-                        <div class="col-12 col-md-3">
+                        <div class="col-12 col-md-6 col-lg-3 mb-3 mb-lg-0">
                             <label for="sort-input">Urutkan:</label>
                             <select name="sort" id="sort-input" class="form-control rounded-lg">
                                 <option value="terbaru">Terbaru</option>
                                 <option value="terlama">Terlama</option>
                             </select>
                         </div>
-                        <div class="col d-flex align-items-end">
+                        <div class="col mb-3 mb-lg-0 d-flex align-items-end">
                             <button id="reset-table" class="btn btn-light shadow-sm"><i class="bi bi-arrow-clockwise"></i> Reset</button>
                         </div>
                     </div>
