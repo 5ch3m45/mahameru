@@ -109,6 +109,8 @@ class Arsip extends CI_Controller {
         $page = $this->input->get('p', true);
         $search = $this->input->get('q', true);
         $sort = $this->input->get('s', true);
+		$start = $this->input->get('date_start', true);
+		$end = $this->input->get('date_end', true);
 
         // validasi page start
         $page = preg_replace('/[^0-9]/i', '', $page);
@@ -124,10 +126,15 @@ class Arsip extends CI_Controller {
         // validasi sort start
         $sort = in_array($sort, ['terbaru', 'terlama']) ? $sort : '';
         // validasi sort end
+		
+		$date = [
+			'start' => $start,
+			'end'	=> $end
+		];
 
         // generate arsips
-        $arsips = $this->arsip_model->getArsipPublic($page, $search, $sort);
-		$count_arsips = $this->arsip_model->countArsipPublic($search);
+        $arsips = $this->arsip_model->getArsipPublic($page, $search, $date, $sort);
+		$count_arsips = $this->arsip_model->countArsipPublic($search, $date);
         foreach ($arsips as $key => $value) {
             // add klasifikasi detail
             $arsips[$key]['klasifikasi'] = $this->db->select('kode, nama')

@@ -9,7 +9,7 @@ class Arsip_model extends CI_Model
         return $this->db->insert_id();
     }
 
-    function getArsipPublic($page, $search, $sort) {
+    function getArsipPublic($page, $search, $date, $sort) {
         $query = $this->db->select('id, informasi, klasifikasi_id, nomor, pencipta, tanggal')
             ->from($this->table)
             ->where('level', 2)
@@ -18,9 +18,18 @@ class Arsip_model extends CI_Model
         if($search) {
             $query = $query->group_start()
                 ->where('informasi LIKE', '%'.$search.'%')
+                ->or_where('nomor LIKE', '%'.$search.'%')
                 ->or_where('pencipta LIKE', '%'.$search.'%')
-                ->or_where('tanggal LIKE', '%'.$search.'%')
                 ->group_end();
+        }
+
+        if($date) {
+            if($date['start']) {
+                $query = $query->where('tanggal >=', $date['start']);
+            }
+            if($date['end']) {
+                $query = $query->where('tanggal <=', $date['end']);
+            }
         }
 
         if($sort) {
@@ -39,7 +48,7 @@ class Arsip_model extends CI_Model
             ->result_array();
     }
 
-    function countArsipPublic($search) {
+    function countArsipPublic($search, $date) {
         $query = $this->db->select('id, informasi, klasifikasi_id, nomor, pencipta, tanggal')
             ->from($this->table)
             ->where('level', 2)
@@ -48,9 +57,17 @@ class Arsip_model extends CI_Model
         if($search) {
             $query = $query->group_start()
                 ->where('informasi LIKE', '%'.$search.'%')
+                ->or_where('nomor LIKE', '%'.$search.'%')
                 ->or_where('pencipta LIKE', '%'.$search.'%')
-                ->or_where('tanggal LIKE', '%'.$search.'%')
                 ->group_end();
+        }
+        if($date) {
+            if($date['start']) {
+                $query = $query->where('tanggal >=', $date['start']);
+            }
+            if($date['end']) {
+                $query = $query->where('tanggal <=', $date['end']);
+            }
         }
 
         return $query->count_all_results();

@@ -16,7 +16,7 @@ $(function() {
         }
     }
 
-    const getData = (q, s) => {
+    const getData = () => {
         if(is_fetching) {
             return;
         }
@@ -26,7 +26,7 @@ $(function() {
         $('#next-page').attr('disabled', true);
         is_fetching = true;
 
-        axios.get(`/api/public/arsip?q=${q}&s=${s}&p=${$('#current-page').val()}`)
+        axios.get(`/api/public/arsip?q=${$('#search-input').val()}&s=${$('#sort-input').val()}&p=${$('#current-page').val()}&date_start=${$('#date-start').val()}&date_end=${$('#date-end').val()}`)
             .then(res => {
                 const { total_page, data } = res.data;
                 // reset table
@@ -86,41 +86,43 @@ $(function() {
     })
 
     // get data on ready
-    getData(query, sort);
+    getData();
 
     // get data on search
     $('#search-input').on('keyup', debounce(function() {
-        current_page = 1;
-        query = $('#search-input').val();
-        sort = $('#sort-input').val();
-        getData(1, query, sort);
+        $('#current-page').val(1);
+        getData();
     }))
 
     // get data on sort
     $('#sort-input').on('change', function() {
-        query = $('#search-input').val();
-        sort = $('#sort-input').val();
-        getData(query, sort);
+        getData();
     })
 
     // get data on prev click
     $('#prev-page').on('click', function() {
         $('#current-page').val($('#current-page').val()*1 - 1);
-        getData(query, sort);
+        getData();
     })
 
     // get data on next click
     $('#next-page').on('click', function() {
         $('#current-page').val($('#current-page').val()*1 + 1);
-        getData(query, sort);
+        getData();
     });
 
     $('#current-page').on('keyup paste', function() {
         $(this).val($(this).val().replace(/[^0-9]/gi, ''))
     })
     $('#current-page').on('keyup paste', debounce(function() {
-        getData(query, sort);
+        getData();
     }, 300))
+    $('#date-start').on('change', function() {
+        getData()
+    })
+    $('#date-end').on('change', function() {
+        getData()
+    })
 
     //reset table
     $('#reset-table').on('click', function() {
