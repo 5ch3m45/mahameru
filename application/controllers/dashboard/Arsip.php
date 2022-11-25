@@ -451,9 +451,9 @@ class Arsip extends CI_Controller {
 
         if(in_array($uploadData['file_ext'], ['.jpg', '.png', '.jpeg'])) {
             $this->resizeImage($uploadData['full_path']);
-            $this->overlayWatermark($uploadData['full_path']);
-            $this->TextWatermark($uploadData['full_path']);
-            $this->Text2Watermark($uploadData['full_path']);
+            $this->overlayWatermarkV2($uploadData['full_path']);
+            // $this->TextWatermark($uploadData['full_path']);
+            // $this->Text2Watermark($uploadData['full_path']);
         }
         
         $data = [
@@ -556,6 +556,27 @@ class Arsip extends CI_Controller {
         $config['wm_opacity'] = 90;
         $config['wm_vrt_alignment'] = 'bottom';
         $config['wm_hor_alignment'] = 'left';
+        $this->image_lib->initialize($config);
+        if (!$this->image_lib->watermark()) 
+        {
+            echo $this->image_lib->display_errors();
+        }
+    }
+
+    public function overlayWatermarkV2($source_image)
+    {
+        $config['image_library'] = 'gd2';
+        $config['source_image'] = $source_image;
+        $config['wm_type'] = 'overlay';
+        $config['wm_overlay_path'] = APPPATH.'/../assets/images/wm_.png';     //the overlay image
+        $config['wm_x_transp'] = 0;
+        $config['wm_y_transp'] = 0;
+        $config['wm_vrt_offset'] = 0;
+        $config['wm_hor_offset'] = 0;
+        $config['wm_quality'] = 10;
+        $config['wm_opacity'] = 10;
+        $config['wm_vrt_alignment'] = 'middle';
+        $config['wm_hor_alignment'] = 'center';
         $this->image_lib->initialize($config);
         if (!$this->image_lib->watermark()) 
         {
