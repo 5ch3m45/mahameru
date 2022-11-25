@@ -38,13 +38,11 @@ $(function() {
             if($('#current-page').val() < 1) {
                 $('#current-page').val(1);
                 _is_fetching = false;
-                load();
                 return;
             }
             if($('#current-page').val() > total_page) {
                 $('#current-page').val(total_page);
                 _is_fetching = false;
-                load();
                 return;
             }
 

@@ -56,7 +56,7 @@ class Klasifikasi extends CI_Controller {
         // validasi page end
 
         // validasi page start
-        $search = preg_replace('/[^a-zA-Z\d\s:]/i', '', $search);
+        $search = preg_replace('/[^a-zA-Z\d\s:\.]/i', '', $search);
         // validasi page end
 
         // validasi page start
@@ -143,9 +143,8 @@ class Klasifikasi extends CI_Controller {
         $input = $this->input->post(NULL, TRUE);
 
         // validasi kode
-        $this->form_validation->set_rules('kode', 'Kode', 'numeric|required', [
+        $this->form_validation->set_rules('kode', 'Kode', 'required', [
             'required' => 'Kode tidak boleh kosong',
-            'numeric' => 'Kode tidak valid',
         ]);
 
         // validasi nama
@@ -154,7 +153,7 @@ class Klasifikasi extends CI_Controller {
         ]);
 
         // cek kode sudah ada apa belum
-        $kode = $this->klasifikasi_model->getOneByKode((int)$input['kode']);
+        $kode = $this->klasifikasi_model->getOneByKode($input['kode']);
         // jika ada kode
         $kodeError = '';
         if($kode) {
@@ -178,7 +177,7 @@ class Klasifikasi extends CI_Controller {
 
         // inisiasi data yang akan disimpan ke database
         $data = [
-            'kode' => (int)$input['kode'],
+            'kode' => $input['kode'],
             'nama' => trim($input['nama']),
             'deskripsi' => @$input['deskripsi'],
             'created_at' => date('c'),
