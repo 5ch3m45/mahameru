@@ -142,53 +142,22 @@
             </section>
             <section id="pencarian" class="spacer bg-white">
                 <div class="container">
-                    <div style="box-shadow: 0px 0px 20px #bbb; border-radius: 50px" data-aos="zoom-in" class="search-section p-2 d-none d-md-block animate__animated animate__fadeIn animate__slower">
+                    <form action="<?= base_url('arsip') ?>" style="box-shadow: 0px 0px 20px #bbb; border-radius: 50px" data-aos="zoom-in" class="search-section p-2 d-none d-md-block animate__animated animate__fadeIn animate__slower">
                         <div class="d-flex">
-                            <input type="text" name="" id="" class="search-arsip form-control form-control-lg input-landing" style="border: 0px"  placeholder="Cari arsip">
-                            <!-- <div class="mr-2" style="border: 0px; background-color: var(--primary); min-width: 170px; color: white; border-radius: 20px; padding-right: 1rem">
-                                <select name="" id="" class="form-control form-control-lg select-landing" style="border: 0px; background-color: var(--primary); color: white; border-radius: 20px;">
-                                    <option value="">Jenis Arsip</option>
-                                    <option value="">Dokumen</option>
-                                    <option value="">Foto</option>
-                                    <option value="">Video</option>
-                                </select>
-                            </div> -->
-                            <button type="button" class="btn btn-primary search-go" style="border-radius: 50px">
+                            <input type="text" name="q" id="" class="form-control form-control-lg input-landing" style="border: 0px"  placeholder="Cari arsip">
+                            <button type="submit" class="btn btn-primary" style="border-radius: 50px">
                                 <i class="mdi mdi-magnify"></i>
                             </button>
                         </div>
-                    </div>
-                    <div data-aos="zoom-in-up" class="search-section d-block d-md-none animate__animated animate__fadeIn">
-                        <input type="text" name="" class="search-arsip form-control form-control-lg mb-2" style="border: 0px; box-shadow: 0px 0px 20px #bbb; border-radius: 50px"  placeholder="Cari arsip">
-                        <!-- <div class="mb-2" style="border: 0px; background-color: var(--primary); min-width: 170px; color: white; border-radius: 20px; padding-right: 1rem">
-                            <select name="" id="" class="form-control form-control-lg" style="border: 0px; background-color: var(--primary); color: white; border-radius: 20px;">
-                                <option value="">Jenis Arsip</option>
-                                <option value="">Dokumen</option>
-                                <option value="">Foto</option>
-                                <option value="">Video</option>
-                            </select>
-                        </div> -->
-                        <button type="button" class="search-go btn btn-primary btn-block" style="border-radius: 50px">
+                    </form>
+                    <form action="<?= base_url('arsip') ?>" data-aos="zoom-in-up" class="search-section d-block d-md-none animate__animated animate__fadeIn">
+                        <input type="text" name="q" class="search-arsip form-control form-control-lg mb-2" style="border: 0px; box-shadow: 0px 0px 20px #bbb; border-radius: 50px"  placeholder="Cari arsip">
+                        <button type="submit" class="btn btn-primary btn-block" style="border-radius: 50px">
                             <i class="mdi mdi-magnify"></i>
                         </button>
-                    </div>
+                    </form>
                 </div>
             </section>
-            <!-- <section id="artikel-pilihan" class="spacer bg-white">
-                <div class="container">
-                    <div class="d-md-flex d-block">
-                        <div class="mr-4">
-                            <img src="<?= assets_url() ?>/images/business-3d-old-man-standing-with-coat-on-hand.png" style="max-height: 300px; max-width: 300px" alt="" srcset="">
-                        </div>
-                        <div>
-                            <h1 class="text-dark display-text">Lorem ipsum dolor sit amet consectetur adipisicing elit.</h1>
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Incidunt ducimus minima nulla ipsam exercitationem perspiciatis nihil ex quis tenetur, aperiam odio? Ad reiciendis quos, libero itaque aliquid fugiat molestias consequuntur eligendi perspiciatis veritatis. Aperiam corporis, dolor recusandae est aspernatur dolorum consectetur culpa odio esse praesentium corrupti reiciendis aliquam totam quis?</p>
-                            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Velit corporis, rerum, fuga eligendi eos, voluptates ipsam adipisci culpa impedit tempora vitae ullam repellat ex deserunt commodi delectus blanditiis iusto accusamus labore iure? Minus aliquam facere earum, corrupti aspernatur fuga soluta magni beatae sapiente, quia, perspiciatis aperiam nemo delectus excepturi cum?</p>
-                            <a href="/artikel/1">Baca selengkapnya</a> | <a href="/artikel"><button class="btn btn-sm btn-primary">Artikel Lainnya</button></a>
-                        </div>
-                    </div>
-                </div>
-            </section> -->
             <section id="arsip-hari-ini" class="spacer bg-white">
                 <div class="container">
                     <div class="d-md-flex d-block justify-content-between mb-5">
