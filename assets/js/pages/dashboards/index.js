@@ -1,6 +1,8 @@
 $(function() {
+    let params = new URL(window.location.href).searchParams;
+
     const loadChart = () => {
-        axios.get(`/api/dashboard/arsip/chart-data`)
+        axios.get(`/api/dashboard/arsip/chart-data?start=${params.get('start')}&end=${params.get('end')}`)
             .then(async res => {
                 let label = [];
                 let series = [];
@@ -85,6 +87,96 @@ $(function() {
                 chart.render();
             })
     }
+
+    const loadHistoricalViewChart = () => {
+        axios.get(`/api/dashboard/arsip/viewer-data?start=${params.get('start')}&end=${params.get('end')}`)
+            .then(async res => {
+                console.log(res)
+                let label = [];
+                let series = [];
+
+                await res.data.data.forEach(item => {
+                    label.push(item.formatted_date);
+                    series.push(item.viewers)
+                })
+
+                var options = {
+                	series: [{
+                		name: 'Pengunjung',
+                		data: series
+                	}],
+                	chart: {
+                		height: 400,
+                		type: 'bar',
+                	},
+                	plotOptions: {
+                		bar: {
+                            borderRadius: 10,
+                			dataLabels: {
+                				position: 'top', // top, center, bottom
+                			},
+                		}
+                	},
+                	dataLabels: {
+                		enabled: true,
+                		formatter: function (val) {
+                			return val;
+                		},
+                		offsetY: -20,
+                		style: {
+                			fontSize: '12px',
+                			colors: ["#304758"]
+                		}
+                	},
+
+                	xaxis: {
+                		categories: label,
+                		position: 'bottom',
+                		axisBorder: {
+                			show: false
+                		},
+                		axisTicks: {
+                			show: false
+                		},
+                		crosshairs: {
+                			fill: {
+                				type: 'gradient',
+                				gradient: {
+                					colorFrom: '#D8E3F0',
+                					colorTo: '#BED1E6',
+                					stops: [0, 100],
+                					opacityFrom: 0.4,
+                					opacityTo: 0.5,
+                				}
+                			}
+                		},
+                		tooltip: {
+                			enabled: true,
+                		}
+                	},
+                	yaxis: {
+                		axisBorder: {
+                			show: false
+                		},
+                		axisTicks: {
+                			show: false,
+                		},
+                		labels: {
+                			show: false,
+                			formatter: function (val) {
+                				return val;
+                			}
+                		}
+
+                	}
+                };
+
+                console.log(series);
+                var chart = new ApexCharts(document.querySelector(".arsip-dilihat-chart"), options);
+                chart.render();
+            })
+    }
+
     const loadTop5Klasifikasi = () => {
         $('#klasifikasi-top5').html('')
         const colors = ['primary', 'secondary', 'info', 'warning', 'danger', 'success'];
@@ -95,13 +187,10 @@ $(function() {
                     if(item.arsip_count > 0) {
                         $('#klasifikasi-top5').append(`
                             <div class="py-3 d-flex align-items-center">
-                                <span class="btn btn-${color} btn-circle d-flex align-items-center">
-                                    &nbsp;
-                                </span>
-                                <div class="ms-3">
-                                    <a href="/admin/kode-klasifikasi/detail/${item.id}">
+                                <div>
+                                    <a href="/dashboard/kode-klasifikasi/detail/${item.id}">
                                         <h5 class="mb-0 fw-bold">${item.kode}</h5>
-                                        <span class="text-muted fs-6">${item.nama}</span>
+                                        <small class="text-muted">${item.nama ? item.nama.length > 50 ? item.nama.substr(0, 50)+"..." : item.nama : item.nama}</small>
                                     </a>
                                 </div>
                                 <div class="ms-auto">
@@ -110,6 +199,31 @@ $(function() {
                             </div>
                         `)
                     }
+                })
+            })
+    }
+
+    const loadTop5Arsip = () => {
+        $('#arsip-top5').html('')
+        axios.get(`/api/dashboard/arsip/top5`)
+            .then(res => {
+                res.data.data.forEach(item => {
+                    $('#arsip-top5').append(`
+                        <div class="pb-3">
+                            <div class="d-flex align-items-center">
+                                <div>
+                                    <a href="/dashboard/arsip/detail/${item.id}">
+                                        <h5 class="mb-0 fw-bold">#${item.nomor}</h5>
+                                        <small class="text-muted">${item.informasi ? item.informasi.length > 50 ? item.informasi.substr(0, 50)+"..." : item.informasi : item.informasi}</small>
+                                    </a>
+                                </div>
+                                <div class="ms-auto">
+                                    <span class="badge bg-light text-muted">${item.viewers} arsip</span>
+                                </div>
+                            </div>
+                            <small class="text-dark">Oleh: ${item.pencipta}</small>
+                        </div>
+                        `)
                 })
             })
     }
@@ -183,7 +297,9 @@ $(function() {
     }
 
     loadChart();
+    loadHistoricalViewChart();
     loadTop5Klasifikasi();
+    loadTop5Arsip();
     loadLast5Arsip();
 
     $(document).on('click', 'tr', function() {

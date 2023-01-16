@@ -106,14 +106,17 @@ $route['api/dashboard/aduan/(:num)']                        = 'dashboard/Aduan/A
 $route['api/dashboard/aduan/(:num)/update']                 = 'dashboard/Aduan/API_update/$1';
 // arsip
 $route['api/dashboard/arsip']                               = 'dashboard/Arsip/API_index';
+$route['api/dashboard/arsip/viewer-data']                   = 'dashboard/Arsip/API_historicalViewers';
 $route['api/dashboard/arsip/chart-data']                    = 'dashboard/Arsip/API_chartData';
 $route['api/dashboard/arsip/last5']                         = 'dashboard/Arsip/API_last5';
+$route['api/dashboard/arsip/top5']                          = 'dashboard/Arsip/API_top5';
 $route['api/dashboard/arsip/(:num)']                        = 'dashboard/Arsip/API_detail/$1';
 $route['api/dashboard/arsip/(:num)/delete']                 = 'dashboard/Arsip/API_destroy/$1';
 $route['api/dashboard/arsip/(:num)/draft']                  = 'dashboard/Arsip/API_draft/$1';
 $route['api/dashboard/arsip/(:num)/publikasi']              = 'dashboard/Arsip/API_publish/$1';
 $route['api/dashboard/arsip/(:num)/restore']                = 'dashboard/Arsip/API_restore/$1';
 $route['api/dashboard/arsip/(:num)/update']                 = 'dashboard/Arsip/API_update/$1';
+$route['api/dashboard/arsip/(:num)/viewer-data']            = 'dashboard/Arsip/API_arsipHistoricalViewers/$1';
 $route['api/dashboard/arsip/(:num)/lampiran']               = 'dashboard/Arsip/API_storeLampiran/$1';
 $route['api/dashboard/arsip/(:num)/lampiran/(:num)/hapus']  = 'dashboard/Arsip/API_destroyLampiran/$1/$2';
 // klasifikasi

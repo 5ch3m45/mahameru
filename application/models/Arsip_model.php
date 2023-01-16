@@ -112,12 +112,15 @@ class Arsip_model extends CI_Model
             $query = $query->where('level', 2);
         }
 
-        if(in_array($sort, ['terbaru', 'terlama', 'nomoraz', 'nomorza'])) {
+        if(in_array($sort, ['terbaru', 'terlama', 'nomoraz', 'nomorza', 'terpopuler'])) {
             if($sort == 'terbaru') {
                 $query = $query->order_by('tanggal', 'desc');
             }
             if($sort == 'terlama') {
                 $query = $query->order_by('tanggal', 'asc');
+            }
+            if($sort == 'terpopuler') {
+                $query = $query->order_by('viewers', 'desc');
             }
             if($sort == 'nomoraz') {
                 $query = $query->order_by('nomor', 'asc');
@@ -175,5 +178,33 @@ class Arsip_model extends CI_Model
         }
 
         return $query->count_all_results();
+    }
+
+    function addTotalViewers($arsip_id, $viewers) {
+        return $this->db->where('id', $arsip_id)
+            ->update($this->table, [
+                'viewers' => $viewers,
+                'last_viewer_update' => time()
+            ]);
+    }
+
+    function getAllHistoricalPublication($start_date, $end_date) {
+        return $this->db->select('DATE_FORMAT(created_at, "%Y-%m-%d") as date, count(id) as count')
+            ->from('tbl_arsip')
+            ->where('updated_at >=', $start_date)
+            ->where('updated_at <=', $end_date)
+            ->where('status', 2)
+            ->group_by('date')
+            ->get()
+            ->result_array();
+    }
+
+    function getTopArsip($limit) {
+        return $this->db->select('id, nomor, informasi, tanggal, viewers, pencipta')
+            ->from('tbl_arsip')
+            ->order_by('viewers', 'desc')
+            ->limit($limit)
+            ->get()
+            ->result_array();
     }
 }

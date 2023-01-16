@@ -9,9 +9,12 @@ class Arsip extends CI_Controller {
 		parent::__construct();
 
 		$this->load->helper('string');
+		$this->load->helper('validation_helper');
+		$this->load->helper('view');
 		$this->load->library('myrole');
 		$this->load->library('session');
 		$this->load->model('arsip_model');
+		$this->load->model('arsip_viewers_model');
 		$this->load->model('lampiran_model');
 		$this->load->model('klasifikasi_model');
 
@@ -29,7 +32,84 @@ class Arsip extends CI_Controller {
 	
 	// ===== VIEW START =====
 	public function index() {
-		$this->load->view('dashboard/arsip/index');
+        $page = $this->input->get('page', true);
+        $search = $this->input->get('search', true);
+        $status = $this->input->get('status', true);
+        $sort = $this->input->get('sort', true);
+        $user = $this->input->get('user', true);
+        $level = $this->input->get('level', true);
+
+        // validasi page start
+        $page = preg_replace('/[^0-9]/i', '', $page);
+        $page = (int)$page;
+        if(!$page) {
+            $page = 1;
+        }
+        // validasi page end
+
+        // validasi search start
+        $search = preg_replace('/[^a-zA-Z\d\s:]/i', '', $search);
+        // validasi search end
+
+        // generate arsips
+        $role = in_array('arsip_semua', $this->myroles) ? 'arsip_semua' : 'arsip_publik';
+        $arsips = $this->arsip_model->getArsipDashboard($role, $page, $search, $level, $status, $sort);
+        $count_arsips = $this->arsip_model->countArsipDashboard($role, $search, $level, $status);
+
+        foreach ($arsips as $key => $value) {
+            // add klasifikasi detail
+            $arsips[$key]['klasifikasi'] = $this->db->select('kode, nama')
+                ->from('tbl_klasifikasi')
+                ->where('id', $value['klasifikasi_id'])
+                ->get()
+                ->row_array();
+            // add lampiran detail
+            $lampiran_count = $this->db->select('id')
+                ->from('tbl_lampiran')
+                ->where('arsip_id', $value['id'])
+                ->where('is_deleted', 0)
+                ->count_all_results();
+            $arsips[$key]['lampirans'] = $this->db->select('type, url')
+                ->from('tbl_lampiran')
+                ->where('arsip_id', $value['id'])
+                ->where('is_deleted', 0)
+                ->limit(2)
+                ->get()
+                ->result_array();
+            if($lampiran_count > 2) {
+                $lampiran_rest = $lampiran_count - count($arsips[$key]['lampirans']);
+                array_push($arsips[$key]['lampirans'], [
+                    'type' => 'rest',
+                    'url' => $lampiran_rest
+                ]);
+            }
+            // format tahun
+            if($value['tanggal']) {
+                if($this->session->is_logged_in) {
+                    $arsips[$key]['tanggal_formatted'] = date('d M Y', strtotime($value['tanggal']));
+                } else {
+                    $arsips[$key]['tahun'] = date('Y', strtotime($value['tanggal']));
+                }
+            }
+            // add admin
+            $arsips[$key]['admin'] = $this->db->select('name')
+                ->from('users')
+                ->where('id', $value['admin_id'])
+                ->get()
+                ->row_array();
+        }
+        
+		$this->load->view('dashboard/arsip/index', [
+            'arsips' => $arsips,
+            'current_page' => (int)$page,
+            'total_page' => (int)ceil($count_arsips/PERPAGE),
+            'page' => $page,
+            'search' => $search,
+            'status' => $status,
+            'sort' => $sort,
+            'user' => $user,
+            'level' => $level,
+        ]);
 	}
 
 	public function create() {
@@ -972,17 +1052,19 @@ class Arsip extends CI_Controller {
     }
 
     public function API_chartData() {
-        $end = date('Y-m-d');
-        $begin = date('Y-m-d', strtotime("-2 week", strtotime($end)));
+        $start_date = $this->input->get('start', true);
+        $end_date = $this->input->get('end', true);
 
-        $data = $this->db->select('DATE_FORMAT(created_at, "%Y-%m-%d") as date, count(id) as count')
-            ->from('tbl_arsip')
-            ->where('created_at IS NOT NULL', null, false)
-            ->where('created_at >=', $begin)
-            ->where('status', 2)
-            ->group_by('date')
-            ->get()
-            ->result_array();
+        if(!$end_date OR !validDate($end_date)) {
+            $end_date = date('Y-m-d');
+        }
+
+        if(!$start_date OR !validDate($start_date)) {
+            $start_date = date('Y-m-d', strtotime('-14 day', strtotime($end_date)));
+        }
+        
+
+        $data = $this->arsip_model->getAllHistoricalPublication($start_date, $end_date);
 
         if(!$data) {
             return $this->output
@@ -995,8 +1077,8 @@ class Arsip extends CI_Controller {
                 ])); 
         }
 
-        $begin = new DateTime($begin);
-        $end = new DateTime(date('Y-m-d', strtotime("+1 day", strtotime($end))));
+        $begin = new DateTime($start_date);
+        $end = new DateTime(date('Y-m-d', strtotime("+1 day", strtotime($end_date))));
         $interval = DateInterval::createFromDateString('1 day');
         $periode = new DatePeriod($begin, $interval, $end);
 
@@ -1017,12 +1099,92 @@ class Arsip extends CI_Controller {
         }
 
         return $this->output
-        ->set_status_header(200)
-        ->set_content_type('application/json', 'utf-8')
-        ->set_output(json_encode([
-            'success' => true,
-            'data' => $result,
-            'csrf' => $this->security->get_csrf_hash()
-        ])); 
+            ->set_status_header(200)
+            ->set_content_type('application/json', 'utf-8')
+            ->set_output(json_encode([
+                'success' => true,
+                'data' => $result,
+                'csrf' => $this->security->get_csrf_hash()
+            ])); 
+    }
+
+    public function API_historicalViewers() {
+        $start_date = $this->input->get('start', true);
+        $end_date = $this->input->get('end', true);
+
+        if(!$end_date OR !validDate($end_date)) {
+            $end_date = date('Y-m-d');
+        }
+
+        if(!$start_date OR !validDate($start_date)) {
+            $start_date = date('Y-m-d', strtotime('-14 day', strtotime($end_date)));
+        }
+
+        $historical_data = $this->arsip_viewers_model->getAllHistoricalViewerByRange($start_date, $end_date);
+
+        // generate interval data
+        $begin = new DateTime($start_date);
+        $end = new DateTime(date('Y-m-d', strtotime("+1 day", strtotime($end_date))));
+        $interval = DateInterval::createFromDateString('1 day');
+        $periode = new DatePeriod($begin, $interval, $end);
+
+        $result = [];
+        foreach ($periode as $key => $date) {
+            $currentDate = $date->format('Y-m-d');
+            $search = array_search($currentDate, array_column($historical_data, 'date'));
+            if(is_int($search)) {
+                $historical_data[$search]['formatted_date'] = $date->format('d/m');
+                array_push($result, $historical_data[$search]);
+            } else {
+                array_push($result, [
+                    'date' => $currentDate,
+                    'formatted_date' => $date->format('d/m'),
+                    'viewers' => 0
+                ]);
+            }
+        }
+
+        return $this->output
+            ->set_status_header(200)
+            ->set_content_type('application/json', 'utf-8')
+            ->set_output(json_encode([
+                'success' => true,
+                'data' => $result,
+                'start' => $start_date,
+                'end' => $end_date,
+            ]));
+    }
+
+    public function API_arsipHistoricalViewers($arsip_id) {
+        $range_day = $this->input->get('s');
+        
+        if((int)$range_day <= 0) {
+            $range_day = 14;
+        }
+
+        $end_date = date('Y-m-d');
+        $start_date = date('Y-m-d', strtotime('-'.(int)$range_day.' day', strtotime($end_date)));
+
+        $data = $this->arsip_viewers_model->getArsipHistoricalViewerByRange($arsip_id, $start_date);
+
+        return $this->output
+            ->set_status_header(200)
+            ->set_content_type('application/json', 'utf-8')
+            ->set_output(json_encode([
+                'success' => true,
+                'data' => $data
+            ]));
+    }
+
+    public function API_top5() {
+        $top_arsip = $this->arsip_model->getTopArsip(5);
+    
+        return $this->output
+            ->set_status_header(200)
+            ->set_content_type('application/json', 'utf-8')
+            ->set_output(json_encode([
+                'success' => true,
+                'data' => $top_arsip
+            ]));
     }
 }

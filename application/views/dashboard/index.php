@@ -31,6 +31,32 @@
             </div>
             <div class="container-fluid">
                 <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <form class="row" method="GET">
+                                    <div class="col-12">
+                                        <h4 class="card-title">Filter statistik</h4>
+                                        <h6 class="card-subtitle">Filter statistik jumlah arsip dipublikasi dan jumlah pengunjung arsip berdasarkan tanggal</h6>
+                                    </div>
+                                    <div class="col-12 col-lg-4">
+                                        <label for="">Tanggal awal</label>
+                                        <input type="date" name="start" id="start-date-input" value="<?= $this->input->get('start', true) ?>" class="form-control">
+                                    </div>
+                                    <div class="col-12 col-lg-4">
+                                        <label for="">Tanggal akhir</label>
+                                        <input type="date" name="end" id="end-date-input" value="<?= $this->input->get('end', true) ?>" class="form-control">
+                                    </div>
+                                    <div class="col-12 col-lg-4">
+                                        <label for="" class="d-none d-lg-block">&nbsp;</label>
+                                        <button type="submit" class="btn btn-primary"><i class="bi bi-funnel-fill"></i> Filter</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-lg-8">
                         <div class="card">
                             <div class="card-body">
@@ -57,6 +83,37 @@
                                 <h4 class="card-title">Klasifikasi Terbanyak</h4>
                                 <h6 class="card-subtitle">Klasifikasi dengan Arsip Dipublikasi Terbanyak</h6>
                                 <div id="klasifikasi-top5" class=""></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-md-flex align-items-center">
+                                    <div>
+                                        <h4 class="card-title">Jumlah Pengunjung Arsip</h4>
+                                        <h6 class="card-subtitle">Jumlah pengunjung arsip dalam <span id="arsip-dikunjungi-day">14</span> hari terakhir</h6>
+                                    </div>
+                                    <div class="ms-auto d-flex no-block align-items-center">
+                                        <ul class="list-inline dl d-flex align-items-center m-r-15 m-b-0">
+                                            <li class="list-inline-item d-flex align-items-center text-info">
+                                                <i class="fa fa-circle font-10 me-1"></i> Pengunjung
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="arsip-dilihat-chart mt-4" style="height: 400px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Top Arsip</h4>
+                                <h6 class="card-subtitle">Arsip dengan Kunjungan Terbanyak</h6>
+                                <div id="arsip-top5" class=""></div>
                             </div>
                         </div>
                     </div>
@@ -230,7 +287,6 @@
     </div>
     <?php include_once(__DIR__.'/components/base_js.php'); ?>
     <script src="<?= assets_url() ?>js/pages/dashboards/index.js?v=<?= time() ?>"></script>
-    <!-- <script src="<?= assets_url() ?>js/pages/dashboards/dashboard1.js?v=<?= time() ?>"></script> -->
     <script>
         $('#arsip-table tr').on('click', function() {
             window.location.href = '/arsip/detail'
