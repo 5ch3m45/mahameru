@@ -42,21 +42,28 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <div class="row mb-4">
+                                <form id="filter-klasifikasi-form" action="<?= base_url('dashboard/kode-klasifikasi') ?>" class="row mb-4">
+                                    <input id="input-halaman" type="hidden" name="page" value="<?= $current_page ?>">
                                     <div class="col-12 col-md-3">
                                         <label for="search-table">Cari</label>
-                                        <input type="text" name="search" id="search-table" class="form-control" placeholder="Cari">
+                                        <input type="text" name="search" value="<?= $search ?>" id="search-table" class="form-control" placeholder="Cari">
                                     </div>
                                     <div class="col-12 col-md-3">
                                         <label for="search-table">Urutkan</label>
                                         <select name="sort" id="sort-table" class="form-control">
-                                            <option value="kode">Kode</option>
-                                            <option value="nama">Nama</option>
-                                            <option value="arsip-terbanyak">Arsip Terbanyak</option>
-                                            <option value="arsip-tersedikit">Arsip Tersedikit</option>
+                                            <option value="kode" <?= !$sort OR $sort == 'kode' ? 'selected' : '' ?>>Kode</option>
+                                            <option value="nama" <?= $sort == 'nama' ? 'selected' : '' ?>>Nama</option>
+                                            <option value="arsip-terbanyak" <?= $sort == 'arsip-terbanyak' ? 'selected' : '' ?>>Arsip Terbanyak</option>
+                                            <option value="arsip-tersedikit" <?= $sort == 'arsip-tersedikit' ? 'selected' : '' ?>>Arsip Tersedikit</option>
                                         </select>
                                     </div>
-                                </div>
+                                    <div class="col-12 col-md-3">
+                                        <label for="search-table">&nbsp;</label>
+                                        <div>
+                                            <button class="btn btn-primary"><i class="bi bi-search"></i> Cari</button>
+                                        </div>
+                                    </div>
+                                </form>
 
                                 <div class="table-responsive" style="min-height: 30rem">
                                     <table id="klasifikasi-table" class="table mb-0 table-hover align-middle text-nowrap">
@@ -67,28 +74,42 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr><td colspan="2" class="text-center"><image src="/assets/images/loader/loading.svg"/></td></tr>
+                                            <?php foreach ($klasifikasis as $key => $klasifikasi) { ?>
+                                                <tr>
+                                                    <td>
+                                                        <div>
+                                                            <a class="text-primary" href="/dashboard/kode-klasifikasi/detail/<?= $klasifikasi['id'] ?>">
+                                                                <strong><?= trim($klasifikasi['kode']) ?>. <?= $klasifikasi['nama'] ?></strong>
+                                                            </a>
+                                                        </div>
+                                                        <div>
+                                                            <small><?= $klasifikasi['deskripsi'] ?></small>
+                                                        </div>
+                                                    </td>
+                                                    <td><?= $klasifikasi['arsip_count'] ?> arsip</td>
+                                                </tr>
+                                            <?php } ?>
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="d-flex justify-content-end">
-                                	<button id="prev-page" class="btn btn-primary"
+                                <div class="d-flex justify-content-end mt-4">
+                                	<a href="<?= $current_page > 1 ? base_url('dashboard/kode-klasifikasi?page='.($current_page - 1).'&search='.$search.'&sort='.$sort) : '#' ?>" class="btn btn-primary"
                                 		style="border-radius: 10px 0 0 10px">
                                         <span class="d-none d-md-block">Sebelumnya</span>
                                         <span class="d-md-none"><<</span>
-                                    </button>
+                                    </a>
                                 	<div class="input-group" style="width: auto">
                                 		<span class="input-group-text d-none d-md-block" style="border-radius: 0!important">Halaman</span>
-                                		<input type="text" id="current-page" value="1"
+                                		<input type="text" id="current-page" value="<?= $current_page ?>"
                                 			style="max-width: 3rem; padding: 0 10px; border-radius: 0!important">
                                 		<span class="input-group-text" id="total-page"
-                                			style="border-radius: 0px!important">dari 10</span>
+                                			style="border-radius: 0px!important">dari <?= $total_page ?></span>
                                 	</div>
-                                	<button id="next-page" class="btn btn-primary"
+                                	<a href="<?= $current_page < $total_page ? base_url('dashboard/kode-klasifikasi?page='.($current_page + 1).'&search='.$search.'&sort='.$sort) : '#' ?>" class="btn btn-primary"
                                 		style="border-radius: 0 10px 10px 0">
                                         <span class="d-none d-md-block">Selanjutnya</span>
                                         <span class="d-md-none">>></span>
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         </div>

@@ -81,8 +81,9 @@ class Klasifikasi_model extends CI_Model
     }
 
     function getKlasifikasiDashboard($page, $search, $sort) {
-        $query = $this->db->select('k.id, k.kode, k.nama, k.deskripsi, k.updated_at')
-            ->from('tbl_klasifikasi k');
+        $query = $this->db->select('k.id, k.kode, k.nama, k.deskripsi, k.updated_at, count(tbl_arsip.id) as arsip_count')
+            ->from('tbl_klasifikasi k')
+            ->join('tbl_arsip', 'tbl_arsip.klasifikasi_id = k.id', 'left');
 
         if($search) {
             $query = $query->where('kode LIKE', '%'.$search.'%')
