@@ -57,7 +57,7 @@
                     <div class="col-12 col-lg-4">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="card-title">Total pengunjung arsip</h4>
+                                <h4 class="card-title">Total Pengunjung Arsip</h4>
                                 <h1><?= $total_viewers ?></h1>
                             </div>
                         </div>
