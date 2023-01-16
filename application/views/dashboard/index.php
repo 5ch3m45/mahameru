@@ -31,13 +31,12 @@
             </div>
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col-12 col-lg-8">
                         <div class="card">
                             <div class="card-body">
                                 <form class="row" method="GET">
                                     <div class="col-12">
                                         <h4 class="card-title">Filter statistik</h4>
-                                        <h6 class="card-subtitle">Filter statistik jumlah arsip dipublikasi dan jumlah pengunjung arsip berdasarkan tanggal</h6>
                                     </div>
                                     <div class="col-12 col-lg-4">
                                         <label for="">Tanggal awal</label>
@@ -55,6 +54,14 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-12 col-lg-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Total pengunjung arsip</h4>
+                                <h1><?= $total_viewers ?></h1>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-8">
@@ -63,7 +70,7 @@
                                 <div class="d-md-flex align-items-center">
                                     <div>
                                         <h4 class="card-title">Jumlah Arsip Dipublikasi</h4>
-                                        <h6 class="card-subtitle">Jumlah arsip dipublikasi 2 minggu terakhir</h6>
+                                        <!-- <h6 class="card-subtitle">Jumlah arsip dipublikasi 2 minggu terakhir</h6> -->
                                     </div>
                                     <div class="ms-auto d-flex no-block align-items-center">
                                         <ul class="list-inline dl d-flex align-items-center m-r-15 m-b-0">
@@ -94,7 +101,6 @@
                                 <div class="d-md-flex align-items-center">
                                     <div>
                                         <h4 class="card-title">Jumlah Pengunjung Arsip</h4>
-                                        <h6 class="card-subtitle">Jumlah pengunjung arsip dalam <span id="arsip-dikunjungi-day">14</span> hari terakhir</h6>
                                     </div>
                                     <div class="ms-auto d-flex no-block align-items-center">
                                         <ul class="list-inline dl d-flex align-items-center m-r-15 m-b-0">

@@ -207,4 +207,12 @@ class Arsip_model extends CI_Model
             ->get()
             ->result_array();
     }
+
+    function totalViewers()
+    {
+        return $this->db->select('sum(viewers) as total')
+            ->from('tbl_arsip')
+            ->get()
+            ->row_array();
+    }
 }

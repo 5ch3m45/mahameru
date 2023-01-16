@@ -7,6 +7,7 @@ class Dashboard extends CI_Controller {
         $this->lang->load('auth');
         $this->load->library('session');
         $this->load->library('myrole');
+        $this->load->model('arsip_model');
 
         if(!$this->session->is_logged_in) {
             redirect(base_url('login'));
@@ -14,10 +15,11 @@ class Dashboard extends CI_Controller {
     }
     
 	public function index() {
-        $data = [
+        $total_viewers = $this->arsip_model->totalViewers();
+		$this->load->view('dashboard/index', [
             'title' => 'Dashboard',
-            'slug' => 'dashboard'
-        ];
-		$this->load->view('dashboard/index', $data);
+            'slug' => 'dashboard',
+            'total_viewers' => $total_viewers['total']
+        ]);
 	}
 }
