@@ -21,7 +21,7 @@ $(function() {
         data.append('phrase', $('#captcha').val())
 
         $(':input').attr('disabled', true)
-        axios.post(`/api/aduan/find`, data)
+        axios.post(`/api/public/aduan/find`, data)
             .then(res => {
                 $('#aduan-container').html(`
                     <h1>${res.data.data.kode}</h1>

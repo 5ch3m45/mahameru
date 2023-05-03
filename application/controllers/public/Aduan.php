@@ -2,13 +2,21 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 use Gregwar\Captcha\CaptchaBuilder;
+use Gregwar\Captcha\PhraseBuilder;
+
 class Aduan extends CI_Controller {
-	public function _construct() {
+
+	public function __construct() {
 		parent::__construct();
 		
 		$this->load->library('form_validation');
         $this->load->helper('formatter_helper');
+        $this->load->model([
+			'aduan_model',
+            'aduan_timeline_model'
+		]);
 	}
+
 	public function show() {
 		$captcha = new CaptchaBuilder();
 		

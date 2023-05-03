@@ -18,7 +18,7 @@ $(function() {
         data.append('aduan', $('#aduan-textarea').val())
         data.append('phrase', $('#captcha').val())
 
-        axios.post(`/api/aduan/create`, data)
+        axios.post(`/api/public/aduan/create`, data)
             .then(res => {
                 $('#aduan-modal-body').html(`
                     <p class="mb-0">Aduan Anda berhasil disimpan dengan nomor:</p>
