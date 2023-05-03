@@ -17,7 +17,7 @@ class Authentication extends CI_Controller {
 
 	public function login() {
 		if($this->session->userdata('is_logged_in')) {
-			redirect(base_url('admin/dashboard'));
+			redirect(base_url('dashboard'));
 		}
 
 		$captcha = new CaptchaBuilder();

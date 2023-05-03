@@ -66,7 +66,7 @@
                                     </a>
                         		</li>
                         		<li class="nav-item">
-                        			<a href="">
+                        			<a href="/login">
                                         <button class="btn btn-primary">Upload Arsip</button>
                                     </a>
                         		</li>
@@ -78,7 +78,7 @@
                                     </a>
                         		</li>
                         		<li class="nav-item">
-                        			<a href="">
+                        			<a href="/login">
                                         <button class="btn btn-primary">Upload Arsip</button>
                                     </a>
                         		</li>
