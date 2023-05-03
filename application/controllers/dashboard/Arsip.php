@@ -430,6 +430,10 @@ class Arsip extends CI_Controller {
             $update['informasi'] = $input['informasi'];
         }
 
+        if(isset($input['keterangan_fisik']) && !empty($input['keterangan_fisik'])) {
+            $update['keterangan_fisik'] = $input['keterangan_fisik'];
+        }
+
         // update
         $this->db->where('id', $arsip['id'])
             ->update('tbl_arsip', $update);

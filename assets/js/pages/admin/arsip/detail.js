@@ -105,7 +105,8 @@ $(function() {
                     tanggal_formatted, 
                     last_updated,
                     level,
-                    lampirans
+                    lampirans,
+                    keterangan_fisik
                 } = res.data.data;
 
                 // set text
@@ -114,6 +115,7 @@ $(function() {
                 $('#nomor-arsip-text').text(nomor ? nomor : '');
                 $('#informasi-text').html(informasi ? informasi : '<em class="text-secondary">Belum ada informasi</em>');
                 $('#klasifikasi-arsip-text').html(klasifikasi.id ? klasifikasi.kode+'. '+klasifikasi.nama : '-');
+                $('#keterangan-fisik-text').html(keterangan_fisik ? keterangan_fisik : '-');
                 $('#pencipta-arsip-text').html(pencipta ? pencipta : '-');
                 $('#tanggal-arsip-text').html(tanggal_formatted ? tanggal_formatted : '-');
                 $('#last-updated-text').html(last_updated);
@@ -152,6 +154,7 @@ $(function() {
                 }
                 // set form value
                 $('#nomorInput').val(nomor);
+                $('#keteranganFisik').val(keterangan_fisik);
                 $('#tanggalInput').val(tanggal);
                 if(klasifikasi.id) {
                     let option = new Option(klasifikasi.kode+'. '+klasifikasi.nama, klasifikasi.id, true, true);
@@ -293,6 +296,7 @@ $(function() {
         data.append('informasi', $('#informasiTextarea').val());
         data.append('pencipta', $('#penciptaInput').val());
         data.append('klasifikasi', $('#klasifikasiSelect').val());
+        data.append('keterangan_fisik', $('#keteranganFisik').val());
         data.append('level', $('#level-select').val());
         axios.post(`/api/dashboard/arsip/${_id}/update`, data)
             .then(res => {

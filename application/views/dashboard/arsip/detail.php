@@ -77,6 +77,8 @@
                                 <h6 id="klasifikasi-arsip-text"><image src="/assets/images/loader/loading.svg"/></h6>
                                 <small class="text-muted p-t-30 db">Pencipta</small>
                                 <h6 id="pencipta-arsip-text"><image src="/assets/images/loader/loading.svg"/></h6>
+                                <small class="text-muted p-t-30 db">Keterangan Fisik</small>
+                                <h6 id="keterangan-fisik-text"><image src="/assets/images/loader/loading.svg"/></h6>
                                 <small class="text-muted p-t-30 db">Tanggal Arsip</small>
                                 <h6 id="tanggal-arsip-text"><image src="/assets/images/loader/loading.svg"/></h6>
                                 <small class="text-muted p-t-30 db">Terakhir diupdate</small>
@@ -192,6 +194,11 @@
                             <option selected></option>
                         </select>
                         <div id="klasifikasiError" class="error-text"></div>
+                    </div>
+    				<div class="mb-3">
+                        <label for="">Keterangan Fisik</label>
+                        <textarea id="keteranganFisik" name="" id="" rows="2" class="form-control"></textarea>
+                        <div id="keteranganFisikError" class="error-text"></div>
                     </div>
     				<div class="mb-3">
                         <label for="">Pencipta</label>
