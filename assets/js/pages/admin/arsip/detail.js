@@ -314,6 +314,7 @@ $(function() {
                 if(item.klasifikasi_id) {
                     $('#klasifikasi-arsip-text').html(item.klasifikasi.kode+' | '+item.klasifikasi.nama)
                 }
+                $('#keterangan-fisik-text').html(item.keterangan_fisik ? item.keterangan_fisik : '-');
                 $('#pencipta-arsip-text').html(item.pencipta ? item.pencipta : '-');
                 $('#level-text').html(item.level == '2' ? '<span class="badge bg-success">Publik</span>' : '<span class="badge bg-danger">Rahasia</span>')
 
